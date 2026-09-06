@@ -116,6 +116,21 @@ await sleep(400);
 if (!root.querySelector('.card--hero')) fail('нет главной карточки');
 else step('главная отрисована: ' + root.querySelector('h1')?.textContent);
 
+/* ── тупик, который ловил новых пользователей ──────────────── */
+console.log('\nБЛИЦ ДО ПЕРВОГО ЗАНЯТИЯ');
+window.location.hash = '#/session/sprint';
+await sleep(500);
+{
+  const txt = root.textContent;
+  if (root.querySelector('.session')) step('блиц запустился сразу (колода не пуста)');
+  else if (txt.includes('для слов, которые ты уже видел')) {
+    step('тупик заменён объяснением');
+    const fixBtn = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Взять первые слова'));
+    if (!fixBtn) fail('нет кнопки выхода из тупика');
+    else { step('кнопка решения на месте: «' + fixBtn.textContent + '»'); }
+  } else fail('неизвестное состояние блица: ' + txt.slice(0, 80));
+}
+
 /* ── занятие ───────────────────────────────────────────────── */
 console.log('\nЗАНЯТИЕ');
 window.location.hash = '#/session/build';
@@ -178,6 +193,36 @@ if (!raw) fail('состояние не записалось');
 else step('записано ' + (raw.length / 1024).toFixed(1) + ' КБ');
 const parsed = JSON.parse(raw);
 step('дней в истории: ' + Object.keys(parsed.days).length + ' · уровень: ' + parsed.profile.level);
+
+/* ── второй тупик: всё повторено ───────────────────────────── */
+console.log('\nКОГДА ВСЁ ПОВТОРЕНО');
+{
+  const st = store.state;
+  for (const rec of Object.values(st.srs.deck1)) { rec.box = Math.max(rec.box, 2); rec.dueDay = st.day + 30; }
+  window.location.hash = '#/home';
+  await sleep(200);
+  window.location.hash = '#/session/sprint';
+  await sleep(500);
+
+  if (root.querySelector('.session')) {
+    const total = Number((root.textContent.match(/\d+\/(\d+)/) || [])[1] || 0);
+    step('тупика нет, блиц собрал сессию из ' + total + ' заданий');
+    const knownCount = Object.values(store.state.srs.deck1).filter(r => r.box >= 1).length;
+    const floor = Math.min(8, knownCount * 2);
+    if (total < floor) fail(`сессия из ${total} заданий при ${knownCount} знакомых словах, ожидалось не меньше ${floor}`);
+    else step(`знакомых слов ${knownCount}, заданий ${total} — сессия не огрызок`);
+  } else if (root.textContent.includes('Всё повторено')) {
+    const more = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Позаниматься ещё'));
+    const raise = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Поднять планку'));
+    if (!more || !raise) fail('нет кнопок решения на экране «Всё повторено»');
+    else {
+      step('запасной экран с кнопками решения показан');
+      click(more); await sleep(500);
+      if (!root.querySelector('.session')) fail('«Позаниматься ещё» не собрало сессию');
+      else step('«Позаниматься ещё» собрало сессию на месте');
+    }
+  } else fail('неизвестное состояние: ' + root.textContent.slice(0, 80));
+}
 
 /* ── приглашение друзей ────────────────────────────────────── */
 console.log('\nПРИГЛАШЕНИЕ ДРУЗЕЙ');

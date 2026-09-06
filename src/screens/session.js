@@ -14,8 +14,8 @@
  */
 
 import { el, en } from '../ui/dom.js';
-import { buildSession, SessionQueue, newRecord } from '../domain/srs.js';
-import { selectByChallenge, allowedExerciseTypes, allowedSources } from '../domain/challenge.js';
+import { buildSession, SessionQueue, newRecord, maintenance } from '../domain/srs.js';
+import { selectByChallenge, allowedExerciseTypes, allowedSources, tierOf } from '../domain/challenge.js';
 import { isSoftMode, MAX_LIVES } from '../domain/streak.js';
 import { poolForChallenge, pickDistractors, shuffle, isTypo } from '../data/content.js';
 import { enterCard, enterOptions, popCorrect, shakeWrong, popCombo, fillBar, animate } from '../core/motion.js';
@@ -29,6 +29,13 @@ export function screen(store, content) {
   return {
     mount(root, ctx) {
       const mode = ctx.params[0] || 'build';
+      let teardown = () => {};
+      start();
+      return { destroy() { speech.cancel(); teardown(); } };
+
+      /* Сессия пересобирается на месте: из тупика человек выходит
+         кнопкой прямо здесь, а не уходом на главную. */
+      function start(extraPractice = false) {
       const s0 = store.state;
       const startedAt = Date.now();
 
@@ -43,14 +50,39 @@ export function screen(store, content) {
       const banded = selectByChallenge(withRecs, s0.challenge.index);
       const pool = mergeUnique(withRecs.filter(p => p.rec.box >= 1 && p.rec.dueDay <= s0.day), banded);
 
-      const items = buildSession(pool, {
-        day: s0.day, mode, size: mode === 'sprint' ? 30 : 18,
-        newBudget: Math.max(0, (s0.settings.dailyGoalWords || 10) - (s0.days[s0.day]?.words || 0)),
-      });
+      const target = mode === 'sprint' ? 24 : 14;
+      let items = extraPractice
+        ? maintenance(withRecs, target, s0.day)
+        : buildSession(pool, {
+            day: s0.day, mode, size: mode === 'sprint' ? 30 : 18,
+            newBudget: Math.max(0, (s0.settings.dailyGoalWords || 10) - (s0.days[s0.day]?.words || 0)),
+          });
+
+      /* Полоса планки сужает подбор, и на маленьком словаре занятие
+         выходило в три задания. Добор идёт из ПОЛНОГО набора знакомых
+         слов, а не из полосы: лучше показать знакомое слово лишний раз,
+         чем выдать огрызок сессии. */
+      if (items.length < 8) {
+        items = items.concat(maintenance(withRecs, 8 - items.length, s0.day, items));
+      }
+
+      /* Знакомых слов может быть меньше, чем нужно на занятие: у человека
+         в первый день их шесть. Тогда слова идут по второму кругу, а не
+         превращают занятие в огрызок из трёх заданий. Больше двух
+         показов одного слова за сессию не даём: это уже зубрёжка. */
+      if (items.length && items.length < 8) {
+        const round2 = items.map(x => ({ ...x, secondPass: true }));
+        items = items.concat(round2).slice(0, Math.max(8, items.length));
+      }
 
       if (!items.length) {
-        root.append(emptyState(ctx));
-        return { destroy() {} };
+        root.replaceChildren();
+        root.append(deadEndFix({
+          mode, ctx, store, content,
+          hasAnyProgress: pool.some(p => p.rec.box >= 1),
+          onRetry: (opts) => start(opts && opts.extraPractice),
+        }));
+        return;
       }
 
       const queue = new SessionQueue(items);
@@ -76,7 +108,7 @@ export function screen(store, content) {
       );
 
       const wrap = el('div', { class: 'session' }, top, combo, stage, feedback);
-      root.append(wrap);
+      root.replaceChildren(wrap);   // пересборка на месте не должна копить экраны
       renderSparks();
       next();
 
@@ -322,7 +354,8 @@ export function screen(store, content) {
         ctx.go('results');
       }
 
-      return { destroy() { speech.cancel(); } };
+      teardown = () => {};
+      }
     },
   };
 }
@@ -352,10 +385,71 @@ function mergeUnique(a, b) {
   return a.concat(b.filter(x => !seen.has(x.id)));
 }
 
-function emptyState(ctx) {
-  return el('div', { class: 'screen center stack', style: 'justify-content:center' },
+/* Экран, который раньше был тупиком.
+ *
+ * Прежний текст отправлял человека «поднять планку в профиле» — то есть
+ * уйти с экрана, найти настройку и вернуться. Это ровно то место, где
+ * люди закрывают приложение.
+ *
+ * Теперь каждая причина пустой колоды имеет кнопку, решающую её здесь же
+ * и в одно касание. Главная кнопка на экране всегда одна. */
+function deadEndFix({ mode, ctx, store, content, hasAnyProgress, onRetry }) {
+  const s = store.state;
+  const modeName = { sprint: 'Блиц', ether: 'Режим «На слух»', build: 'Занятие' }[mode] || 'Занятие';
+
+  // Причина первая: человек ещё ничего не учил, а блиц и слух работают
+  // только по знакомым словам. Это самый частый вход в тупик.
+  if (!hasAnyProgress) {
+    return el('div', { class: 'screen center stack', style: 'justify-content:center;gap:var(--sp-4)' },
+      el('div', { style: 'font-size:48px' }, '🌱'),
+      el('h1', { class: 't-h1' }, `${modeName} — для слов, которые ты уже видел`),
+      el('p', { class: 't-sm' },
+        'Сейчас их ещё нет. Возьмём первый десяток, это минуты четыре. ' +
+        'После этого сюда можно возвращаться сколько угодно.'),
+      el('button', {
+        class: 'btn btn--primary btn--cta',
+        onClick: () => { sound.sessionStart(); ctx.go('session/build'); },
+      }, 'Взять первые слова'),
+      el('button', { class: 'btn btn--ghost', onClick: () => ctx.go('home') }, 'Не сейчас'),
+    );
+  }
+
+  // Причина вторая: на сегодня всё повторено. Это не проблема, а успех,
+  // но выход всё равно должен быть здесь, а не в настройках.
+  const bar = tierOfIndex(store);
+  return el('div', { class: 'screen center stack', style: 'justify-content:center;gap:var(--sp-4)' },
     el('div', { style: 'font-size:48px' }, '🌤'),
-    el('h1', { class: 't-h1' }, 'На сегодня всё'),
-    el('p', { class: 't-sm' }, 'Все слова повторены. Возвращайся завтра — или подними планку в профиле, если хочется ещё.'),
-    el('button', { class: 'btn btn--primary btn--cta', onClick: () => ctx.go('home') }, 'На главную'));
+    el('h1', { class: 't-h1' }, 'Всё повторено'),
+    el('p', { class: 't-sm' }, 'На сегодня слова закончились. Можно остановиться — или взять ещё, прямо отсюда.'),
+
+    el('button', {
+      class: 'btn btn--primary btn--cta',
+      onClick: () => { sound.sessionStart(); onRetry({ extraPractice: true }); },
+    }, 'Позаниматься ещё'),
+
+    el('div', { class: 'card stack', style: 'gap:var(--sp-2);width:100%' },
+      el('div', { class: 'row row--between' },
+        el('div', { class: 't-sm' }, `Планка ${s.challenge.index} · ${bar.name}`),
+        el('div', { class: 't-caption' }, 'сложность подбора')),
+      el('div', { class: 't-caption' }, 'Выше планка — в подбор попадают слова потруднее и новые типы заданий.'),
+      el('button', {
+        class: 'btn',
+        onClick: () => {
+          sound.tap();
+          store.dispatch({ type: 'CHALLENGE_SET', index: Math.min(30, s.challenge.index + 3) });
+          onRetry();
+        },
+      }, 'Поднять планку и попробовать'),
+    ),
+
+    mode !== 'build' ? el('button', {
+      class: 'btn', onClick: () => { sound.sessionStart(); ctx.go('session/build'); },
+    }, 'Взять новые слова') : null,
+
+    el('button', { class: 'btn btn--ghost', onClick: () => ctx.go('home') }, 'На сегодня хватит'),
+  );
+}
+
+function tierOfIndex(store) {
+  return tierOf(store.state.challenge.index);
 }
