@@ -98,18 +98,18 @@ export function t(ru, vars) {
 }
 
 /**
- * Множественное число. Русская форма задаётся тремя вариантами,
- * перевод может иметь свои правила — берём их из Intl.
+ * Множественное число.
+ *
+ * Категорию спрашиваем у платформы, потому что у каждого языка свои
+ * правила: в немецком их две, в русском три, в арабском шесть. Формы
+ * приходят уже переведёнными из вызывающего кода.
  */
-export function plural(n, forms) {
+export function plural(n, one, few, many) {
   const rules = pluralRules();
   const cat = rules ? rules.select(n) : fallbackSelect(n);
-  const key = `${forms.key}#${cat}`;
-  const translated = dict && dict[key];
-  if (translated) return translated;
-  // Русский источник: one / few / many
-  const ruCat = fallbackSelect(n);
-  return forms[ruCat] || forms.many || forms.other || '';
+  if (cat === 'one') return one;
+  if (cat === 'few') return few;
+  return many;
 }
 
 let _rules = null, _rulesLang = null;

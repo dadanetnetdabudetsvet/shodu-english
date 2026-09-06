@@ -10,7 +10,7 @@ import { confetti } from './core/confetti.js';
 import { registerServiceWorker } from './core/sw-update.js';
 import { loadContent } from './data/content.js';
 import { readRefFromUrl } from './domain/referral.js';
-import { detectLanguage, setLanguage } from './i18n/index.js';
+import { detectLanguage, setLanguage, onLanguageChange } from './i18n/index.js';
 import { createStore } from './ui/store.js';
 import { createRouter } from './ui/router.js';
 import { rootReducer } from './ui/reducer.js';
@@ -28,6 +28,8 @@ async function boot() {
   await setLanguage(state.settings.lang || detectLanguage());
 
   applySettings(state.settings);
+  localizeTabbar();
+  onLanguageChange(localizeTabbar);
 
   const content = await loadContent();
   const store = createStore(state, rootReducer);
@@ -84,6 +86,16 @@ async function boot() {
       });
     },
   });
+}
+
+/* Подписи навигации живут в разметке, поэтому переводятся отдельно.
+   Раньше они не попадали в каталог и на любом языке оставались русскими. */
+function localizeTabbar() {
+  const labels = { home: 'Дом', words: 'Слова', rules: 'Правила', profile: 'Профиль' };
+  for (const item of tabbar.querySelectorAll('[data-tab]')) {
+    const node = item.querySelector('.tabbar__label');
+    if (node) node.textContent = t(labels[item.dataset.tab] || '');
+  }
 }
 
 function applySettings(s) {

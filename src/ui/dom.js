@@ -33,8 +33,11 @@ export function plural(n, one, few, many) {
   return many;
 }
 
-export const words = (n) => t('{v0} {v1}', { v0: n, v1: plural(n, 'слово', 'слова', 'слов') });
-export const days = (n) => t('{v0} {v1}', { v0: n, v1: plural(n, 'день', 'дня', 'дней') });
+/* Формы проходят через переводчик по одной: подстановка русского
+   литерала внутрь переводимой строки оставила бы русский хвост
+   в любом языке. */
+export const words = (n) => t('{v0} {v1}', { v0: n, v1: plural(n, t('слово'), t('слова'), t('слов')) });
+export const days = (n) => t('{v0} {v1}', { v0: n, v1: plural(n, t('день'), t('дня'), t('дней')) });
 
 export function greeting(name) {
   const h = new Date().getHours();
@@ -44,7 +47,7 @@ export function greeting(name) {
 
 export function fmtMinutes(ms) {
   const m = Math.round(ms / 60000);
-  return t('{v0} {v1}', { v0: m, v1: plural(m, 'минута', 'минуты', 'минут') });
+  return t('{v0} {v1}', { v0: m, v1: plural(m, t('минута'), t('минуты'), t('минут')) });
 }
 
 /** Ловушка фокуса для шторок и модальных окон. */

@@ -166,10 +166,11 @@ export function poolForChallenge(content, sources) {
   if (sources.includes('tier34')) {
     pool = content.deck1.concat(content.extra.filter(w => w.deck === 'cognates2'));
   }
-  if (sources.includes('falseFriends')) pool = pool.concat(content.falseFriends);
-  if (sources.includes('deck2')) {
-    pool = pool.concat(content.deck2, content.extra.filter(w => w.deck !== 'cognates2'));
+  if (sources.includes('deck2')) pool = pool.concat(content.deck2);
+  if (sources.includes('general')) {
+    pool = pool.concat(content.extra.filter(w => w.deck !== 'cognates2'));
   }
+  if (sources.includes('falseFriends')) pool = pool.concat(content.falseFriends);
   return pool;
 }
 
