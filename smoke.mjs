@@ -179,5 +179,43 @@ else step('записано ' + (raw.length / 1024).toFixed(1) + ' КБ');
 const parsed = JSON.parse(raw);
 step('дней в истории: ' + Object.keys(parsed.days).length + ' · уровень: ' + parsed.profile.level);
 
+/* ── приглашение друзей ────────────────────────────────────── */
+console.log('\nПРИГЛАШЕНИЕ ДРУЗЕЙ');
+{
+  const { makeProof, makeSelfCode } = await imp('src/domain/referral.js');
+  const my = store.state.referral.selfCode;
+  if (!my) fail('код приглашения не выдан при первом запуске');
+  else step('мой код: ' + my);
+
+  const friend = makeSelfCode();
+  const before = store.state.econ.gems;
+  store.dispatch({ type: 'REFERRAL_CONFIRM', proof: makeProof(my, friend) });
+  const after = store.state.econ.gems;
+  if (after - before !== 100) fail(`за первого друга начислено ${after - before}, ожидалось 100`);
+  else step('первый друг: +' + (after - before));
+
+  store.dispatch({ type: 'REFERRAL_CONFIRM', proof: makeProof(my, friend) });
+  if (store.state.referral.friends.length !== 1) fail('повторный код зачёлся');
+  else step('повторный код отклонён');
+
+  const f2 = makeSelfCode(), f3 = makeSelfCode(), f4 = makeSelfCode();
+  const g0 = store.state.econ.gems;
+  store.dispatch({ type: 'REFERRAL_CONFIRM', proof: makeProof(my, f2) });
+  store.dispatch({ type: 'REFERRAL_CONFIRM', proof: makeProof(my, f3) });
+  store.dispatch({ type: 'REFERRAL_CONFIRM', proof: makeProof(my, f4) });
+  const gained = store.state.econ.gems - g0;
+  if (gained !== 200 + 400 + 150) fail(`за друзей 2-4 начислено ${gained}, ожидалось 750`);
+  else step('лестница 2-4: +' + gained + ' (200, 400, затем стандартные 150)');
+
+  store.dispatch({ type: 'REFERRAL_CONFIRM', proof: makeProof('ZZZZZZ', makeSelfCode()) });
+  if (store.state.referral.friends.length !== 4) fail('чужой код зачёлся');
+  else step('чужой код отклонён · всего друзей: ' + store.state.referral.friends.length);
+}
+
+window.location.hash = '#/profile';
+await sleep(400);
+if (!root.textContent.includes('Друзья')) fail('в профиле нет блока друзей');
+else step('блок друзей в профиле отрисован');
+
 console.log('\n' + (errors.length ? `ОШИБОК: ${errors.length}\n` + errors.slice(0, 12).join('\n') : 'ОШИБОК НЕТ'));
 process.exit(errors.length ? 1 : 0);

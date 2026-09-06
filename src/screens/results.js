@@ -9,6 +9,7 @@ import { el } from '../ui/dom.js';
 import { takeResult } from './session.js';
 import { countKnown, levelInfo } from '../ui/reducer.js';
 import { VOTE_REPLY, tierOf } from '../domain/challenge.js';
+import { makeProof } from '../domain/referral.js';
 import { popIn, tweenNumber } from '../core/motion.js';
 import { confetti } from '../core/confetti.js';
 import { sound } from '../core/sound.js';
@@ -73,6 +74,34 @@ export function screen(store, content) {
         }, label);
       }
 
+      /* Пришёл по приглашению и закрыл первое занятие — выдаём бонус
+         и показываем код, который надо отправить пригласившему.
+         Раньше этого момента кода нет: награда за реальное занятие. */
+      let handshake = null;
+      const ref = s.referral || {};
+      if (r.completed && ref.invitedBy && !ref.newcomerPaid) {
+        store.dispatch({ type: 'REFERRAL_NEWCOMER_PAID' });
+        const proof = makeProof(ref.invitedBy, ref.selfCode);
+        handshake = el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
+          el('div', { style: 'font-weight:600' }, 'Тебя позвал друг'),
+          el('div', { class: 't-sm' }, 'Тебе начислено 100 алмазов. Отправь этот код тому, кто позвал, — ему тоже начислят.'),
+          el('div', {
+            class: 'card card--flat center t-num',
+            style: 'font-size:var(--fs-xl);font-weight:800;letter-spacing:.08em',
+          }, proof),
+          el('button', {
+            class: 'btn btn--primary',
+            onClick: async () => {
+              const text = `Мой код в Шоду: ${proof}`;
+              try {
+                if (navigator.share) await navigator.share({ text });
+                else { await navigator.clipboard.writeText(proof); }
+              } catch { /* отмена шаринга это не ошибка */ }
+            },
+          }, 'Отправить код'),
+        );
+      }
+
       const actions = el('div', { class: 'stack', style: 'gap:var(--sp-2)' },
         el('button', {
           class: 'btn btn--primary btn--cta',
@@ -89,6 +118,7 @@ export function screen(store, content) {
         goalLine,
         r.maxCombo >= 5 ? el('div', { class: 't-sm center' }, `Лучшая серия: ${r.maxCombo} подряд`) : null,
         voteBox, voteReply,
+        handshake,
         el('div', { class: 'grow' }),
         actions,
       ));

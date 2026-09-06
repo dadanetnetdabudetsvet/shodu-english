@@ -9,6 +9,7 @@ import { setMotionLevel } from './core/motion.js';
 import { confetti } from './core/confetti.js';
 import { registerServiceWorker } from './core/sw-update.js';
 import { loadContent } from './data/content.js';
+import { readRefFromUrl } from './domain/referral.js';
 import { createStore } from './ui/store.js';
 import { createRouter } from './ui/router.js';
 import { rootReducer } from './ui/reducer.js';
@@ -26,6 +27,9 @@ async function boot() {
   const content = await loadContent();
   const store = createStore(state, rootReducer);
   window.__shodu = { store, content, storage };   // для отладки с телефона
+
+  // Код приглашения снимается с адреса при самом первом открытии.
+  store.dispatch({ type: 'REFERRAL_INIT', ref: readRefFromUrl(location.href) });
 
   wireEffects(store, content);
   wireStoragePersistence(store);

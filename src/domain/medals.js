@@ -34,6 +34,10 @@ export const MEDALS = [
     check: (c) => c.corrected >= 50 },
   { id: 'traps', icon: '🪤', name: 'Не попался', hint: 'Десять ложных друзей выучено', gems: 60,
     check: (c) => c.trapsKnown >= 10 },
+  { id: 'first_friend', icon: '🤝', name: 'Первый друг', hint: 'Позвать и зачесть одного друга', gems: 50,
+    check: (c) => c.friends >= 1 },
+  { id: 'company', icon: '🎪', name: 'Компания', hint: 'Трое друзей рядом', gems: 100,
+    check: (c) => c.friends >= 3 },
   // Награда за возвращение после провала.
   { id: 'phoenix', icon: '🎭', name: 'Феникс', hint: 'Вернуться после долгого перерыва', gems: 150,
     secret: true, check: (c) => c.returnedAfter >= 30 },

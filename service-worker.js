@@ -38,6 +38,7 @@ const SHELL = [
   './src/ui/toast.js',
   './src/data/content.js',
   './src/domain/medals.js',
+  './src/domain/referral.js',
   './src/core/sw-update.js',
   './src/screens/welcome.js',
   './src/screens/home.js',

@@ -64,6 +64,12 @@ export function emptyState() {
     srs: { deck1: {}, deck2: {} },
     days: {},                   // { [номер дня]: { ms, xp, words, sessions, correct, answered } }
     dailyQuests: { day: null, list: [] },
+    referral: {
+      selfCode: null,           // выдаётся при первом запуске
+      invitedBy: null,          // код пригласившего, если пришли по ссылке
+      newcomerPaid: false,      // бонус новичку выдан после первого занятия
+      friends: [],              // подтверждённые коды друзей
+    },
     medals: {},                 // { [id]: номер дня получения }
     rulesRead: {},              // { [id правила]: номер дня }
     keys: {},                   // открытые «ключи» соответствий, -tion → -ция

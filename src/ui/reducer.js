@@ -8,6 +8,7 @@ import { answerXp, sessionBonusXp, SOFT_MODE_XP_FACTOR, GEMS, milestoneFor,
 import { refreshStreak, completeDay, costsLife, loseLife, regenLives,
          isSoftMode, grantEmergencyFreeze } from '../domain/streak.js';
 import { applyVote, autoAdjust, setManual, clampIndex } from '../domain/challenge.js';
+import { makeSelfCode, verifyProof, rewardFor, NEWCOMER_GEMS } from '../domain/referral.js';
 import { fx } from './store.js';
 
 export function rootReducer(state, action) {
@@ -142,6 +143,49 @@ export function rootReducer(state, action) {
       return {
         state: { ...state, days, econ, streak, profile: { ...state.profile, level } },
         effects: [...effects, fx.save()],
+      };
+    }
+
+    case 'REFERRAL_INIT': {
+      const r = { ...state.referral };
+      let changed = false;
+      if (!r.selfCode) { r.selfCode = makeSelfCode(); changed = true; }
+      if (action.ref && !r.invitedBy && action.ref !== r.selfCode) { r.invitedBy = action.ref; changed = true; }
+      if (!changed) return { state, effects: [] };
+      return { state: { ...state, referral: r }, effects: [fx.save()] };
+    }
+
+    /* Бонус новичку выдаётся за первое ЗАВЕРШЁННОЕ занятие,
+       а не за установку: иначе это приглашение к накрутке. */
+    case 'REFERRAL_NEWCOMER_PAID': {
+      const r = state.referral;
+      if (!r.invitedBy || r.newcomerPaid) return { state, effects: [] };
+      return {
+        state: {
+          ...state,
+          referral: { ...r, newcomerPaid: true },
+          econ: { ...state.econ, gems: state.econ.gems + NEWCOMER_GEMS },
+        },
+        effects: [fx.sound('gems', 5), fx.toast(`Бонус за приглашение: +${NEWCOMER_GEMS} алмазов`, 'info'), fx.save()],
+      };
+    }
+
+    case 'REFERRAL_CONFIRM': {
+      const r = state.referral;
+      const res = verifyProof(r.selfCode, action.proof, r.friends);
+      if (!res.ok) return { state, effects: [fx.toast(res.reason, 'warn')] };
+      const nth = r.friends.length + 1;
+      const gems = rewardFor(nth);
+      return {
+        state: {
+          ...state,
+          referral: { ...r, friends: [...r.friends, res.friendCode] },
+          econ: { ...state.econ, gems: state.econ.gems + gems },
+        },
+        effects: [
+          fx.sound('medal'), fx.confetti({ count: 90 }),
+          fx.toast(`Друг зачтён. +${gems} алмазов`, 'info'), fx.save(),
+        ],
       };
     }
 

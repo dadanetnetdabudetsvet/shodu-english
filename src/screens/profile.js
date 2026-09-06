@@ -12,6 +12,7 @@ import { gradeForLevel } from '../domain/scoring.js';
 import { tierOf, MIN_INDEX, MAX_INDEX } from '../domain/challenge.js';
 import { weekDone } from '../domain/streak.js';
 import { WEEKDAY_SHORT, weekdayIndex } from '../core/day.js';
+import { inviteUrl, shareTargets, nextRewardHint, ladderPreview, INVITE_TEXT } from '../domain/referral.js';
 import { sound } from '../core/sound.js';
 import { storage } from '../core/storage.js';
 import { toast } from '../ui/toast.js';
@@ -39,6 +40,7 @@ export function screen(store, content) {
           statsGrid({ known, learning, s, totalMs, totalSessions }),
           chart(s),
           medalsBlock(s, { known, learning, totalSessions }),
+          inviteBlock(s),
           settingsBlock(s),
         );
       }
@@ -186,6 +188,76 @@ export function screen(store, content) {
                 el('div', { style: 'font-size:22px' }, has ? m.icon : '🔒'),
                 el('div', { class: 'tile__cap' }, m.name));
             })),
+        );
+      }
+
+      /* ── друзья ────────────────────────────────────────────── */
+      function inviteBlock(s) {
+        const ref = s.referral || {};
+        const url = inviteUrl(location.href.split('#')[0].split('?')[0], ref.selfCode || '');
+        const count = (ref.friends || []).length;
+
+        const ladder = el('div', { style: 'display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2)' },
+          ...ladderPreview().map((row, i) => el('div', {
+            class: 'tile',
+            style: (typeof row.nth === 'number' && count >= row.nth) ? 'box-shadow:var(--sh-gold-glow)' : '',
+          },
+            el('div', { class: 'tile__val', style: 'font-size:var(--fs-md)' }, `${row.gems}`),
+            el('div', { class: 'tile__cap' }, typeof row.nth === 'number' ? `${row.nth}-й друг` : row.nth))));
+
+        const links = el('div', { style: 'display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2)' },
+          ...shareTargets(url).map(t => el('a', {
+            class: 'btn', href: t.href, target: '_blank', rel: 'noopener',
+            style: 'min-height:44px;font-size:var(--fs-sm);text-decoration:none',
+            onClick: () => sound.tap(),
+          }, `${t.icon} ${t.label}`)));
+
+        const proofInput = el('input', {
+          class: 'option', type: 'text', placeholder: 'ABC123-XYZW',
+          style: 'width:100%;min-height:48px;text-transform:uppercase',
+        });
+
+        return el('div', { class: 'card stack' },
+          el('div', { class: 'row row--between' },
+            el('div', { style: 'font-weight:600' }, 'Друзья'),
+            el('div', { class: 't-caption' }, count ? `${count} зачтено` : 'пока никого')),
+          el('div', { class: 't-sm' }, nextRewardHint(count)),
+          ladder,
+          el('div', { class: 'row', style: 'gap:var(--sp-2)' },
+            el('button', {
+              class: 'btn btn--primary grow',
+              onClick: async () => {
+                sound.tap();
+                const text = `${INVITE_TEXT} ${url}`;
+                try {
+                  if (navigator.share) await navigator.share({ title: 'Шоду', text: INVITE_TEXT, url });
+                  else { await navigator.clipboard.writeText(text); toast('Ссылка скопирована.', { kind: 'info' }); }
+                } catch { /* человек передумал, это не ошибка */ }
+              },
+            }, 'Позвать друга'),
+            el('button', {
+              class: 'btn',
+              onClick: async () => {
+                try { await navigator.clipboard.writeText(url); toast('Ссылка скопирована.', { kind: 'info' }); }
+                catch { toast(url, { kind: 'info', ms: 8000 }); }
+              },
+            }, 'Копировать'),
+          ),
+          links,
+          el('div', { class: 't-caption' },
+            'Друг получит 100 алмазов сразу после первого занятия и пришлёт тебе короткий код. ' +
+            'Вставь его сюда — начислим и тебе. Пока нет сервера, приложение не может узнать об этом само, ' +
+            'поэтому подтверждение идёт через код.'),
+          proofInput,
+          el('button', {
+            class: 'btn', onClick: () => {
+              const v = proofInput.value.trim();
+              if (!v) return;
+              store.dispatch({ type: 'REFERRAL_CONFIRM', proof: v });
+              proofInput.value = '';
+              render();
+            },
+          }, 'Зачесть друга'),
         );
       }
 
@@ -338,6 +410,7 @@ export function screen(store, content) {
           known: agg.known, sessions: agg.totalSessions,
           streakBest: s.streak.best, weekBest: weekDone(s.days, s.day),
           cleanSessions: cleanDays, returnedAfter: s.flags.returnedAfter || 0,
+          friends: (s.referral?.friends || []).length,
         };
       }
 
