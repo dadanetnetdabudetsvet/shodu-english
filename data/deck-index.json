@@ -1,0 +1,21 @@
+{
+ "version": 1,
+ "total": 951,
+ "decks": {
+  "cognates": 200,
+  "core": 120,
+  "traps": 30,
+  "cognates2": 150,
+  "actions": 238,
+  "nouns": 213
+ },
+ "duplicatesRemoved": 49,
+ "order": [
+  "cognates",
+  "core",
+  "traps",
+  "cognates2",
+  "actions",
+  "nouns"
+ ]
+}

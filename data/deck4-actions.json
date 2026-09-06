@@ -1,0 +1,5896 @@
+{
+ "version": 1,
+ "deck": "actions",
+ "words": [
+  {
+   "id": "v001",
+   "en": "think",
+   "ru": "думать",
+   "ipa": "/θɪŋk/",
+   "tr": "тинк",
+   "group": "verb",
+   "order": 1,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "thought",
+    "pp": "thought",
+    "ing": "thinking",
+    "third": "thinks"
+   },
+   "ex_en": "I think it is good.",
+   "ex_ru": "Я думаю, это хорошо.",
+   "hint": "Неправильный: think — thought — thought, вторая форма звучит «тот». Think about — думать о чём-то.",
+   "builds_with": [
+    "c010",
+    "w187",
+    "c061"
+   ]
+  },
+  {
+   "id": "v002",
+   "en": "use",
+   "ru": "использовать",
+   "ipa": "/juːz/",
+   "tr": "юз",
+   "group": "verb",
+   "order": 2,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "used",
+    "pp": "used",
+    "ing": "using",
+    "third": "uses"
+   },
+   "ex_en": "I use a computer.",
+   "ex_ru": "Я использую компьютер.",
+   "hint": "Глагол use звучит «юз», а существительное use — «юс». Правильный: use — used.",
+   "builds_with": [
+    "w064",
+    "w072",
+    "w065"
+   ]
+  },
+  {
+   "id": "v003",
+   "en": "find",
+   "ru": "находить",
+   "ipa": "/faɪnd/",
+   "tr": "файнд",
+   "group": "verb",
+   "order": 3,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "found",
+    "pp": "found",
+    "ing": "finding",
+    "third": "finds"
+   },
+   "ex_en": "He finds the address.",
+   "ex_ru": "Он находит адрес.",
+   "hint": "Неправильный: find — found — found. Find — найти, а look for — искать.",
+   "builds_with": [
+    "w036",
+    "w067",
+    "w066"
+   ]
+  },
+  {
+   "id": "v004",
+   "en": "tell",
+   "ru": "рассказывать",
+   "ipa": "/tel/",
+   "tr": "тэл",
+   "group": "verb",
+   "order": 4,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "told",
+    "pp": "told",
+    "ing": "telling",
+    "third": "tells"
+   },
+   "ex_en": "He tells me the plan.",
+   "ex_ru": "Он рассказывает мне план.",
+   "hint": "Неправильный: tell — told — told. Tell всегда кому-то: tell me. Say — без адресата.",
+   "builds_with": [
+    "c026",
+    "w050",
+    "w192"
+   ]
+  },
+  {
+   "id": "v005",
+   "en": "ask",
+   "ru": "спрашивать",
+   "ipa": "/ɑːsk/",
+   "tr": "аск",
+   "group": "verb",
+   "order": 5,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "asked",
+    "pp": "asked",
+    "ing": "asking",
+    "third": "asks"
+   },
+   "ex_en": "I ask the doctor.",
+   "ex_ru": "Я спрашиваю доктора.",
+   "hint": "Ask for — просить что-то, ask about — спрашивать о чём-то. Правильный: ask — asked.",
+   "builds_with": [
+    "w100",
+    "c035",
+    "c108"
+   ]
+  },
+  {
+   "id": "v006",
+   "en": "feel",
+   "ru": "чувствовать",
+   "ipa": "/fiːl/",
+   "tr": "фил",
+   "group": "verb",
+   "order": 6,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "felt",
+    "pp": "felt",
+    "ing": "feeling",
+    "third": "feels"
+   },
+   "ex_en": "I feel good.",
+   "ex_ru": "Я чувствую себя хорошо.",
+   "hint": "Неправильный: feel — felt — felt. I feel good — «мне хорошо», слово «себя» английскому не нужно.",
+   "builds_with": [
+    "c061",
+    "c070",
+    "w102"
+   ]
+  },
+  {
+   "id": "v007",
+   "en": "try",
+   "ru": "пытаться",
+   "ipa": "/traɪ/",
+   "tr": "трай",
+   "group": "verb",
+   "order": 7,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "tried",
+    "pp": "tried",
+    "ing": "trying",
+    "third": "tries"
+   },
+   "ex_en": "I try to help.",
+   "ex_ru": "Я пытаюсь помочь.",
+   "hint": "После try идёт to: try to help. Правильный, но y меняется на i: try — tried.",
+   "builds_with": [
+    "c059",
+    "c097",
+    "c035"
+   ]
+  },
+  {
+   "id": "v008",
+   "en": "call",
+   "ru": "звонить",
+   "ipa": "/kɔːl/",
+   "tr": "кол",
+   "group": "verb",
+   "order": 8,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "called",
+    "pp": "called",
+    "ing": "calling",
+    "third": "calls"
+   },
+   "ex_en": "Call me tomorrow.",
+   "ex_ru": "Позвони мне завтра.",
+   "hint": "Ещё call значит «называть»: they call him Max. Правильный: call — called.",
+   "builds_with": [
+    "c026",
+    "c071",
+    "w017"
+   ]
+  },
+  {
+   "id": "v009",
+   "en": "leave",
+   "ru": "уезжать, уходить",
+   "ipa": "/liːv/",
+   "tr": "лив",
+   "group": "verb",
+   "order": 9,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "left",
+    "pp": "left",
+    "ing": "leaving",
+    "third": "leaves"
+   },
+   "ex_en": "I leave tomorrow.",
+   "ex_ru": "Я уезжаю завтра.",
+   "hint": "Неправильный: leave — left — left. Второй смысл — «оставить»: leave it here.",
+   "builds_with": [
+    "c071",
+    "w160",
+    "w152"
+   ]
+  },
+  {
+   "id": "v010",
+   "en": "put",
+   "ru": "положить",
+   "ipa": "/pʊt/",
+   "tr": "пут",
+   "group": "verb",
+   "order": 10,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "put",
+    "pp": "put",
+    "ing": "putting",
+    "third": "puts"
+   },
+   "ex_en": "Put the file here.",
+   "ex_ru": "Положи файл сюда.",
+   "hint": "Неправильный, но лёгкий: put — put — put, все формы одинаковые. В -ing удваивается t: putting.",
+   "builds_with": [
+    "w067",
+    "c067",
+    "w060"
+   ]
+  },
+  {
+   "id": "v011",
+   "en": "show",
+   "ru": "показывать",
+   "ipa": "/ʃəʊ/",
+   "tr": "шоу",
+   "group": "verb",
+   "order": 11,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "showed",
+    "pp": "shown",
+    "ing": "showing",
+    "third": "shows"
+   },
+   "ex_en": "He shows me the photo.",
+   "ex_ru": "Он показывает мне фото.",
+   "hint": "Третья форма особая: show — showed — shown. Русское «шоу» — это оно же.",
+   "builds_with": [
+    "w139",
+    "c026",
+    "w057"
+   ]
+  },
+  {
+   "id": "v012",
+   "en": "hear",
+   "ru": "слышать",
+   "ipa": "/hɪə/",
+   "tr": "хиэ",
+   "group": "verb",
+   "order": 12,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "heard",
+    "pp": "heard",
+    "ing": "hearing",
+    "third": "hears"
+   },
+   "ex_en": "I hear music.",
+   "ex_ru": "Я слышу музыку.",
+   "hint": "Неправильный: hear — heard — heard, и heard звучит «хёд». Hear — слышать само собой, listen — слушать нарочно.",
+   "builds_with": [
+    "w132",
+    "w141",
+    "w081"
+   ]
+  },
+  {
+   "id": "v013",
+   "en": "look",
+   "ru": "смотреть (взглянуть)",
+   "ipa": "/lʊk/",
+   "tr": "лук",
+   "group": "verb",
+   "order": 13,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "looked",
+    "pp": "looked",
+    "ing": "looking",
+    "third": "looks"
+   },
+   "ex_en": "Look at the photo.",
+   "ex_ru": "Смотри на фото.",
+   "hint": "Look at — смотреть на, look for — искать. Предлог меняет смысл целиком.",
+   "builds_with": [
+    "w139",
+    "c096",
+    "w134"
+   ]
+  },
+  {
+   "id": "v014",
+   "en": "listen",
+   "ru": "слушать",
+   "ipa": "/ˈlɪs.ən/",
+   "tr": "ли́сн",
+   "group": "verb",
+   "order": 14,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "listened",
+    "pp": "listened",
+    "ing": "listening",
+    "third": "listens"
+   },
+   "ex_en": "Listen to the music.",
+   "ex_ru": "Слушай музыку.",
+   "hint": "Буква t молчит: «лисн». И всегда с to: listen to me.",
+   "builds_with": [
+    "w132",
+    "c097",
+    "c026"
+   ]
+  },
+  {
+   "id": "v015",
+   "en": "speak",
+   "ru": "говорить",
+   "ipa": "/spiːk/",
+   "tr": "спик",
+   "group": "verb",
+   "order": 15,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "spoke",
+    "pp": "spoken",
+    "ing": "speaking",
+    "third": "speaks"
+   },
+   "ex_en": "I speak English.",
+   "ex_ru": "Я говорю по-английски.",
+   "hint": "Неправильный: speak — spoke — spoken. Speak — про язык, talk — про разговор с кем-то.",
+   "builds_with": [
+    "c010",
+    "c032",
+    "c011"
+   ]
+  },
+  {
+   "id": "v016",
+   "en": "talk",
+   "ru": "разговаривать",
+   "ipa": "/tɔːk/",
+   "tr": "ток",
+   "group": "verb",
+   "order": 16,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "talked",
+    "pp": "talked",
+    "ing": "talking",
+    "third": "talks"
+   },
+   "ex_en": "We talk about work.",
+   "ex_ru": "Мы разговариваем о работе.",
+   "hint": "Буква l молчит: «ток». Talk to — с кем, talk about — о чём.",
+   "builds_with": [
+    "c015",
+    "c047",
+    "w048"
+   ]
+  },
+  {
+   "id": "v017",
+   "en": "understand",
+   "ru": "понимать",
+   "ipa": "/ˌʌn.dəˈstænd/",
+   "tr": "андэстэ́нд",
+   "group": "verb",
+   "order": 17,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "understood",
+    "pp": "understood",
+    "ing": "understanding",
+    "third": "understands"
+   },
+   "ex_en": "I understand you.",
+   "ex_ru": "Я тебя понимаю.",
+   "hint": "Буквально «стоять под» — как русское «подразумевать». Неправильный: understand — understood.",
+   "builds_with": [
+    "c011",
+    "w194",
+    "c010"
+   ]
+  },
+  {
+   "id": "v018",
+   "en": "remember",
+   "ru": "помнить",
+   "ipa": "/rɪˈmem.bə/",
+   "tr": "римэ́мбэ",
+   "group": "verb",
+   "order": 18,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "remembered",
+    "pp": "remembered",
+    "ing": "remembering",
+    "third": "remembers"
+   },
+   "ex_en": "I remember your address.",
+   "ex_ru": "Я помню твой адрес.",
+   "hint": "Remember — и «помнить», и «вспомнить». Пара к нему — forget.",
+   "builds_with": [
+    "w036",
+    "c018",
+    "c026"
+   ]
+  },
+  {
+   "id": "v019",
+   "en": "forget",
+   "ru": "забывать",
+   "ipa": "/fəˈɡet/",
+   "tr": "фэге́т",
+   "group": "verb",
+   "order": 19,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "forgot",
+    "pp": "forgotten",
+    "ing": "forgetting",
+    "third": "forgets"
+   },
+   "ex_en": "Don't forget the passport.",
+   "ex_ru": "Не забывай паспорт.",
+   "hint": "Неправильный: forget — forgot — forgotten. В -ing удваивается t: forgetting.",
+   "builds_with": [
+    "w163",
+    "c036",
+    "w153"
+   ]
+  },
+  {
+   "id": "v020",
+   "en": "learn",
+   "ru": "изучать",
+   "ipa": "/lɜːn/",
+   "tr": "лён",
+   "group": "verb",
+   "order": 20,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "learned",
+    "pp": "learned",
+    "ing": "learning",
+    "third": "learns"
+   },
+   "ex_en": "I learn English.",
+   "ex_ru": "Я изучаю английский.",
+   "hint": "В британском встречается learnt, в американском learned — верны обе. Learn — учиться самому, teach — учить другого.",
+   "builds_with": [
+    "c010",
+    "w043",
+    "w039"
+   ]
+  },
+  {
+   "id": "v021",
+   "en": "wait",
+   "ru": "ждать",
+   "ipa": "/weɪt/",
+   "tr": "уэйт",
+   "group": "verb",
+   "order": 21,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "waited",
+    "pp": "waited",
+    "ing": "waiting",
+    "third": "waits"
+   },
+   "ex_en": "Wait a minute, please.",
+   "ex_ru": "Подожди минуту, пожалуйста.",
+   "hint": "Ждать кого-то — только wait for: wait for me. Без for фраза рассыпается.",
+   "builds_with": [
+    "w190",
+    "c118",
+    "c026"
+   ]
+  },
+  {
+   "id": "v022",
+   "en": "walk",
+   "ru": "идти пешком",
+   "ipa": "/wɔːk/",
+   "tr": "уок",
+   "group": "verb",
+   "order": 22,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "walked",
+    "pp": "walked",
+    "ing": "walking",
+    "third": "walks"
+   },
+   "ex_en": "We walk to the park.",
+   "ex_ru": "Мы идём в парк пешком.",
+   "hint": "Буква l молчит: «уок». Walk — только своими ногами, go — любым способом.",
+   "builds_with": [
+    "w031",
+    "c097",
+    "c015"
+   ]
+  },
+  {
+   "id": "v023",
+   "en": "run",
+   "ru": "бегать",
+   "ipa": "/rʌn/",
+   "tr": "ран",
+   "group": "verb",
+   "order": 23,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "ran",
+    "pp": "run",
+    "ing": "running",
+    "third": "runs"
+   },
+   "ex_en": "I run in the park.",
+   "ex_ru": "Я бегаю в парке.",
+   "hint": "Неправильный: run — ran — run. В -ing удваивается n: running.",
+   "builds_with": [
+    "w031",
+    "w099",
+    "w083"
+   ]
+  },
+  {
+   "id": "v024",
+   "en": "sit",
+   "ru": "сидеть",
+   "ipa": "/sɪt/",
+   "tr": "сит",
+   "group": "verb",
+   "order": 24,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "sat",
+    "pp": "sat",
+    "ing": "sitting",
+    "third": "sits"
+   },
+   "ex_en": "We sit in the cafe.",
+   "ex_ru": "Мы сидим в кафе.",
+   "hint": "Неправильный: sit — sat — sat. Sit down — «садись», sit — просто сидеть.",
+   "builds_with": [
+    "w006",
+    "w032",
+    "c094"
+   ]
+  },
+  {
+   "id": "v025",
+   "en": "stand",
+   "ru": "стоять",
+   "ipa": "/stænd/",
+   "tr": "стэнд",
+   "group": "verb",
+   "order": 25,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "stood",
+    "pp": "stood",
+    "ing": "standing",
+    "third": "stands"
+   },
+   "ex_en": "We stand and wait.",
+   "ex_ru": "Мы стоим и ждём.",
+   "hint": "Неправильный: stand — stood — stood. Русский «стенд» пришёл отсюда же.",
+   "builds_with": [
+    "c015",
+    "c102",
+    "w030"
+   ]
+  },
+  {
+   "id": "v026",
+   "en": "sleep",
+   "ru": "спать",
+   "ipa": "/sliːp/",
+   "tr": "слип",
+   "group": "verb",
+   "order": 26,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "slept",
+    "pp": "slept",
+    "ing": "sleeping",
+    "third": "sleeps"
+   },
+   "ex_en": "I sleep in the hotel.",
+   "ex_ru": "Я сплю в отеле.",
+   "hint": "Неправильный: sleep — slept — slept. Существительное sleep — это сон.",
+   "builds_with": [
+    "w152",
+    "c094",
+    "w129"
+   ]
+  },
+  {
+   "id": "v027",
+   "en": "stop",
+   "ru": "остановиться",
+   "ipa": "/stɒp/",
+   "tr": "стоп",
+   "group": "verb",
+   "order": 27,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "stopped",
+    "pp": "stopped",
+    "ing": "stopping",
+    "third": "stops"
+   },
+   "ex_en": "Stop here, please.",
+   "ex_ru": "Остановись здесь, пожалуйста.",
+   "hint": "В -ing и в прошедшем удваивается p: stopping, stopped. Stop doing — перестать делать.",
+   "builds_with": [
+    "c067",
+    "c118",
+    "w017"
+   ]
+  },
+  {
+   "id": "v028",
+   "en": "begin",
+   "ru": "начинать",
+   "ipa": "/bɪˈɡɪn/",
+   "tr": "биги́н",
+   "group": "verb",
+   "order": 28,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "began",
+    "pp": "begun",
+    "ing": "beginning",
+    "third": "begins"
+   },
+   "ex_en": "We begin at two.",
+   "ex_ru": "Мы начинаем в два.",
+   "hint": "Неправильный: begin — began — begun. Begin и start — одно и то же, begin чуть строже.",
+   "builds_with": [
+    "c120",
+    "c096",
+    "w056"
+   ]
+  },
+  {
+   "id": "v029",
+   "en": "finish",
+   "ru": "заканчивать",
+   "ipa": "/ˈfɪn.ɪʃ/",
+   "tr": "фи́ниш",
+   "group": "verb",
+   "order": 29,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "finished",
+    "pp": "finished",
+    "ing": "finishing",
+    "third": "finishes"
+   },
+   "ex_en": "I finish the report.",
+   "ex_ru": "Я заканчиваю отчёт.",
+   "hint": "Финиш — то же слово. После finish идёт -ing: finish reading.",
+   "builds_with": [
+    "w062",
+    "w054",
+    "w060"
+   ]
+  },
+  {
+   "id": "v030",
+   "en": "close",
+   "ru": "закрывать",
+   "ipa": "/kləʊz/",
+   "tr": "клоуз",
+   "group": "verb",
+   "order": 30,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "closed",
+    "pp": "closed",
+    "ing": "closing",
+    "third": "closes"
+   },
+   "ex_en": "Please close the file.",
+   "ex_ru": "Закрой файл, пожалуйста.",
+   "hint": "Глагол close звучит «клоуз», а прилагательное close «близкий» — «клоус». Пара к open.",
+   "builds_with": [
+    "w067",
+    "c118",
+    "c060"
+   ]
+  },
+  {
+   "id": "v031",
+   "en": "turn",
+   "ru": "поворачивать",
+   "ipa": "/tɜːn/",
+   "tr": "тён",
+   "group": "verb",
+   "order": 31,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "turned",
+    "pp": "turned",
+    "ing": "turning",
+    "third": "turns"
+   },
+   "ex_en": "Turn here, please.",
+   "ex_ru": "Поворачивай здесь, пожалуйста.",
+   "hint": "Turn on — включить, turn off — выключить. Само turn — повернуть.",
+   "builds_with": [
+    "c067",
+    "c118",
+    "w017"
+   ]
+  },
+  {
+   "id": "v032",
+   "en": "move",
+   "ru": "двигать",
+   "ipa": "/muːv/",
+   "tr": "мув",
+   "group": "verb",
+   "order": 32,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "moved",
+    "pp": "moved",
+    "ing": "moving",
+    "third": "moves"
+   },
+   "ex_en": "Move the lamp here.",
+   "ex_ru": "Двигай лампу сюда.",
+   "hint": "Move — и «двигать», и «переезжать»: we move to Berlin. Правильный: move — moved.",
+   "builds_with": [
+    "w037",
+    "c067",
+    "w038"
+   ]
+  },
+  {
+   "id": "v033",
+   "en": "meet",
+   "ru": "встречать",
+   "ipa": "/miːt/",
+   "tr": "мит",
+   "group": "verb",
+   "order": 33,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "met",
+    "pp": "met",
+    "ing": "meeting",
+    "third": "meets"
+   },
+   "ex_en": "Meet me at the cafe.",
+   "ex_ru": "Встречай меня в кафе.",
+   "hint": "Неправильный: meet — met — met. Meeting — это встреча, а не «митинг» в русском смысле.",
+   "builds_with": [
+    "c026",
+    "w006",
+    "w160"
+   ]
+  },
+  {
+   "id": "v034",
+   "en": "pay",
+   "ru": "платить",
+   "ipa": "/peɪ/",
+   "tr": "пэй",
+   "group": "verb",
+   "order": 34,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "paid",
+    "pp": "paid",
+    "ing": "paying",
+    "third": "pays"
+   },
+   "ex_en": "He pays for the taxi.",
+   "ex_ru": "Он платит за такси.",
+   "hint": "Неправильный: pay — paid — paid, пишется paid, не payed. Платить за что-то — pay for.",
+   "builds_with": [
+    "w017",
+    "c099",
+    "w169"
+   ]
+  },
+  {
+   "id": "v035",
+   "en": "sell",
+   "ru": "продавать",
+   "ipa": "/sel/",
+   "tr": "сэл",
+   "group": "verb",
+   "order": 35,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "sold",
+    "pp": "sold",
+    "ing": "selling",
+    "third": "sells"
+   },
+   "ex_en": "They sell good coffee.",
+   "ex_ru": "Они продают хороший кофе.",
+   "hint": "Неправильный: sell — sold — sold. Пара: buy — покупать, sell — продавать.",
+   "builds_with": [
+    "w003",
+    "w180",
+    "w001"
+   ]
+  },
+  {
+   "id": "v036",
+   "en": "spend",
+   "ru": "тратить",
+   "ipa": "/spend/",
+   "tr": "спэнд",
+   "group": "verb",
+   "order": 36,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "spent",
+    "pp": "spent",
+    "ing": "spending",
+    "third": "spends"
+   },
+   "ex_en": "He spends two dollars.",
+   "ex_ru": "Он тратит два доллара.",
+   "hint": "Неправильный: spend — spent — spent. Тратят и деньги, и время: spend time.",
+   "builds_with": [
+    "w169",
+    "w190",
+    "w171"
+   ]
+  },
+  {
+   "id": "v037",
+   "en": "send",
+   "ru": "отправлять",
+   "ipa": "/send/",
+   "tr": "сэнд",
+   "group": "verb",
+   "order": 37,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "sent",
+    "pp": "sent",
+    "ing": "sending",
+    "third": "sends"
+   },
+   "ex_en": "He sends me the file.",
+   "ex_ru": "Он отправляет мне файл.",
+   "hint": "Неправильный: send — sent — sent. Чаще всего: send an email, send a file.",
+   "builds_with": [
+    "w075",
+    "w067",
+    "w060"
+   ]
+  },
+  {
+   "id": "v038",
+   "en": "bring",
+   "ru": "приносить",
+   "ipa": "/brɪŋ/",
+   "tr": "бринг",
+   "group": "verb",
+   "order": 38,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "brought",
+    "pp": "brought",
+    "ing": "bringing",
+    "third": "brings"
+   },
+   "ex_en": "He brings the menu.",
+   "ex_ru": "Он приносит меню.",
+   "hint": "Неправильный: bring — brought — brought, звучит «брот». Bring — сюда, take — отсюда.",
+   "builds_with": [
+    "w011",
+    "w003",
+    "c118"
+   ]
+  },
+  {
+   "id": "v039",
+   "en": "keep",
+   "ru": "хранить",
+   "ipa": "/kiːp/",
+   "tr": "кип",
+   "group": "verb",
+   "order": 39,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "kept",
+    "pp": "kept",
+    "ing": "keeping",
+    "third": "keeps"
+   },
+   "ex_en": "Keep the passport here.",
+   "ex_ru": "Храни паспорт здесь.",
+   "hint": "Неправильный: keep — kept — kept. Keep doing — продолжать делать.",
+   "builds_with": [
+    "w163",
+    "w060",
+    "c067"
+   ]
+  },
+  {
+   "id": "v040",
+   "en": "become",
+   "ru": "становиться",
+   "ipa": "/bɪˈkʌm/",
+   "tr": "бика́м",
+   "group": "verb",
+   "order": 40,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "became",
+    "pp": "become",
+    "ing": "becoming",
+    "third": "becomes"
+   },
+   "ex_en": "He becomes a doctor.",
+   "ex_ru": "Он становится доктором.",
+   "hint": "Неправильный: become — became — become, третья форма как первая. Внутри спрятано come.",
+   "builds_with": [
+    "w100",
+    "w142",
+    "c052"
+   ]
+  },
+  {
+   "id": "v041",
+   "en": "happen",
+   "ru": "происходить",
+   "ipa": "/ˈhæp.ən/",
+   "tr": "хэ́пэн",
+   "group": "verb",
+   "order": 41,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "happened",
+    "pp": "happened",
+    "ing": "happening",
+    "third": "happens"
+   },
+   "ex_en": "What happens in the film?",
+   "ex_ru": "Что происходит в фильме?",
+   "hint": "Happen — про события, не про людей: it happens, а не he happens.",
+   "builds_with": [
+    "c108",
+    "w134",
+    "w195"
+   ]
+  },
+  {
+   "id": "v042",
+   "en": "mean",
+   "ru": "значить",
+   "ipa": "/miːn/",
+   "tr": "мин",
+   "group": "verb",
+   "order": 42,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "meant",
+    "pp": "meant",
+    "ing": "meaning",
+    "third": "means"
+   },
+   "ex_en": "What does this mean?",
+   "ex_ru": "Что это значит?",
+   "hint": "Неправильный: mean — meant — meant, и meant звучит «мэнт». I mean — «я имею в виду».",
+   "builds_with": [
+    "c108",
+    "c023",
+    "c035"
+   ]
+  },
+  {
+   "id": "v043",
+   "en": "let",
+   "ru": "позволять",
+   "ipa": "/let/",
+   "tr": "лэт",
+   "group": "verb",
+   "order": 43,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "let",
+    "pp": "let",
+    "ing": "letting",
+    "third": "lets"
+   },
+   "ex_en": "Let me help you.",
+   "ex_ru": "Позволь мне помочь тебе.",
+   "hint": "Неправильный: let — let — let, все формы одинаковые. После let глагол идёт без to: let me go.",
+   "builds_with": [
+    "c026",
+    "c059",
+    "c011"
+   ]
+  },
+  {
+   "id": "v044",
+   "en": "change",
+   "ru": "менять",
+   "ipa": "/tʃeɪndʒ/",
+   "tr": "чэйндж",
+   "group": "verb",
+   "order": 44,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "changed",
+    "pp": "changed",
+    "ing": "changing",
+    "third": "changes"
+   },
+   "ex_en": "I change the plan.",
+   "ex_ru": "Я меняю план.",
+   "hint": "Change — и «менять», и «сдача» в магазине. Change money — обменять деньги.",
+   "builds_with": [
+    "w050",
+    "w169",
+    "w193"
+   ]
+  },
+  {
+   "id": "v045",
+   "en": "choose",
+   "ru": "выбирать",
+   "ipa": "/tʃuːz/",
+   "tr": "чуз",
+   "group": "verb",
+   "order": 45,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "chose",
+    "pp": "chosen",
+    "ing": "choosing",
+    "third": "chooses"
+   },
+   "ex_en": "Choose a good hotel.",
+   "ex_ru": "Выбирай хороший отель.",
+   "hint": "Неправильный: choose — chose — chosen. Choose звучит «чуз», а chose «чоуз» — разные слова.",
+   "builds_with": [
+    "w152",
+    "w011",
+    "c061"
+   ]
+  },
+  {
+   "id": "v046",
+   "en": "answer",
+   "ru": "отвечать",
+   "ipa": "/ˈɑːn.sə/",
+   "tr": "а́нсэ",
+   "group": "verb",
+   "order": 46,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "answered",
+    "pp": "answered",
+    "ing": "answering",
+    "third": "answers"
+   },
+   "ex_en": "He answers the email.",
+   "ex_ru": "Он отвечает на имейл.",
+   "hint": "Буква w молчит: «а́нсэ». Answer a question — без предлога, «ответить на вопрос».",
+   "builds_with": [
+    "w075",
+    "w055",
+    "w062"
+   ]
+  },
+  {
+   "id": "v047",
+   "en": "watch",
+   "ru": "смотреть (фильм, матч)",
+   "ipa": "/wɒtʃ/",
+   "tr": "уоч",
+   "group": "verb",
+   "order": 47,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "watched",
+    "pp": "watched",
+    "ing": "watching",
+    "third": "watches"
+   },
+   "ex_en": "We watch a film.",
+   "ex_ru": "Мы смотрим фильм.",
+   "hint": "Watch — про то, что движется: фильм, матч. Ещё watch — наручные часы.",
+   "builds_with": [
+    "w134",
+    "w086",
+    "c015"
+   ]
+  },
+  {
+   "id": "v048",
+   "en": "cook",
+   "ru": "готовить (еду)",
+   "ipa": "/kʊk/",
+   "tr": "кук",
+   "group": "verb",
+   "order": 48,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "cooked",
+    "pp": "cooked",
+    "ing": "cooking",
+    "third": "cooks"
+   },
+   "ex_en": "I cook a good soup.",
+   "ex_ru": "Я готовлю хороший суп.",
+   "hint": "Cook — готовить еду. Человек cook — это повар, а не кухня.",
+   "builds_with": [
+    "w002",
+    "w001",
+    "w008"
+   ]
+  },
+  {
+   "id": "v049",
+   "en": "wash",
+   "ru": "мыть, стирать",
+   "ipa": "/wɒʃ/",
+   "tr": "уош",
+   "group": "verb",
+   "order": 49,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "washed",
+    "pp": "washed",
+    "ing": "washing",
+    "third": "washes"
+   },
+   "ex_en": "I wash the jeans.",
+   "ex_ru": "Я стираю джинсы.",
+   "hint": "Одно слово на два дела: wash the lemon — помыть, wash the jeans — постирать.",
+   "builds_with": [
+    "w117",
+    "w118",
+    "w124"
+   ]
+  },
+  {
+   "id": "v050",
+   "en": "wear",
+   "ru": "носить (одежду)",
+   "ipa": "/weə/",
+   "tr": "уэа",
+   "group": "verb",
+   "order": 50,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "wore",
+    "pp": "worn",
+    "ing": "wearing",
+    "third": "wears"
+   },
+   "ex_en": "She wears jeans at work.",
+   "ex_ru": "Она носит джинсы на работе.",
+   "hint": "Неправильный: wear — wore — worn. Wear — носить на себе, carry — нести в руках.",
+   "builds_with": [
+    "w117",
+    "w121",
+    "w131"
+   ]
+  },
+  {
+   "id": "v051",
+   "en": "drive",
+   "ru": "водить (машину)",
+   "ipa": "/draɪv/",
+   "tr": "драйв",
+   "group": "verb",
+   "order": 51,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "drove",
+    "pp": "driven",
+    "ing": "driving",
+    "third": "drives"
+   },
+   "ex_en": "He drives a taxi.",
+   "ex_ru": "Он водит такси.",
+   "hint": "Неправильный: drive — drove — driven. Русский «драйв» — то же слово.",
+   "builds_with": [
+    "w017",
+    "w027",
+    "w021"
+   ]
+  },
+  {
+   "id": "v052",
+   "en": "fly",
+   "ru": "летать",
+   "ipa": "/flaɪ/",
+   "tr": "флай",
+   "group": "verb",
+   "order": 52,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "flew",
+    "pp": "flown",
+    "ing": "flying",
+    "third": "flies"
+   },
+   "ex_en": "We fly tomorrow.",
+   "ex_ru": "Мы летим завтра.",
+   "hint": "Неправильный: fly — flew — flown. Ещё fly — это муха.",
+   "builds_with": [
+    "w160",
+    "w023",
+    "c071"
+   ]
+  },
+  {
+   "id": "v053",
+   "en": "travel",
+   "ru": "путешествовать",
+   "ipa": "/ˈtræv.əl/",
+   "tr": "трэ́вл",
+   "group": "verb",
+   "order": 53,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "travelled",
+    "pp": "travelled",
+    "ing": "travelling",
+    "third": "travels"
+   },
+   "ex_en": "I travel and work.",
+   "ex_ru": "Я путешествую и работаю.",
+   "hint": "В британском travelling с двумя l, в американском traveling с одной — верны обе.",
+   "builds_with": [
+    "w155",
+    "w162",
+    "w166"
+   ]
+  },
+  {
+   "id": "v054",
+   "en": "visit",
+   "ru": "посещать",
+   "ipa": "/ˈvɪz.ɪt/",
+   "tr": "ви́зит",
+   "group": "verb",
+   "order": 54,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "visited",
+    "pp": "visited",
+    "ing": "visiting",
+    "third": "visits"
+   },
+   "ex_en": "We visit the museum.",
+   "ex_ru": "Мы посещаем музей.",
+   "hint": "Русский «визит» — то же слово. Visit a person — навестить, visit a place — побывать.",
+   "builds_with": [
+    "w042",
+    "w101",
+    "w045"
+   ]
+  },
+  {
+   "id": "v055",
+   "en": "stay",
+   "ru": "оставаться",
+   "ipa": "/steɪ/",
+   "tr": "стэй",
+   "group": "verb",
+   "order": 55,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "stayed",
+    "pp": "stayed",
+    "ing": "staying",
+    "third": "stays"
+   },
+   "ex_en": "I stay in the hotel.",
+   "ex_ru": "Я остаюсь в отеле.",
+   "hint": "Stay — остаться на время, live — жить постоянно. Stay at a hotel — жить в отеле.",
+   "builds_with": [
+    "w152",
+    "c067",
+    "w154"
+   ]
+  },
+  {
+   "id": "v056",
+   "en": "win",
+   "ru": "выигрывать",
+   "ipa": "/wɪn/",
+   "tr": "уин",
+   "group": "verb",
+   "order": 56,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "won",
+    "pp": "won",
+    "ing": "winning",
+    "third": "wins"
+   },
+   "ex_en": "We win the match.",
+   "ex_ru": "Мы выигрываем матч.",
+   "hint": "Неправильный: win — won — won, и won звучит «уан», как one. В -ing удваивается n.",
+   "builds_with": [
+    "w086",
+    "w094",
+    "w098"
+   ]
+  },
+  {
+   "id": "v057",
+   "en": "lose",
+   "ru": "проигрывать, терять",
+   "ipa": "/luːz/",
+   "tr": "луз",
+   "group": "verb",
+   "order": 57,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "lost",
+    "pp": "lost",
+    "ing": "losing",
+    "third": "loses"
+   },
+   "ex_en": "We lose the match.",
+   "ex_ru": "Мы проигрываем матч.",
+   "hint": "Неправильный: lose — lost — lost. Одна o — lose «терять», две в loose — «свободный».",
+   "builds_with": [
+    "w086",
+    "w163",
+    "w087"
+   ]
+  },
+  {
+   "id": "v058",
+   "en": "dance",
+   "ru": "танцевать",
+   "ipa": "/dɑːns/",
+   "tr": "данс",
+   "group": "verb",
+   "order": 58,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "danced",
+    "pp": "danced",
+    "ing": "dancing",
+    "third": "dances"
+   },
+   "ex_en": "We dance at the club.",
+   "ex_ru": "Мы танцуем в клубе.",
+   "hint": "Русский «танец» и dance — родня через французский. Правильный: dance — danced.",
+   "builds_with": [
+    "w033",
+    "w132",
+    "w144"
+   ]
+  },
+  {
+   "id": "v059",
+   "en": "sing",
+   "ru": "петь",
+   "ipa": "/sɪŋ/",
+   "tr": "синг",
+   "group": "verb",
+   "order": 59,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "sang",
+    "pp": "sung",
+    "ing": "singing",
+    "third": "sings"
+   },
+   "ex_en": "I can sing.",
+   "ex_ru": "Я умею петь.",
+   "hint": "Неправильный: sing — sang — sung. Singer — певец.",
+   "builds_with": [
+    "c032",
+    "w132",
+    "w138"
+   ]
+  },
+  {
+   "id": "v060",
+   "en": "swim",
+   "ru": "плавать",
+   "ipa": "/swɪm/",
+   "tr": "суим",
+   "group": "verb",
+   "order": 60,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "swam",
+    "pp": "swum",
+    "ing": "swimming",
+    "third": "swims"
+   },
+   "ex_en": "I swim in the ocean.",
+   "ex_ru": "Я плаваю в океане.",
+   "hint": "Неправильный: swim — swam — swum. В -ing удваивается m: swimming.",
+   "builds_with": [
+    "w164",
+    "w083",
+    "w154"
+   ]
+  },
+  {
+   "id": "v061",
+   "en": "laugh",
+   "ru": "смеяться",
+   "ipa": "/lɑːf/",
+   "tr": "лаф",
+   "group": "verb",
+   "order": 61,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "laughed",
+    "pp": "laughed",
+    "ing": "laughing",
+    "third": "laughs"
+   },
+   "ex_en": "We laugh at the comedy.",
+   "ex_ru": "Мы смеёмся над комедией.",
+   "hint": "Пишется gh, читается «ф»: «лаф». Смеяться над чем-то — laugh at.",
+   "builds_with": [
+    "w148",
+    "w137",
+    "c015"
+   ]
+  },
+  {
+   "id": "v062",
+   "en": "smile",
+   "ru": "улыбаться",
+   "ipa": "/smaɪl/",
+   "tr": "смайл",
+   "group": "verb",
+   "order": 62,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "smiled",
+    "pp": "smiled",
+    "ing": "smiling",
+    "third": "smiles"
+   },
+   "ex_en": "She smiles at the photo.",
+   "ex_ru": "Она улыбается на фото.",
+   "hint": "Русский «смайл» пришёл отсюда. Улыбнуться кому-то — smile at somebody.",
+   "builds_with": [
+    "w139",
+    "w076",
+    "c082"
+   ]
+  },
+  {
+   "id": "v063",
+   "en": "cry",
+   "ru": "плакать",
+   "ipa": "/kraɪ/",
+   "tr": "край",
+   "group": "verb",
+   "order": 63,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "cried",
+    "pp": "cried",
+    "ing": "crying",
+    "third": "cries"
+   },
+   "ex_en": "I want to cry.",
+   "ex_ru": "Я хочу плакать.",
+   "hint": "Cry — и плакать, и кричать. Y меняется на i: cry — cried.",
+   "builds_with": [
+    "c038",
+    "c097",
+    "w137"
+   ]
+  },
+  {
+   "id": "v064",
+   "en": "thank",
+   "ru": "благодарить",
+   "ipa": "/θæŋk/",
+   "tr": "тэнк",
+   "group": "verb",
+   "order": 64,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "thanked",
+    "pp": "thanked",
+    "ing": "thanking",
+    "third": "thanks"
+   },
+   "ex_en": "I thank the doctor.",
+   "ex_ru": "Я благодарю доктора.",
+   "hint": "Thank you — буквально «благодарю тебя». Звук th здесь глухой, как в think.",
+   "builds_with": [
+    "w100",
+    "c011",
+    "c118"
+   ]
+  },
+  {
+   "id": "v065",
+   "en": "seem",
+   "ru": "казаться",
+   "ipa": "/siːm/",
+   "tr": "сим",
+   "group": "verb",
+   "order": 65,
+   "pos": "verb",
+   "level": "a1",
+   "forms": {
+    "past": "seemed",
+    "pp": "seemed",
+    "ing": "seeming",
+    "third": "seems"
+   },
+   "ex_en": "It can seem difficult.",
+   "ex_ru": "Это может казаться трудным.",
+   "hint": "После seem прилагательное идёт сразу: it seems easy, без to be.",
+   "builds_with": [
+    "c032",
+    "c085",
+    "c014"
+   ]
+  },
+  {
+   "id": "v066",
+   "en": "hold",
+   "ru": "держать",
+   "ipa": "/həʊld/",
+   "tr": "хоулд",
+   "group": "verb",
+   "order": 66,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "held",
+    "pp": "held",
+    "ing": "holding",
+    "third": "holds"
+   },
+   "ex_en": "Hold my coffee, please.",
+   "ex_ru": "Подержи мой кофе, пожалуйста.",
+   "hint": "Неправильный: hold — held — held. Hold on — «подожди» по телефону.",
+   "builds_with": [
+    "w003",
+    "c017",
+    "c118"
+   ]
+  },
+  {
+   "id": "v067",
+   "en": "cost",
+   "ru": "стоить",
+   "ipa": "/kɒst/",
+   "tr": "кост",
+   "group": "verb",
+   "order": 67,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "cost",
+    "pp": "cost",
+    "ing": "costing",
+    "third": "costs"
+   },
+   "ex_en": "The taxi costs two dollars.",
+   "ex_ru": "Такси стоит два доллара.",
+   "hint": "Неправильный, но простой: cost — cost — cost. How much does it cost — «сколько это стоит».",
+   "builds_with": [
+    "w017",
+    "w169",
+    "c114"
+   ]
+  },
+  {
+   "id": "v068",
+   "en": "decide",
+   "ru": "решать",
+   "ipa": "/dɪˈsaɪd/",
+   "tr": "диса́йд",
+   "group": "verb",
+   "order": 68,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "decided",
+    "pp": "decided",
+    "ing": "deciding",
+    "third": "decides"
+   },
+   "ex_en": "We decide tomorrow.",
+   "ex_ru": "Мы решаем завтра.",
+   "hint": "Decision — решение, из того же корня. После decide идёт to: decide to go.",
+   "builds_with": [
+    "c071",
+    "w188",
+    "w050"
+   ]
+  },
+  {
+   "id": "v069",
+   "en": "explain",
+   "ru": "объяснять",
+   "ipa": "/ɪkˈspleɪn/",
+   "tr": "иксплэ́йн",
+   "group": "verb",
+   "order": 69,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "explained",
+    "pp": "explained",
+    "ing": "explaining",
+    "third": "explains"
+   },
+   "ex_en": "Explain the plan, please.",
+   "ex_ru": "Объясни план, пожалуйста.",
+   "hint": "Explain to me, а не explain me — предлог обязателен.",
+   "builds_with": [
+    "w050",
+    "w069",
+    "c118"
+   ]
+  },
+  {
+   "id": "v070",
+   "en": "study",
+   "ru": "учиться",
+   "ipa": "/ˈstʌd.i/",
+   "tr": "ста́ди",
+   "group": "verb",
+   "order": 70,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "studied",
+    "pp": "studied",
+    "ing": "studying",
+    "third": "studies"
+   },
+   "ex_en": "I study at the university.",
+   "ex_ru": "Я учусь в университете.",
+   "hint": "Study — учиться и изучать предмет. Student — студент, отсюда же.",
+   "builds_with": [
+    "w039",
+    "w043",
+    "w151"
+   ]
+  },
+  {
+   "id": "v071",
+   "en": "teach",
+   "ru": "преподавать",
+   "ipa": "/tiːtʃ/",
+   "tr": "тич",
+   "group": "verb",
+   "order": 71,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "taught",
+    "pp": "taught",
+    "ing": "teaching",
+    "third": "teaches"
+   },
+   "ex_en": "She teaches at school.",
+   "ex_ru": "Она преподаёт в школе.",
+   "hint": "Неправильный: teach — taught — taught, звучит «тот». Teacher — преподаватель.",
+   "builds_with": [
+    "w043",
+    "w039",
+    "w132"
+   ]
+  },
+  {
+   "id": "v072",
+   "en": "believe",
+   "ru": "верить",
+   "ipa": "/bɪˈliːv/",
+   "tr": "били́в",
+   "group": "verb",
+   "order": 72,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "believed",
+    "pp": "believed",
+    "ing": "believing",
+    "third": "believes"
+   },
+   "ex_en": "I believe you.",
+   "ex_ru": "Я верю тебе.",
+   "hint": "Believe somebody — верить кому-то, believe in — верить во что-то.",
+   "builds_with": [
+    "c011",
+    "c010",
+    "w192"
+   ]
+  },
+  {
+   "id": "v073",
+   "en": "build",
+   "ru": "строить",
+   "ipa": "/bɪld/",
+   "tr": "билд",
+   "group": "verb",
+   "order": 73,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "built",
+    "pp": "built",
+    "ing": "building",
+    "third": "builds"
+   },
+   "ex_en": "They build a hotel.",
+   "ex_ru": "Они строят отель.",
+   "hint": "Неправильный: build — built — built. Building — здание.",
+   "builds_with": [
+    "w152",
+    "w041",
+    "w038"
+   ]
+  },
+  {
+   "id": "v074",
+   "en": "break",
+   "ru": "ломать",
+   "ipa": "/breɪk/",
+   "tr": "брэйк",
+   "group": "verb",
+   "order": 74,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "broke",
+    "pp": "broken",
+    "ing": "breaking",
+    "third": "breaks"
+   },
+   "ex_en": "Don't break the camera.",
+   "ex_ru": "Не ломай камеру.",
+   "hint": "Неправильный: break — broke — broken. Русский «брейк» — то же слово. Break a rule — нарушить правило.",
+   "builds_with": [
+    "w076",
+    "w064",
+    "c036"
+   ]
+  },
+  {
+   "id": "v075",
+   "en": "cut",
+   "ru": "резать",
+   "ipa": "/kʌt/",
+   "tr": "кат",
+   "group": "verb",
+   "order": 75,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "cut",
+    "pp": "cut",
+    "ing": "cutting",
+    "third": "cuts"
+   },
+   "ex_en": "I can cut the lemon.",
+   "ex_ru": "Я могу резать лимон.",
+   "hint": "Неправильный: cut — cut — cut, все формы одинаковые. В -ing удваивается t: cutting.",
+   "builds_with": [
+    "w009",
+    "c032",
+    "w008"
+   ]
+  },
+  {
+   "id": "v076",
+   "en": "add",
+   "ru": "добавлять",
+   "ipa": "/æd/",
+   "tr": "эд",
+   "group": "verb",
+   "order": 76,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "added",
+    "pp": "added",
+    "ing": "adding",
+    "third": "adds"
+   },
+   "ex_en": "She adds a photo.",
+   "ex_ru": "Она добавляет фото.",
+   "hint": "Add to — добавить к чему-то. Существительное — addition, «сложение».",
+   "builds_with": [
+    "w139",
+    "w060",
+    "w067"
+   ]
+  },
+  {
+   "id": "v077",
+   "en": "offer",
+   "ru": "предлагать (услугу)",
+   "ipa": "/ˈɒf.ə/",
+   "tr": "о́фэ",
+   "group": "verb",
+   "order": 77,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "offered",
+    "pp": "offered",
+    "ing": "offering",
+    "third": "offers"
+   },
+   "ex_en": "They offer a discount.",
+   "ex_ru": "Они предлагают скидку.",
+   "hint": "Offer — предложить вещь или услугу, suggest — подать идею.",
+   "builds_with": [
+    "w180",
+    "w003",
+    "w170"
+   ]
+  },
+  {
+   "id": "v078",
+   "en": "arrive",
+   "ru": "прибывать",
+   "ipa": "/əˈraɪv/",
+   "tr": "эра́йв",
+   "group": "verb",
+   "order": 78,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "arrived",
+    "pp": "arrived",
+    "ing": "arriving",
+    "third": "arrives"
+   },
+   "ex_en": "We arrive at two.",
+   "ex_ru": "Мы прибываем в два.",
+   "hint": "Arrive at — в точку, arrive in — в город. Come проще, arrive официальнее.",
+   "builds_with": [
+    "w160",
+    "c120",
+    "w027"
+   ]
+  },
+  {
+   "id": "v079",
+   "en": "return",
+   "ru": "возвращаться",
+   "ipa": "/rɪˈtɜːn/",
+   "tr": "ритё́н",
+   "group": "verb",
+   "order": 79,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "returned",
+    "pp": "returned",
+    "ing": "returning",
+    "third": "returns"
+   },
+   "ex_en": "I return tomorrow.",
+   "ex_ru": "Я возвращаюсь завтра.",
+   "hint": "Return — вернуться и вернуть. Return ticket — билет туда и обратно.",
+   "builds_with": [
+    "c071",
+    "w152",
+    "w160"
+   ]
+  },
+  {
+   "id": "v080",
+   "en": "follow",
+   "ru": "следовать",
+   "ipa": "/ˈfɒl.əʊ/",
+   "tr": "фо́лоу",
+   "group": "verb",
+   "order": 80,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "followed",
+    "pp": "followed",
+    "ing": "following",
+    "third": "follows"
+   },
+   "ex_en": "Follow me, please.",
+   "ex_ru": "Следуй за мной, пожалуйста.",
+   "hint": "Follow me — иди за мной, без предлога. В соцсетях follower — подписчик, отсюда же.",
+   "builds_with": [
+    "c026",
+    "c118",
+    "w156"
+   ]
+  },
+  {
+   "id": "v081",
+   "en": "join",
+   "ru": "присоединяться",
+   "ipa": "/dʒɔɪn/",
+   "tr": "джойн",
+   "group": "verb",
+   "order": 81,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "joined",
+    "pp": "joined",
+    "ing": "joining",
+    "third": "joins"
+   },
+   "ex_en": "Join us, please.",
+   "ex_ru": "Присоединяйся к нам, пожалуйста.",
+   "hint": "Join a club — вступить в клуб, тоже без предлога.",
+   "builds_with": [
+    "w033",
+    "c028",
+    "w056"
+   ]
+  },
+  {
+   "id": "v082",
+   "en": "share",
+   "ru": "делиться",
+   "ipa": "/ʃeə/",
+   "tr": "шэа",
+   "group": "verb",
+   "order": 82,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "shared",
+    "pp": "shared",
+    "ing": "sharing",
+    "third": "shares"
+   },
+   "ex_en": "Share the photo, please.",
+   "ex_ru": "Поделись фото, пожалуйста.",
+   "hint": "Share — делиться и доля в бизнесе. Русское «шарить» файл — из него.",
+   "builds_with": [
+    "w139",
+    "w067",
+    "w194"
+   ]
+  },
+  {
+   "id": "v083",
+   "en": "save",
+   "ru": "сохранять",
+   "ipa": "/seɪv/",
+   "tr": "сэйв",
+   "group": "verb",
+   "order": 83,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "saved",
+    "pp": "saved",
+    "ing": "saving",
+    "third": "saves"
+   },
+   "ex_en": "Save the file, please.",
+   "ex_ru": "Сохрани файл, пожалуйста.",
+   "hint": "Три смысла в одном слове: сохранить файл, сэкономить деньги, спасти человека.",
+   "builds_with": [
+    "w067",
+    "w060",
+    "w169"
+   ]
+  },
+  {
+   "id": "v084",
+   "en": "earn",
+   "ru": "зарабатывать",
+   "ipa": "/ɜːn/",
+   "tr": "ён",
+   "group": "verb",
+   "order": 84,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "earned",
+    "pp": "earned",
+    "ing": "earning",
+    "third": "earns"
+   },
+   "ex_en": "I earn dollars here.",
+   "ex_ru": "Я зарабатываю доллары здесь.",
+   "hint": "Earn — заработать трудом, win — выиграть. Начинается со звука «ё»: «ён».",
+   "builds_with": [
+    "w169",
+    "c047",
+    "w171"
+   ]
+  },
+  {
+   "id": "v085",
+   "en": "order",
+   "ru": "заказывать",
+   "ipa": "/ˈɔː.də/",
+   "tr": "о́дэ",
+   "group": "verb",
+   "order": 85,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "ordered",
+    "pp": "ordered",
+    "ing": "ordering",
+    "third": "orders"
+   },
+   "ex_en": "I order a pizza.",
+   "ex_ru": "Я заказываю пиццу.",
+   "hint": "Order — заказать и порядок. In order — по порядку.",
+   "builds_with": [
+    "w001",
+    "w011",
+    "w015"
+   ]
+  },
+  {
+   "id": "v086",
+   "en": "carry",
+   "ru": "нести",
+   "ipa": "/ˈkær.i/",
+   "tr": "кэ́ри",
+   "group": "verb",
+   "order": 86,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "carried",
+    "pp": "carried",
+    "ing": "carrying",
+    "third": "carries"
+   },
+   "ex_en": "I carry the baggage.",
+   "ex_ru": "Я несу багаж.",
+   "hint": "Carry — нести в руках, wear — носить на себе. Y меняется на i: carried.",
+   "builds_with": [
+    "w166",
+    "w060",
+    "w117"
+   ]
+  },
+  {
+   "id": "v087",
+   "en": "catch",
+   "ru": "ловить",
+   "ipa": "/kætʃ/",
+   "tr": "кэч",
+   "group": "verb",
+   "order": 87,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "caught",
+    "pp": "caught",
+    "ing": "catching",
+    "third": "catches"
+   },
+   "ex_en": "I catch the bus.",
+   "ex_ru": "Я ловлю автобус.",
+   "hint": "Неправильный: catch — caught — caught, звучит «кот». Catch a bus — успеть на автобус.",
+   "builds_with": [
+    "w027",
+    "w017",
+    "w086"
+   ]
+  },
+  {
+   "id": "v088",
+   "en": "throw",
+   "ru": "бросать",
+   "ipa": "/θrəʊ/",
+   "tr": "троу",
+   "group": "verb",
+   "order": 88,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "threw",
+    "pp": "thrown",
+    "ing": "throwing",
+    "third": "throws"
+   },
+   "ex_en": "Throw it here.",
+   "ex_ru": "Бросай это сюда.",
+   "hint": "Неправильный: throw — threw — thrown. Throw away — выбросить.",
+   "builds_with": [
+    "c014",
+    "c067",
+    "w083"
+   ]
+  },
+  {
+   "id": "v089",
+   "en": "push",
+   "ru": "толкать",
+   "ipa": "/pʊʃ/",
+   "tr": "пуш",
+   "group": "verb",
+   "order": 89,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "pushed",
+    "pp": "pushed",
+    "ing": "pushing",
+    "third": "pushes"
+   },
+   "ex_en": "Don't push me.",
+   "ex_ru": "Не толкай меня.",
+   "hint": "На дверях push — «от себя». Push-уведомление в телефоне — из этого слова.",
+   "builds_with": [
+    "c026",
+    "c036",
+    "w030"
+   ]
+  },
+  {
+   "id": "v090",
+   "en": "pull",
+   "ru": "тянуть",
+   "ipa": "/pʊl/",
+   "tr": "пул",
+   "group": "verb",
+   "order": 90,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "pulled",
+    "pp": "pulled",
+    "ing": "pulling",
+    "third": "pulls"
+   },
+   "ex_en": "Pull it, please.",
+   "ex_ru": "Тяни это, пожалуйста.",
+   "hint": "На дверях pull — «на себя», пара к push. Читается «пул», коротко.",
+   "builds_with": [
+    "c014",
+    "c118",
+    "w034"
+   ]
+  },
+  {
+   "id": "v091",
+   "en": "touch",
+   "ru": "трогать",
+   "ipa": "/tʌtʃ/",
+   "tr": "тач",
+   "group": "verb",
+   "order": 91,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "touched",
+    "pp": "touched",
+    "ing": "touching",
+    "third": "touches"
+   },
+   "ex_en": "Don't touch the monitor.",
+   "ex_ru": "Не трогай монитор.",
+   "hint": "Читается «тач», как в тачскрине. Touch — тронуть рукой.",
+   "builds_with": [
+    "w078",
+    "w064",
+    "c036"
+   ]
+  },
+  {
+   "id": "v092",
+   "en": "wake",
+   "ru": "будить, просыпаться",
+   "ipa": "/weɪk/",
+   "tr": "уэйк",
+   "group": "verb",
+   "order": 92,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "woke",
+    "pp": "woken",
+    "ing": "waking",
+    "third": "wakes"
+   },
+   "ex_en": "Wake me at two.",
+   "ex_ru": "Разбуди меня в два.",
+   "hint": "Неправильный: wake — woke — woken. Wake up — проснуться, wake somebody up — разбудить.",
+   "builds_with": [
+    "c026",
+    "c120",
+    "w190"
+   ]
+  },
+  {
+   "id": "v093",
+   "en": "jump",
+   "ru": "прыгать",
+   "ipa": "/dʒʌmp/",
+   "tr": "джамп",
+   "group": "verb",
+   "order": 93,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "jumped",
+    "pp": "jumped",
+    "ing": "jumping",
+    "third": "jumps"
+   },
+   "ex_en": "The athlete jumps high.",
+   "ex_ru": "Атлет прыгает высоко.",
+   "hint": "Jump — прыгнуть. В спорте long jump — прыжок в длину.",
+   "builds_with": [
+    "w095",
+    "w083",
+    "w093"
+   ]
+  },
+  {
+   "id": "v094",
+   "en": "ride",
+   "ru": "кататься, ездить верхом",
+   "ipa": "/raɪd/",
+   "tr": "райд",
+   "group": "verb",
+   "order": 94,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "rode",
+    "pp": "ridden",
+    "ing": "riding",
+    "third": "rides"
+   },
+   "ex_en": "I ride a motorcycle.",
+   "ex_ru": "Я катаюсь на мотоцикле.",
+   "hint": "Неправильный: ride — rode — ridden. Ride — велосипед, мотоцикл, лошадь; drive — машина.",
+   "builds_with": [
+    "w025",
+    "w021",
+    "w027"
+   ]
+  },
+  {
+   "id": "v095",
+   "en": "draw",
+   "ru": "рисовать",
+   "ipa": "/drɔː/",
+   "tr": "дро",
+   "group": "verb",
+   "order": 95,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "drew",
+    "pp": "drawn",
+    "ing": "drawing",
+    "third": "draws"
+   },
+   "ex_en": "She draws a robot.",
+   "ex_ru": "Она рисует робота.",
+   "hint": "Неправильный: draw — drew — drawn. Второй смысл — «тянуть»: draw a line.",
+   "builds_with": [
+    "w070",
+    "w139",
+    "w137"
+   ]
+  },
+  {
+   "id": "v096",
+   "en": "drop",
+   "ru": "ронять",
+   "ipa": "/drɒp/",
+   "tr": "дроп",
+   "group": "verb",
+   "order": 96,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "dropped",
+    "pp": "dropped",
+    "ing": "dropping",
+    "third": "drops"
+   },
+   "ex_en": "Don't drop the camera.",
+   "ex_ru": "Не роняй камеру.",
+   "hint": "В -ing удваивается p: dropping. Существительное drop — капля.",
+   "builds_with": [
+    "w076",
+    "w146",
+    "c036"
+   ]
+  },
+  {
+   "id": "v097",
+   "en": "fix",
+   "ru": "чинить",
+   "ipa": "/fɪks/",
+   "tr": "фикс",
+   "group": "verb",
+   "order": 97,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "fixed",
+    "pp": "fixed",
+    "ing": "fixing",
+    "third": "fixes"
+   },
+   "ex_en": "He fixes the computer.",
+   "ex_ru": "Он чинит компьютер.",
+   "hint": "Fix — починить и закрепить. Русское «фиксировать» — из того же корня.",
+   "builds_with": [
+    "w064",
+    "w021",
+    "w029"
+   ]
+  },
+  {
+   "id": "v098",
+   "en": "grow",
+   "ru": "расти",
+   "ipa": "/ɡrəʊ/",
+   "tr": "гроу",
+   "group": "verb",
+   "order": 98,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "grew",
+    "pp": "grown",
+    "ing": "growing",
+    "third": "grows"
+   },
+   "ex_en": "The business grows fast.",
+   "ex_ru": "Бизнес растёт быстро.",
+   "hint": "Неправильный: grow — grew — grown. Grow up — вырасти, стать взрослым.",
+   "builds_with": [
+    "w049",
+    "w177",
+    "w181"
+   ]
+  },
+  {
+   "id": "v099",
+   "en": "allow",
+   "ru": "разрешать",
+   "ipa": "/əˈlaʊ/",
+   "tr": "эла́у",
+   "group": "verb",
+   "order": 99,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "allowed",
+    "pp": "allowed",
+    "ing": "allowing",
+    "third": "allows"
+   },
+   "ex_en": "They allow photos here.",
+   "ex_ru": "Они разрешают фото здесь.",
+   "hint": "Allow somebody to do — разрешить кому-то. Пишется похоже на loud, но это разные слова.",
+   "builds_with": [
+    "w139",
+    "c067",
+    "c042"
+   ]
+  },
+  {
+   "id": "v100",
+   "en": "accept",
+   "ru": "принимать",
+   "ipa": "/əkˈsept/",
+   "tr": "эксэ́пт",
+   "group": "verb",
+   "order": 100,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "accepted",
+    "pp": "accepted",
+    "ing": "accepting",
+    "third": "accepts"
+   },
+   "ex_en": "They accept the plan.",
+   "ex_ru": "Они принимают план.",
+   "hint": "Accept — принять, а except — «кроме». Одна буква меняет всё.",
+   "builds_with": [
+    "w050",
+    "w053",
+    "w170"
+   ]
+  },
+  {
+   "id": "v101",
+   "en": "agree",
+   "ru": "соглашаться",
+   "ipa": "/əˈɡriː/",
+   "tr": "эгри́",
+   "group": "verb",
+   "order": 101,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "agreed",
+    "pp": "agreed",
+    "ing": "agreeing",
+    "third": "agrees"
+   },
+   "ex_en": "I agree with you.",
+   "ex_ru": "Я соглашаюсь с тобой.",
+   "hint": "Agree with somebody — согласиться с кем-то, именно with.",
+   "builds_with": [
+    "c100",
+    "c011",
+    "w053"
+   ]
+  },
+  {
+   "id": "v102",
+   "en": "invite",
+   "ru": "приглашать",
+   "ipa": "/ɪnˈvaɪt/",
+   "tr": "инва́йт",
+   "group": "verb",
+   "order": 102,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "invited",
+    "pp": "invited",
+    "ing": "inviting",
+    "third": "invites"
+   },
+   "ex_en": "I invite you to the cafe.",
+   "ex_ru": "Я приглашаю тебя в кафе.",
+   "hint": "Русский «инвайт» — из этого слова. Invitation — приглашение.",
+   "builds_with": [
+    "c011",
+    "w006",
+    "w141"
+   ]
+  },
+  {
+   "id": "v103",
+   "en": "promise",
+   "ru": "обещать",
+   "ipa": "/ˈprɒm.ɪs/",
+   "tr": "про́мис",
+   "group": "verb",
+   "order": 103,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "promised",
+    "pp": "promised",
+    "ing": "promising",
+    "third": "promises"
+   },
+   "ex_en": "I promise to help.",
+   "ex_ru": "Я обещаю помочь.",
+   "hint": "Promise — и глагол, и существительное «обещание». Правильный: promise — promised.",
+   "builds_with": [
+    "c059",
+    "c010",
+    "c097"
+   ]
+  },
+  {
+   "id": "v104",
+   "en": "hope",
+   "ru": "надеяться",
+   "ipa": "/həʊp/",
+   "tr": "хоуп",
+   "group": "verb",
+   "order": 104,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "hoped",
+    "pp": "hoped",
+    "ing": "hoping",
+    "third": "hopes"
+   },
+   "ex_en": "I hope you are ready.",
+   "ex_ru": "Я надеюсь, ты готов.",
+   "hint": "Hope — надежда и надеяться. I hope so — «надеюсь, что да».",
+   "builds_with": [
+    "c011",
+    "c087",
+    "c082"
+   ]
+  },
+  {
+   "id": "v105",
+   "en": "wish",
+   "ru": "желать",
+   "ipa": "/wɪʃ/",
+   "tr": "уиш",
+   "group": "verb",
+   "order": 105,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "wished",
+    "pp": "wished",
+    "ing": "wishing",
+    "third": "wishes"
+   },
+   "ex_en": "I wish you a good day.",
+   "ex_ru": "Я желаю тебе хорошего дня.",
+   "hint": "Wish — пожелать кому-то. Хотеть в обычном смысле — это want.",
+   "builds_with": [
+    "c011",
+    "c061",
+    "c082"
+   ]
+  },
+  {
+   "id": "v106",
+   "en": "worry",
+   "ru": "беспокоиться",
+   "ipa": "/ˈwʌr.i/",
+   "tr": "уа́ри",
+   "group": "verb",
+   "order": 106,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "worried",
+    "pp": "worried",
+    "ing": "worrying",
+    "third": "worries"
+   },
+   "ex_en": "Don't worry about the deadline.",
+   "ex_ru": "Не беспокойся о дедлайне.",
+   "hint": "Don't worry — самая частая фраза с этим словом. Y меняется на i: worried.",
+   "builds_with": [
+    "w051",
+    "w102",
+    "c036"
+   ]
+  },
+  {
+   "id": "v107",
+   "en": "enjoy",
+   "ru": "наслаждаться",
+   "ipa": "/ɪnˈdʒɔɪ/",
+   "tr": "инджо́й",
+   "group": "verb",
+   "order": 107,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "enjoyed",
+    "pp": "enjoyed",
+    "ing": "enjoying",
+    "third": "enjoys"
+   },
+   "ex_en": "I enjoy the concert.",
+   "ex_ru": "Я наслаждаюсь концертом.",
+   "hint": "После enjoy идёт -ing: enjoy reading. Enjoy your meal — «приятного аппетита».",
+   "builds_with": [
+    "w141",
+    "w132",
+    "w155"
+   ]
+  },
+  {
+   "id": "v108",
+   "en": "prefer",
+   "ru": "предпочитать",
+   "ipa": "/prɪˈfɜː/",
+   "tr": "прифё́",
+   "group": "verb",
+   "order": 108,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "preferred",
+    "pp": "preferred",
+    "ing": "preferring",
+    "third": "prefers"
+   },
+   "ex_en": "I prefer coffee.",
+   "ex_ru": "Я предпочитаю кофе.",
+   "hint": "Удваивается r: preferred, preferring. Prefer A to B — предпочитать одно другому.",
+   "builds_with": [
+    "w003",
+    "w001",
+    "w011"
+   ]
+  },
+  {
+   "id": "v109",
+   "en": "hate",
+   "ru": "ненавидеть",
+   "ipa": "/heɪt/",
+   "tr": "хэйт",
+   "group": "verb",
+   "order": 109,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "hated",
+    "pp": "hated",
+    "ing": "hating",
+    "third": "hates"
+   },
+   "ex_en": "She hates stress.",
+   "ex_ru": "Она ненавидит стресс.",
+   "hint": "Hate сильнее, чем «не нравится». Пара: love — hate.",
+   "builds_with": [
+    "w102",
+    "c041",
+    "w051"
+   ]
+  },
+  {
+   "id": "v110",
+   "en": "miss",
+   "ru": "скучать",
+   "ipa": "/mɪs/",
+   "tr": "мис",
+   "group": "verb",
+   "order": 110,
+   "pos": "verb",
+   "level": "a2",
+   "forms": {
+    "past": "missed",
+    "pp": "missed",
+    "ing": "missing",
+    "third": "misses"
+   },
+   "ex_en": "I miss you.",
+   "ex_ru": "Я скучаю по тебе.",
+   "hint": "Miss — и скучать, и не попасть: miss the bus — опоздать на автобус.",
+   "builds_with": [
+    "c011",
+    "w027",
+    "w141"
+   ]
+  },
+  {
+   "id": "v111",
+   "en": "care",
+   "ru": "заботиться",
+   "ipa": "/keə/",
+   "tr": "кэа",
+   "group": "verb",
+   "order": 111,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "cared",
+    "pp": "cared",
+    "ing": "caring",
+    "third": "cares"
+   },
+   "ex_en": "She cares about you.",
+   "ex_ru": "Она заботится о тебе.",
+   "hint": "Care about — заботиться о ком-то. Take care — «береги себя» на прощание.",
+   "builds_with": [
+    "c011",
+    "w100",
+    "c020"
+   ]
+  },
+  {
+   "id": "v112",
+   "en": "hurt",
+   "ru": "болеть (о теле)",
+   "ipa": "/hɜːt/",
+   "tr": "хёт",
+   "group": "verb",
+   "order": 112,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "hurt",
+    "pp": "hurt",
+    "ing": "hurting",
+    "third": "hurts"
+   },
+   "ex_en": "My muscle hurts.",
+   "ex_ru": "У меня болит мышца.",
+   "hint": "Неправильный: hurt — hurt — hurt. It hurts — «болит», о части тела.",
+   "builds_with": [
+    "w114",
+    "w100",
+    "w111"
+   ]
+  },
+  {
+   "id": "v113",
+   "en": "receive",
+   "ru": "получать",
+   "ipa": "/rɪˈsiːv/",
+   "tr": "риси́в",
+   "group": "verb",
+   "order": 113,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "received",
+    "pp": "received",
+    "ing": "receiving",
+    "third": "receives"
+   },
+   "ex_en": "I receive an email.",
+   "ex_ru": "Я получаю имейл.",
+   "hint": "Receive — официальное «получить», get — то же самое попроще. После c идёт ei.",
+   "builds_with": [
+    "w075",
+    "w060",
+    "w167"
+   ]
+  },
+  {
+   "id": "v114",
+   "en": "serve",
+   "ru": "подавать, обслуживать",
+   "ipa": "/sɜːv/",
+   "tr": "сёв",
+   "group": "verb",
+   "order": 114,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "served",
+    "pp": "served",
+    "ing": "serving",
+    "third": "serves"
+   },
+   "ex_en": "They serve coffee here.",
+   "ex_ru": "Они подают кофе здесь.",
+   "hint": "Service — обслуживание, из того же корня. Читается «сёв», без «р».",
+   "builds_with": [
+    "w003",
+    "w015",
+    "w006"
+   ]
+  },
+  {
+   "id": "v115",
+   "en": "count",
+   "ru": "считать",
+   "ipa": "/kaʊnt/",
+   "tr": "каунт",
+   "group": "verb",
+   "order": 115,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "counted",
+    "pp": "counted",
+    "ing": "counting",
+    "third": "counts"
+   },
+   "ex_en": "Count the dollars, please.",
+   "ex_ru": "Считай доллары, пожалуйста.",
+   "hint": "Count — считать по числам. Account — счёт в банке, отсюда же.",
+   "builds_with": [
+    "w169",
+    "w175",
+    "w190"
+   ]
+  },
+  {
+   "id": "v116",
+   "en": "include",
+   "ru": "включать (в состав)",
+   "ipa": "/ɪnˈkluːd/",
+   "tr": "инклу́д",
+   "group": "verb",
+   "order": 116,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "included",
+    "pp": "included",
+    "ing": "including",
+    "third": "includes"
+   },
+   "ex_en": "The tour includes a hotel.",
+   "ex_ru": "Тур включает отель.",
+   "hint": "Include — включать в состав. Включить свет — это turn on, другое слово.",
+   "builds_with": [
+    "w155",
+    "w152",
+    "w168"
+   ]
+  },
+  {
+   "id": "v117",
+   "en": "create",
+   "ru": "создавать",
+   "ipa": "/kriˈeɪt/",
+   "tr": "криэ́йт",
+   "group": "verb",
+   "order": 117,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "created",
+    "pp": "created",
+    "ing": "creating",
+    "third": "creates"
+   },
+   "ex_en": "We create a new site.",
+   "ex_ru": "Мы создаём новый сайт.",
+   "hint": "Русский «креатив» — из этого слова. Create — сделать с нуля.",
+   "builds_with": [
+    "w066",
+    "w073",
+    "w187"
+   ]
+  },
+  {
+   "id": "v118",
+   "en": "develop",
+   "ru": "развивать",
+   "ipa": "/dɪˈvel.əp/",
+   "tr": "диве́лэп",
+   "group": "verb",
+   "order": 118,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "developed",
+    "pp": "developed",
+    "ing": "developing",
+    "third": "develops"
+   },
+   "ex_en": "They develop a program.",
+   "ex_ru": "Они развивают программу.",
+   "hint": "Ударение на второй слог: диВЕлэп. Developer — разработчик.",
+   "builds_with": [
+    "w073",
+    "w049",
+    "w054"
+   ]
+  },
+  {
+   "id": "v119",
+   "en": "improve",
+   "ru": "улучшать",
+   "ipa": "/ɪmˈpruːv/",
+   "tr": "импру́в",
+   "group": "verb",
+   "order": 119,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "improved",
+    "pp": "improved",
+    "ing": "improving",
+    "third": "improves"
+   },
+   "ex_en": "I improve my English.",
+   "ex_ru": "Я улучшаю свой английский.",
+   "hint": "Improve — сделать лучше. Внутри слышно prove — «доказывать».",
+   "builds_with": [
+    "c017",
+    "w049",
+    "w191"
+   ]
+  },
+  {
+   "id": "v120",
+   "en": "manage",
+   "ru": "управлять",
+   "ipa": "/ˈmæn.ɪdʒ/",
+   "tr": "мэ́нидж",
+   "group": "verb",
+   "order": 120,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "managed",
+    "pp": "managed",
+    "ing": "managing",
+    "third": "manages"
+   },
+   "ex_en": "She manages the project.",
+   "ex_ru": "Она управляет проектом.",
+   "hint": "Manager — менеджер, отсюда. Ещё manage to do — «суметь сделать».",
+   "builds_with": [
+    "w054",
+    "w059",
+    "w049"
+   ]
+  },
+  {
+   "id": "v121",
+   "en": "discuss",
+   "ru": "обсуждать",
+   "ipa": "/dɪˈskʌs/",
+   "tr": "диска́с",
+   "group": "verb",
+   "order": 121,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "discussed",
+    "pp": "discussed",
+    "ing": "discussing",
+    "third": "discusses"
+   },
+   "ex_en": "We discuss the contract.",
+   "ex_ru": "Мы обсуждаем контракт.",
+   "hint": "Discuss без предлога: discuss the plan, а не discuss about.",
+   "builds_with": [
+    "w053",
+    "w050",
+    "w056"
+   ]
+  },
+  {
+   "id": "v122",
+   "en": "suggest",
+   "ru": "предлагать (идею)",
+   "ipa": "/səˈdʒest/",
+   "tr": "сэдже́ст",
+   "group": "verb",
+   "order": 122,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "suggested",
+    "pp": "suggested",
+    "ing": "suggesting",
+    "third": "suggests"
+   },
+   "ex_en": "I suggest a new plan.",
+   "ex_ru": "Я предлагаю новый план.",
+   "hint": "Suggest — подать идею, offer — предложить вещь. Буквы gg звучат «дж».",
+   "builds_with": [
+    "w050",
+    "w187",
+    "w054"
+   ]
+  },
+  {
+   "id": "v123",
+   "en": "sign",
+   "ru": "подписывать",
+   "ipa": "/saɪn/",
+   "tr": "сайн",
+   "group": "verb",
+   "order": 123,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "signed",
+    "pp": "signed",
+    "ing": "signing",
+    "third": "signs"
+   },
+   "ex_en": "He signs the contract.",
+   "ex_ru": "Он подписывает контракт.",
+   "hint": "Буква g молчит: «сайн». Signature — подпись.",
+   "builds_with": [
+    "w053",
+    "w060",
+    "w036"
+   ]
+  },
+  {
+   "id": "v124",
+   "en": "print",
+   "ru": "печатать",
+   "ipa": "/prɪnt/",
+   "tr": "принт",
+   "group": "verb",
+   "order": 124,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "printed",
+    "pp": "printed",
+    "ing": "printing",
+    "third": "prints"
+   },
+   "ex_en": "Print the document, please.",
+   "ex_ru": "Напечатай документ, пожалуйста.",
+   "hint": "Принтер и «принт» на футболке — отсюда. Print — напечатать на бумаге.",
+   "builds_with": [
+    "w060",
+    "w065",
+    "w062"
+   ]
+  },
+  {
+   "id": "v125",
+   "en": "copy",
+   "ru": "копировать",
+   "ipa": "/ˈkɒp.i/",
+   "tr": "ко́пи",
+   "group": "verb",
+   "order": 125,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "copied",
+    "pp": "copied",
+    "ing": "copying",
+    "third": "copies"
+   },
+   "ex_en": "Copy the file, please.",
+   "ex_ru": "Скопируй файл, пожалуйста.",
+   "hint": "Копия и copy — одно слово. Y меняется на i: copied.",
+   "builds_with": [
+    "w067",
+    "w060",
+    "w064"
+   ]
+  },
+  {
+   "id": "v126",
+   "en": "describe",
+   "ru": "описывать",
+   "ipa": "/dɪˈskraɪb/",
+   "tr": "дискра́йб",
+   "group": "verb",
+   "order": 126,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "described",
+    "pp": "described",
+    "ing": "describing",
+    "third": "describes"
+   },
+   "ex_en": "He describes the problem.",
+   "ex_ru": "Он описывает проблему.",
+   "hint": "Description — описание. Describe — рассказать, как что-то выглядит.",
+   "builds_with": [
+    "w188",
+    "w195",
+    "w187"
+   ]
+  },
+  {
+   "id": "v127",
+   "en": "hurry",
+   "ru": "торопиться",
+   "ipa": "/ˈhʌr.i/",
+   "tr": "ха́ри",
+   "group": "verb",
+   "order": 127,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "hurried",
+    "pp": "hurried",
+    "ing": "hurrying",
+    "third": "hurries"
+   },
+   "ex_en": "Don't hurry, please.",
+   "ex_ru": "Не торопись, пожалуйста.",
+   "hint": "Hurry up — «поторопись». Y меняется на i: hurried.",
+   "builds_with": [
+    "c036",
+    "c118",
+    "w190"
+   ]
+  },
+  {
+   "id": "v128",
+   "en": "reach",
+   "ru": "достигать",
+   "ipa": "/riːtʃ/",
+   "tr": "рич",
+   "group": "verb",
+   "order": 128,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "reached",
+    "pp": "reached",
+    "ing": "reaching",
+    "third": "reaches"
+   },
+   "ex_en": "We reach the airport.",
+   "ex_ru": "Мы достигаем аэропорта.",
+   "hint": "Reach — добраться до места и дотянуться рукой. Без предлога: reach the airport.",
+   "builds_with": [
+    "w160",
+    "w087",
+    "w191"
+   ]
+  },
+  {
+   "id": "v129",
+   "en": "lead",
+   "ru": "вести, руководить",
+   "ipa": "/liːd/",
+   "tr": "лид",
+   "group": "verb",
+   "order": 129,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "led",
+    "pp": "led",
+    "ing": "leading",
+    "third": "leads"
+   },
+   "ex_en": "She leads the project.",
+   "ex_ru": "Она руководит проектом.",
+   "hint": "Неправильный: lead — led — led. Leader — лидер, отсюда. Металл lead читается «лэд».",
+   "builds_with": [
+    "w054",
+    "w052",
+    "w049"
+   ]
+  },
+  {
+   "id": "v130",
+   "en": "fill",
+   "ru": "заполнять",
+   "ipa": "/fɪl/",
+   "tr": "фил",
+   "group": "verb",
+   "order": 130,
+   "pos": "verb",
+   "level": "b1",
+   "forms": {
+    "past": "filled",
+    "pp": "filled",
+    "ing": "filling",
+    "third": "fills"
+   },
+   "ex_en": "Please fill the document.",
+   "ex_ru": "Пожалуйста, заполни документ.",
+   "hint": "Fill in — заполнить бланк. Гласная короткая: fill «фил», а feel тянется дольше.",
+   "builds_with": [
+    "w060",
+    "w053",
+    "w163"
+   ]
+  },
+  {
+   "id": "v131",
+   "en": "important",
+   "ru": "важный",
+   "ipa": "/ɪmˈpɔː.tənt/",
+   "tr": "импо́тэнт",
+   "group": "adj",
+   "order": 1,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "more important",
+    "sup": "most important"
+   },
+   "ex_en": "This is an important document.",
+   "ex_ru": "Это важный документ.",
+   "hint": "Длинные прилагательные сравнивают через more: more important. Ударение на второй слог.",
+   "builds_with": [
+    "w060",
+    "w056",
+    "w053"
+   ]
+  },
+  {
+   "id": "v132",
+   "en": "beautiful",
+   "ru": "красивый",
+   "ipa": "/ˈbjuː.tɪ.fəl/",
+   "tr": "бью́тифэл",
+   "group": "adj",
+   "order": 2,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "more beautiful",
+    "sup": "most beautiful"
+   },
+   "ex_en": "The park is beautiful.",
+   "ex_ru": "Парк красивый.",
+   "hint": "Beauty — красота, отсюда. Про мужчину чаще говорят handsome.",
+   "builds_with": [
+    "w031",
+    "w152",
+    "w040"
+   ]
+  },
+  {
+   "id": "v133",
+   "en": "right",
+   "ru": "правильный",
+   "ipa": "/raɪt/",
+   "tr": "райт",
+   "group": "adj",
+   "order": 3,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": null,
+    "sup": null
+   },
+   "ex_en": "This is the right answer.",
+   "ex_ru": "Это правильный ответ.",
+   "hint": "Right — и «правильный», и «правый». You are right — «ты прав». Степени сравнения ему не нужны.",
+   "builds_with": [
+    "w191",
+    "w168",
+    "w069"
+   ]
+  },
+  {
+   "id": "v134",
+   "en": "wrong",
+   "ru": "неправильный",
+   "ipa": "/rɒŋ/",
+   "tr": "ронг",
+   "group": "adj",
+   "order": 4,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": null,
+    "sup": null
+   },
+   "ex_en": "The address is wrong.",
+   "ex_ru": "Адрес неправильный.",
+   "hint": "Пара к right. Буква w молчит: «ронг». What's wrong — «что не так».",
+   "builds_with": [
+    "w036",
+    "w069",
+    "w050"
+   ]
+  },
+  {
+   "id": "v135",
+   "en": "different",
+   "ru": "другой (не такой)",
+   "ipa": "/ˈdɪf.ər.ənt/",
+   "tr": "ди́фэрэнт",
+   "group": "adj",
+   "order": 5,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "more different",
+    "sup": "most different"
+   },
+   "ex_en": "We have a different plan.",
+   "ex_ru": "У нас другой план.",
+   "hint": "Different from — отличается от чего-то. Ударение на первый слог: ДИфэрэнт.",
+   "builds_with": [
+    "w050",
+    "w193",
+    "w187"
+   ]
+  },
+  {
+   "id": "v136",
+   "en": "same",
+   "ru": "такой же",
+   "ipa": "/seɪm/",
+   "tr": "сэйм",
+   "group": "adj",
+   "order": 6,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": null,
+    "sup": null
+   },
+   "ex_en": "We have the same plan.",
+   "ex_ru": "У нас такой же план.",
+   "hint": "Всегда с the: the same. Пара к different.",
+   "builds_with": [
+    "w050",
+    "w193",
+    "w036"
+   ]
+  },
+  {
+   "id": "v137",
+   "en": "young",
+   "ru": "молодой",
+   "ipa": "/jʌŋ/",
+   "tr": "янг",
+   "group": "adj",
+   "order": 7,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "younger",
+    "sup": "youngest"
+   },
+   "ex_en": "He is a young doctor.",
+   "ex_ru": "Он молодой доктор.",
+   "hint": "Пара к old. Сравнение через -er: younger — моложе.",
+   "builds_with": [
+    "w100",
+    "w095",
+    "w200"
+   ]
+  },
+  {
+   "id": "v138",
+   "en": "strong",
+   "ru": "сильный",
+   "ipa": "/strɒŋ/",
+   "tr": "стронг",
+   "group": "adj",
+   "order": 8,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "stronger",
+    "sup": "strongest"
+   },
+   "ex_en": "He is a strong athlete.",
+   "ex_ru": "Он сильный атлет.",
+   "hint": "Strong coffee — крепкий кофе, не «сильный». Пара: strong — weak.",
+   "builds_with": [
+    "w095",
+    "w003",
+    "w114"
+   ]
+  },
+  {
+   "id": "v139",
+   "en": "high",
+   "ru": "высокий",
+   "ipa": "/haɪ/",
+   "tr": "хай",
+   "group": "adj",
+   "order": 9,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "higher",
+    "sup": "highest"
+   },
+   "ex_en": "The temperature is high.",
+   "ex_ru": "Температура высокая.",
+   "hint": "High — про предметы и уровни, tall — про людей. Буквы gh молчат: «хай».",
+   "builds_with": [
+    "w116",
+    "w103",
+    "w175"
+   ]
+  },
+  {
+   "id": "v140",
+   "en": "tall",
+   "ru": "высокий (о человеке)",
+   "ipa": "/tɔːl/",
+   "tr": "тол",
+   "group": "adj",
+   "order": 10,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "taller",
+    "sup": "tallest"
+   },
+   "ex_en": "My boss is tall.",
+   "ex_ru": "Мой босс высокий.",
+   "hint": "Tall — только про людей и деревья. Гора и цена — high.",
+   "builds_with": [
+    "w048",
+    "w095",
+    "w200"
+   ]
+  },
+  {
+   "id": "v141",
+   "en": "heavy",
+   "ru": "тяжёлый",
+   "ipa": "/ˈhev.i/",
+   "tr": "хэ́ви",
+   "group": "adj",
+   "order": 11,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "heavier",
+    "sup": "heaviest"
+   },
+   "ex_en": "The baggage is heavy.",
+   "ex_ru": "Багаж тяжёлый.",
+   "hint": "Heavy metal — «тяжёлый металл», отсюда. Y меняется на i: heavier.",
+   "builds_with": [
+    "w166",
+    "w117",
+    "w102"
+   ]
+  },
+  {
+   "id": "v142",
+   "en": "light",
+   "ru": "лёгкий (по весу)",
+   "ipa": "/laɪt/",
+   "tr": "лайт",
+   "group": "adj",
+   "order": 12,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "lighter",
+    "sup": "lightest"
+   },
+   "ex_en": "The baggage is light.",
+   "ex_ru": "Багаж лёгкий.",
+   "hint": "Light — и «лёгкий», и «свет». Русское «лайт» — из него. Пара к heavy.",
+   "builds_with": [
+    "w166",
+    "w002",
+    "w010"
+   ]
+  },
+  {
+   "id": "v143",
+   "en": "full",
+   "ru": "полный",
+   "ipa": "/fʊl/",
+   "tr": "фул",
+   "group": "adj",
+   "order": 13,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "fuller",
+    "sup": "fullest"
+   },
+   "ex_en": "The hotel is full.",
+   "ex_ru": "Отель полный.",
+   "hint": "Full of people — полон людей. I'm full — «я наелся».",
+   "builds_with": [
+    "w152",
+    "w027",
+    "w015"
+   ]
+  },
+  {
+   "id": "v144",
+   "en": "empty",
+   "ru": "пустой",
+   "ipa": "/ˈemp.ti/",
+   "tr": "э́мпти",
+   "group": "adj",
+   "order": 14,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "emptier",
+    "sup": "emptiest"
+   },
+   "ex_en": "The office is empty.",
+   "ex_ru": "Офис пустой.",
+   "hint": "Пара к full. Y меняется на i: emptier.",
+   "builds_with": [
+    "w047",
+    "w032",
+    "w027"
+   ]
+  },
+  {
+   "id": "v145",
+   "en": "clean",
+   "ru": "чистый",
+   "ipa": "/kliːn/",
+   "tr": "клин",
+   "group": "adj",
+   "order": 15,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "cleaner",
+    "sup": "cleanest"
+   },
+   "ex_en": "The apartment is clean.",
+   "ex_ru": "Квартира чистая.",
+   "hint": "Clean — и «чистый», и «убирать». Пара: clean — dirty.",
+   "builds_with": [
+    "w038",
+    "w047",
+    "w152"
+   ]
+  },
+  {
+   "id": "v146",
+   "en": "dirty",
+   "ru": "грязный",
+   "ipa": "/ˈdɜː.ti/",
+   "tr": "дё́ти",
+   "group": "adj",
+   "order": 16,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "dirtier",
+    "sup": "dirtiest"
+   },
+   "ex_en": "The jeans are dirty.",
+   "ex_ru": "Джинсы грязные.",
+   "hint": "Dirt — грязь, отсюда. Читается «дёти», без «р».",
+   "builds_with": [
+    "w117",
+    "w024",
+    "w029"
+   ]
+  },
+  {
+   "id": "v147",
+   "en": "dark",
+   "ru": "тёмный",
+   "ipa": "/dɑːk/",
+   "tr": "дак",
+   "group": "adj",
+   "order": 17,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "darker",
+    "sup": "darkest"
+   },
+   "ex_en": "The cinema is dark.",
+   "ex_ru": "В кино темно.",
+   "hint": "Dark chocolate — тёмный шоколад. Читается «дак», без «р».",
+   "builds_with": [
+    "w045",
+    "w012",
+    "w037"
+   ]
+  },
+  {
+   "id": "v148",
+   "en": "quiet",
+   "ru": "тихий",
+   "ipa": "/ˈkwaɪ.ət/",
+   "tr": "куа́йэт",
+   "group": "adj",
+   "order": 18,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "quieter",
+    "sup": "quietest"
+   },
+   "ex_en": "The cafe is quiet.",
+   "ex_ru": "Кафе тихое.",
+   "hint": "Quiet «куа́йэт» — тихий, а quite «куайт» — довольно. Порядок букв разный.",
+   "builds_with": [
+    "w006",
+    "w031",
+    "w047"
+   ]
+  },
+  {
+   "id": "v149",
+   "en": "sure",
+   "ru": "уверен",
+   "ipa": "/ʃɔː/",
+   "tr": "шо",
+   "group": "adj",
+   "order": 19,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "surer",
+    "sup": "surest"
+   },
+   "ex_en": "I am sure.",
+   "ex_ru": "Я уверен.",
+   "hint": "Are you sure — «ты уверен?». Читается «шо», без «р».",
+   "builds_with": [
+    "c002",
+    "c010",
+    "c087"
+   ]
+  },
+  {
+   "id": "v150",
+   "en": "true",
+   "ru": "правдивый",
+   "ipa": "/truː/",
+   "tr": "тру",
+   "group": "adj",
+   "order": 20,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "truer",
+    "sup": "truest"
+   },
+   "ex_en": "This information is true.",
+   "ex_ru": "Эта информация правдивая.",
+   "hint": "True — правда как факт. Truth — существительное «правда».",
+   "builds_with": [
+    "w194",
+    "w199",
+    "w192"
+   ]
+  },
+  {
+   "id": "v151",
+   "en": "funny",
+   "ru": "смешной",
+   "ipa": "/ˈfʌn.i/",
+   "tr": "фа́ни",
+   "group": "adj",
+   "order": 21,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "funnier",
+    "sup": "funniest"
+   },
+   "ex_en": "The comedy is funny.",
+   "ex_ru": "Комедия смешная.",
+   "hint": "Funny — смешной, а fun — веселье. Y меняется на i: funnier.",
+   "builds_with": [
+    "w148",
+    "w137",
+    "w142"
+   ]
+  },
+  {
+   "id": "v152",
+   "en": "angry",
+   "ru": "сердитый",
+   "ipa": "/ˈæŋ.ɡri/",
+   "tr": "э́нгри",
+   "group": "adj",
+   "order": 22,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "angrier",
+    "sup": "angriest"
+   },
+   "ex_en": "The boss is angry.",
+   "ex_ru": "Босс сердитый.",
+   "hint": "Angry with somebody — сердиться на кого-то. Игра Angry Birds — «сердитые птицы».",
+   "builds_with": [
+    "w048",
+    "w055",
+    "w052"
+   ]
+  },
+  {
+   "id": "v153",
+   "en": "sad",
+   "ru": "грустный",
+   "ipa": "/sæd/",
+   "tr": "сэд",
+   "group": "adj",
+   "order": 23,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "sadder",
+    "sup": "saddest"
+   },
+   "ex_en": "The film is sad.",
+   "ex_ru": "Фильм грустный.",
+   "hint": "Пара к happy. В сравнении удваивается d: sadder.",
+   "builds_with": [
+    "w134",
+    "w137",
+    "w132"
+   ]
+  },
+  {
+   "id": "v154",
+   "en": "tired",
+   "ru": "уставший",
+   "ipa": "/ˈtaɪəd/",
+   "tr": "та́йэд",
+   "group": "adj",
+   "order": 24,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "more tired",
+    "sup": "most tired"
+   },
+   "ex_en": "I am tired today.",
+   "ex_ru": "Я уставший сегодня.",
+   "hint": "Пишется с -ed, но это прилагательное. Tired of — «надоело».",
+   "builds_with": [
+    "c070",
+    "c047",
+    "w102"
+   ]
+  },
+  {
+   "id": "v155",
+   "en": "hungry",
+   "ru": "голодный",
+   "ipa": "/ˈhʌŋ.ɡri/",
+   "tr": "ха́нгри",
+   "group": "adj",
+   "order": 25,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "hungrier",
+    "sup": "hungriest"
+   },
+   "ex_en": "I am hungry now.",
+   "ex_ru": "Я голодный сейчас.",
+   "hint": "I'm hungry — «я голоден», через глагол be. Y меняется на i: hungrier.",
+   "builds_with": [
+    "w001",
+    "w002",
+    "c068"
+   ]
+  },
+  {
+   "id": "v156",
+   "en": "thirsty",
+   "ru": "хочется пить",
+   "ipa": "/ˈθɜː.sti/",
+   "tr": "тё́сти",
+   "group": "adj",
+   "order": 26,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "thirstier",
+    "sup": "thirstiest"
+   },
+   "ex_en": "I am thirsty.",
+   "ex_ru": "Мне хочется пить.",
+   "hint": "Thirst — жажда. Thirsty — про воду, hungry — про еду.",
+   "builds_with": [
+    "w003",
+    "w014",
+    "w002"
+   ]
+  },
+  {
+   "id": "v157",
+   "en": "sick",
+   "ru": "болен",
+   "ipa": "/sɪk/",
+   "tr": "сик",
+   "group": "adj",
+   "order": 27,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "sicker",
+    "sup": "sickest"
+   },
+   "ex_en": "My boss is sick.",
+   "ex_ru": "Мой босс болен.",
+   "hint": "I am sick — «я болен». В британском чаще ill, в американском sick.",
+   "builds_with": [
+    "w048",
+    "w100",
+    "w106"
+   ]
+  },
+  {
+   "id": "v158",
+   "en": "rich",
+   "ru": "богатый",
+   "ipa": "/rɪtʃ/",
+   "tr": "рич",
+   "group": "adj",
+   "order": 28,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "richer",
+    "sup": "richest"
+   },
+   "ex_en": "The client is rich.",
+   "ex_ru": "Клиент богатый.",
+   "hint": "Rich — и про людей, и про вкус: rich chocolate. Пара: rich — poor.",
+   "builds_with": [
+    "w055",
+    "w172",
+    "w179"
+   ]
+  },
+  {
+   "id": "v159",
+   "en": "interesting",
+   "ru": "интересный",
+   "ipa": "/ˈɪn.trəs.tɪŋ/",
+   "tr": "и́нтрэстинг",
+   "group": "adj",
+   "order": 29,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "more interesting",
+    "sup": "most interesting"
+   },
+   "ex_en": "The film is interesting.",
+   "ex_ru": "Фильм интересный.",
+   "hint": "Interesting — про вещь, interested — про человека: I am interested. Три слога: ИНтрэстинг.",
+   "builds_with": [
+    "w134",
+    "w187",
+    "w199"
+   ]
+  },
+  {
+   "id": "v160",
+   "en": "boring",
+   "ru": "скучный",
+   "ipa": "/ˈbɔː.rɪŋ/",
+   "tr": "бо́ринг",
+   "group": "adj",
+   "order": 30,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "more boring",
+    "sup": "most boring"
+   },
+   "ex_en": "The conference is boring.",
+   "ex_ru": "Конференция скучная.",
+   "hint": "Boring — вещь скучная, bored — человеку скучно. Перепутать легко.",
+   "builds_with": [
+    "w056",
+    "w057",
+    "w137"
+   ]
+  },
+  {
+   "id": "v161",
+   "en": "tasty",
+   "ru": "вкусный",
+   "ipa": "/ˈteɪ.sti/",
+   "tr": "тэ́йсти",
+   "group": "adj",
+   "order": 31,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "tastier",
+    "sup": "tastiest"
+   },
+   "ex_en": "The soup is tasty.",
+   "ex_ru": "Суп вкусный.",
+   "hint": "Taste — вкус, отсюда. Про очень вкусное говорят delicious.",
+   "builds_with": [
+    "w002",
+    "w001",
+    "w010"
+   ]
+  },
+  {
+   "id": "v162",
+   "en": "sweet",
+   "ru": "сладкий",
+   "ipa": "/swiːt/",
+   "tr": "суит",
+   "group": "adj",
+   "order": 32,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "sweeter",
+    "sup": "sweetest"
+   },
+   "ex_en": "The dessert is sweet.",
+   "ex_ru": "Десерт сладкий.",
+   "hint": "Sweets — конфеты. Ещё sweet — «милый» про человека.",
+   "builds_with": [
+    "w010",
+    "w012",
+    "w003"
+   ]
+  },
+  {
+   "id": "v163",
+   "en": "next",
+   "ru": "следующий",
+   "ipa": "/nekst/",
+   "tr": "нэкст",
+   "group": "adj",
+   "order": 33,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": null,
+    "sup": null
+   },
+   "ex_en": "The next bus is at two.",
+   "ex_ru": "Следующий автобус в два.",
+   "hint": "Next week — на следующей неделе, без предлога. Степеней сравнения не образует.",
+   "builds_with": [
+    "w027",
+    "w190",
+    "w086"
+   ]
+  },
+  {
+   "id": "v164",
+   "en": "last",
+   "ru": "последний",
+   "ipa": "/lɑːst/",
+   "tr": "ласт",
+   "group": "adj",
+   "order": 34,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": null,
+    "sup": null
+   },
+   "ex_en": "This is the last minute.",
+   "ex_ru": "Это последняя минута.",
+   "hint": "Last — и «последний», и «прошлый»: last year — в прошлом году.",
+   "builds_with": [
+    "w190",
+    "w189",
+    "w027"
+   ]
+  },
+  {
+   "id": "v165",
+   "en": "first",
+   "ru": "первый",
+   "ipa": "/fɜːst/",
+   "tr": "фёст",
+   "group": "adj",
+   "order": 35,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": null,
+    "sup": null
+   },
+   "ex_en": "This is my first visa.",
+   "ex_ru": "Это моя первая виза.",
+   "hint": "First — первый и «сначала»: first, we eat. Читается «фёст», без «р».",
+   "builds_with": [
+    "w153",
+    "w163",
+    "w189"
+   ]
+  },
+  {
+   "id": "v166",
+   "en": "other",
+   "ru": "другой (из оставшихся)",
+   "ipa": "/ˈʌð.ə/",
+   "tr": "а́зэ",
+   "group": "adj",
+   "order": 36,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": null,
+    "sup": null
+   },
+   "ex_en": "The other doctor is busy.",
+   "ex_ru": "Другой доктор занят.",
+   "hint": "The other — «тот самый другой», another — «ещё один». Звук th здесь звонкий, как в with.",
+   "builds_with": [
+    "w100",
+    "w048",
+    "w027"
+   ]
+  },
+  {
+   "id": "v167",
+   "en": "black",
+   "ru": "чёрный",
+   "ipa": "/blæk/",
+   "tr": "блэк",
+   "group": "adj",
+   "order": 37,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "blacker",
+    "sup": "blackest"
+   },
+   "ex_en": "I want a black coffee.",
+   "ex_ru": "Я хочу чёрный кофе.",
+   "hint": "Black coffee — кофе без молока. Русское «блэк» — из него.",
+   "builds_with": [
+    "w003",
+    "w117",
+    "w121"
+   ]
+  },
+  {
+   "id": "v168",
+   "en": "white",
+   "ru": "белый",
+   "ipa": "/waɪt/",
+   "tr": "уайт",
+   "group": "adj",
+   "order": 38,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "whiter",
+    "sup": "whitest"
+   },
+   "ex_en": "The hotel is white.",
+   "ex_ru": "Отель белый.",
+   "hint": "White coffee — кофе с молоком, а не «белый кофе». Начинается со звука «у».",
+   "builds_with": [
+    "w152",
+    "w121",
+    "w122"
+   ]
+  },
+  {
+   "id": "v169",
+   "en": "red",
+   "ru": "красный",
+   "ipa": "/red/",
+   "tr": "рэд",
+   "group": "adj",
+   "order": 39,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "redder",
+    "sup": "reddest"
+   },
+   "ex_en": "The lamp is red.",
+   "ex_ru": "Лампа красная.",
+   "hint": "В сравнении удваивается d: redder. Red — и красный, и рыжий про волосы.",
+   "builds_with": [
+    "w037",
+    "w117",
+    "w121"
+   ]
+  },
+  {
+   "id": "v170",
+   "en": "green",
+   "ru": "зелёный",
+   "ipa": "/ɡriːn/",
+   "tr": "грин",
+   "group": "adj",
+   "order": 40,
+   "pos": "adj",
+   "level": "a1",
+   "forms": {
+    "comp": "greener",
+    "sup": "greenest"
+   },
+   "ex_en": "The salad is green.",
+   "ex_ru": "Салат зелёный.",
+   "hint": "Green — и зелёный, и «новичок» про человека. Green card — отсюда же.",
+   "builds_with": [
+    "w008",
+    "w031",
+    "w009"
+   ]
+  },
+  {
+   "id": "v171",
+   "en": "weak",
+   "ru": "слабый",
+   "ipa": "/wiːk/",
+   "tr": "уик",
+   "group": "adj",
+   "order": 41,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "weaker",
+    "sup": "weakest"
+   },
+   "ex_en": "The pulse is weak.",
+   "ex_ru": "Пульс слабый.",
+   "hint": "Weak и week звучат одинаково — «уик». Пара: strong — weak.",
+   "builds_with": [
+    "w103",
+    "w003",
+    "w082"
+   ]
+  },
+  {
+   "id": "v172",
+   "en": "low",
+   "ru": "низкий",
+   "ipa": "/ləʊ/",
+   "tr": "лоу",
+   "group": "adj",
+   "order": 42,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "lower",
+    "sup": "lowest"
+   },
+   "ex_en": "The temperature is low.",
+   "ex_ru": "Температура низкая.",
+   "hint": "Low — низкий уровень, а низкий человек — short. Пара: high — low.",
+   "builds_with": [
+    "w116",
+    "w175",
+    "w103"
+   ]
+  },
+  {
+   "id": "v173",
+   "en": "wet",
+   "ru": "мокрый",
+   "ipa": "/wet/",
+   "tr": "уэт",
+   "group": "adj",
+   "order": 43,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "wetter",
+    "sup": "wettest"
+   },
+   "ex_en": "The jeans are wet.",
+   "ex_ru": "Джинсы мокрые.",
+   "hint": "В сравнении удваивается t: wetter. Пара: wet — dry.",
+   "builds_with": [
+    "w117",
+    "w121",
+    "w164"
+   ]
+  },
+  {
+   "id": "v174",
+   "en": "dry",
+   "ru": "сухой",
+   "ipa": "/draɪ/",
+   "tr": "драй",
+   "group": "adj",
+   "order": 44,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "drier",
+    "sup": "driest"
+   },
+   "ex_en": "The climate is dry.",
+   "ex_ru": "Климат сухой.",
+   "hint": "Dry wine — сухое вино, то же слово. Y меняется на i: drier.",
+   "builds_with": [
+    "w157",
+    "w104",
+    "w121"
+   ]
+  },
+  {
+   "id": "v175",
+   "en": "soft",
+   "ru": "мягкий",
+   "ipa": "/sɒft/",
+   "tr": "софт",
+   "group": "adj",
+   "order": 45,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "softer",
+    "sup": "softest"
+   },
+   "ex_en": "The sweater is soft.",
+   "ex_ru": "Свитер мягкий.",
+   "hint": "Software — «мягкое обеспечение», отсюда русский «софт». Пара: soft — hard.",
+   "builds_with": [
+    "w121",
+    "w146",
+    "w122"
+   ]
+  },
+  {
+   "id": "v176",
+   "en": "hard",
+   "ru": "твёрдый",
+   "ipa": "/hɑːd/",
+   "tr": "хад",
+   "group": "adj",
+   "order": 46,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "harder",
+    "sup": "hardest"
+   },
+   "ex_en": "The chocolate is hard.",
+   "ex_ru": "Шоколад твёрдый.",
+   "hint": "Hard — твёрдый и трудный: a hard question. Читается «хад», без «р».",
+   "builds_with": [
+    "w012",
+    "w069",
+    "w114"
+   ]
+  },
+  {
+   "id": "v177",
+   "en": "loud",
+   "ru": "громкий",
+   "ipa": "/laʊd/",
+   "tr": "лауд",
+   "group": "adj",
+   "order": 47,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "louder",
+    "sup": "loudest"
+   },
+   "ex_en": "The music is loud.",
+   "ex_ru": "Музыка громкая.",
+   "hint": "Loud — громкий, quiet — тихий. Out loud — вслух.",
+   "builds_with": [
+    "w132",
+    "w141",
+    "w081"
+   ]
+  },
+  {
+   "id": "v178",
+   "en": "safe",
+   "ru": "безопасный",
+   "ipa": "/seɪf/",
+   "tr": "сэйф",
+   "group": "adj",
+   "order": 48,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "safer",
+    "sup": "safest"
+   },
+   "ex_en": "The metro is safe.",
+   "ex_ru": "Метро безопасное.",
+   "hint": "Safe — и «безопасный», и «сейф». Safety — безопасность.",
+   "builds_with": [
+    "w020",
+    "w017",
+    "w160"
+   ]
+  },
+  {
+   "id": "v179",
+   "en": "dangerous",
+   "ru": "опасный",
+   "ipa": "/ˈdeɪn.dʒər.əs/",
+   "tr": "дэ́йнджэрэс",
+   "group": "adj",
+   "order": 49,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "more dangerous",
+    "sup": "most dangerous"
+   },
+   "ex_en": "The sport is dangerous.",
+   "ex_ru": "Спорт опасный.",
+   "hint": "Danger — опасность. Пара: dangerous — safe.",
+   "builds_with": [
+    "w083",
+    "w091",
+    "w107"
+   ]
+  },
+  {
+   "id": "v180",
+   "en": "real",
+   "ru": "настоящий",
+   "ipa": "/rɪəl/",
+   "tr": "риэл",
+   "group": "adj",
+   "order": 50,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "more real",
+    "sup": "most real"
+   },
+   "ex_en": "This is a real problem.",
+   "ex_ru": "Это настоящая проблема.",
+   "hint": "Real — настоящий, а русское «реальный» шире. Really — «действительно».",
+   "builds_with": [
+    "w188",
+    "w183",
+    "w187"
+   ]
+  },
+  {
+   "id": "v181",
+   "en": "simple",
+   "ru": "простой",
+   "ipa": "/ˈsɪm.pəl/",
+   "tr": "си́мпл",
+   "group": "adj",
+   "order": 51,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "simpler",
+    "sup": "simplest"
+   },
+   "ex_en": "The plan is simple.",
+   "ex_ru": "План простой.",
+   "hint": "Simple — простой по устройству, easy — лёгкий в исполнении. Буква e на конце не звучит.",
+   "builds_with": [
+    "w050",
+    "w069",
+    "w080"
+   ]
+  },
+  {
+   "id": "v182",
+   "en": "clear",
+   "ru": "ясный",
+   "ipa": "/klɪə/",
+   "tr": "клиэ",
+   "group": "adj",
+   "order": 52,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "clearer",
+    "sup": "clearest"
+   },
+   "ex_en": "The text is clear.",
+   "ex_ru": "Текст ясный.",
+   "hint": "Clear — ясный и прозрачный. Is that clear — «понятно?».",
+   "builds_with": [
+    "w140",
+    "w194",
+    "w157"
+   ]
+  },
+  {
+   "id": "v183",
+   "en": "strange",
+   "ru": "странный",
+   "ipa": "/streɪndʒ/",
+   "tr": "стрэйндж",
+   "group": "adj",
+   "order": 53,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "stranger",
+    "sup": "strangest"
+   },
+   "ex_en": "The situation is strange.",
+   "ex_ru": "Ситуация странная.",
+   "hint": "Осторожно: stranger — это и «страннее», и «незнакомец».",
+   "builds_with": [
+    "w195",
+    "w185",
+    "w137"
+   ]
+  },
+  {
+   "id": "v184",
+   "en": "serious",
+   "ru": "серьёзный",
+   "ipa": "/ˈsɪə.ri.əs/",
+   "tr": "си́эриэс",
+   "group": "adj",
+   "order": 54,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "more serious",
+    "sup": "most serious"
+   },
+   "ex_en": "The problem is serious.",
+   "ex_ru": "Проблема серьёзная.",
+   "hint": "Are you serious — «ты серьёзно?». Русское «серьёзный» — родня через французский.",
+   "builds_with": [
+    "w188",
+    "w183",
+    "w102"
+   ]
+  },
+  {
+   "id": "v185",
+   "en": "healthy",
+   "ru": "здоровый",
+   "ipa": "/ˈhel.θi/",
+   "tr": "хэ́лти",
+   "group": "adj",
+   "order": 55,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "healthier",
+    "sup": "healthiest"
+   },
+   "ex_en": "The diet is healthy.",
+   "ex_ru": "Диета здоровая.",
+   "hint": "Health — здоровье. Звук th здесь глухой, как в think.",
+   "builds_with": [
+    "w104",
+    "w111",
+    "w088"
+   ]
+  },
+  {
+   "id": "v186",
+   "en": "poor",
+   "ru": "бедный",
+   "ipa": "/pɔː/",
+   "tr": "по",
+   "group": "adj",
+   "order": 56,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "poorer",
+    "sup": "poorest"
+   },
+   "ex_en": "My client is poor.",
+   "ex_ru": "Мой клиент бедный.",
+   "hint": "Poor — бедный и «бедняжка»: poor you. Читается «по», без «р».",
+   "builds_with": [
+    "w055",
+    "w171",
+    "w177"
+   ]
+  },
+  {
+   "id": "v187",
+   "en": "lucky",
+   "ru": "везучий",
+   "ipa": "/ˈlʌk.i/",
+   "tr": "ла́ки",
+   "group": "adj",
+   "order": 57,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "luckier",
+    "sup": "luckiest"
+   },
+   "ex_en": "You are lucky today.",
+   "ex_ru": "Ты везучий сегодня.",
+   "hint": "Luck — удача. I'm lucky — «мне повезло».",
+   "builds_with": [
+    "c011",
+    "c070",
+    "w182"
+   ]
+  },
+  {
+   "id": "v188",
+   "en": "famous",
+   "ru": "знаменитый",
+   "ipa": "/ˈfeɪ.məs/",
+   "tr": "фэ́ймэс",
+   "group": "adj",
+   "order": 58,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "more famous",
+    "sup": "most famous"
+   },
+   "ex_en": "The actor is famous.",
+   "ex_ru": "Актёр знаменитый.",
+   "hint": "Famous for — знаменит чем-то. Fame — слава.",
+   "builds_with": [
+    "w142",
+    "w098",
+    "w149"
+   ]
+  },
+  {
+   "id": "v189",
+   "en": "blue",
+   "ru": "синий",
+   "ipa": "/bluː/",
+   "tr": "блу",
+   "group": "adj",
+   "order": 59,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "bluer",
+    "sup": "bluest"
+   },
+   "ex_en": "The lamp is blue.",
+   "ex_ru": "Лампа синяя.",
+   "hint": "Blue — одно слово на синий и голубой. Ещё blues — грусть и музыка.",
+   "builds_with": [
+    "w037",
+    "w117",
+    "w122"
+   ]
+  },
+  {
+   "id": "v190",
+   "en": "possible",
+   "ru": "возможный",
+   "ipa": "/ˈpɒs.ə.bəl/",
+   "tr": "по́сэбл",
+   "group": "adj",
+   "order": 60,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "more possible",
+    "sup": "most possible"
+   },
+   "ex_en": "This plan is possible.",
+   "ex_ru": "Этот план возможный.",
+   "hint": "Impossible — невозможный, с приставкой im-. As soon as possible — «как можно скорее».",
+   "builds_with": [
+    "w050",
+    "w191",
+    "w182"
+   ]
+  },
+  {
+   "id": "v191",
+   "en": "useful",
+   "ru": "полезный",
+   "ipa": "/ˈjuːs.fəl/",
+   "tr": "ю́сфэл",
+   "group": "adj",
+   "order": 61,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "more useful",
+    "sup": "most useful"
+   },
+   "ex_en": "The information is useful.",
+   "ex_ru": "Информация полезная.",
+   "hint": "Use + ful — «полный пользы». Здесь use звучит глухо: «юс».",
+   "builds_with": [
+    "w194",
+    "w156",
+    "w111"
+   ]
+  },
+  {
+   "id": "v192",
+   "en": "fresh",
+   "ru": "свежий",
+   "ipa": "/freʃ/",
+   "tr": "фрэш",
+   "group": "adj",
+   "order": 62,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "fresher",
+    "sup": "freshest"
+   },
+   "ex_en": "The salad is fresh.",
+   "ex_ru": "Салат свежий.",
+   "hint": "Fresh air — свежий воздух. «Фреш» в русском меню — отсюда.",
+   "builds_with": [
+    "w008",
+    "w009",
+    "w002"
+   ]
+  },
+  {
+   "id": "v193",
+   "en": "deep",
+   "ru": "глубокий",
+   "ipa": "/diːp/",
+   "tr": "дип",
+   "group": "adj",
+   "order": 63,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "deeper",
+    "sup": "deepest"
+   },
+   "ex_en": "The ocean is deep.",
+   "ex_ru": "Океан глубокий.",
+   "hint": "Deep — и про воду, и про мысль: a deep idea. Depth — глубина.",
+   "builds_with": [
+    "w164",
+    "w102",
+    "w187"
+   ]
+  },
+  {
+   "id": "v194",
+   "en": "thin",
+   "ru": "тонкий",
+   "ipa": "/θɪn/",
+   "tr": "тин",
+   "group": "adj",
+   "order": 64,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "thinner",
+    "sup": "thinnest"
+   },
+   "ex_en": "The document is thin.",
+   "ex_ru": "Документ тонкий.",
+   "hint": "В сравнении удваивается n: thinner. Про человека thin — худой, звучит нейтрально.",
+   "builds_with": [
+    "w060",
+    "w140",
+    "w062"
+   ]
+  },
+  {
+   "id": "v195",
+   "en": "kind",
+   "ru": "добрый",
+   "ipa": "/kaɪnd/",
+   "tr": "кайнд",
+   "group": "adj",
+   "order": 65,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "kinder",
+    "sup": "kindest"
+   },
+   "ex_en": "The doctor is kind.",
+   "ex_ru": "Доктор добрый.",
+   "hint": "Kind — добрый, а ещё «вид, сорт»: what kind of. Kind of — «вроде как».",
+   "builds_with": [
+    "w100",
+    "w156",
+    "w200"
+   ]
+  },
+  {
+   "id": "v196",
+   "en": "friendly",
+   "ru": "дружелюбный",
+   "ipa": "/ˈfrend.li/",
+   "tr": "фрэ́ндли",
+   "group": "adj",
+   "order": 66,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "friendlier",
+    "sup": "friendliest"
+   },
+   "ex_en": "The manager is friendly.",
+   "ex_ru": "Менеджер дружелюбный.",
+   "hint": "Friend — друг, отсюда. Кончается на -ly, но это прилагательное, не наречие.",
+   "builds_with": [
+    "w059",
+    "w048",
+    "w156"
+   ]
+  },
+  {
+   "id": "v197",
+   "en": "smart",
+   "ru": "умный",
+   "ipa": "/smɑːt/",
+   "tr": "смат",
+   "group": "adj",
+   "order": 67,
+   "pos": "adj",
+   "level": "a2",
+   "forms": {
+    "comp": "smarter",
+    "sup": "smartest"
+   },
+   "ex_en": "My boss is smart.",
+   "ex_ru": "Мой босс умный.",
+   "hint": "Smart — умный. В британском ещё «нарядный»: a smart suit. Читается «смат», без «р».",
+   "builds_with": [
+    "w048",
+    "w150",
+    "w064"
+   ]
+  },
+  {
+   "id": "v198",
+   "en": "necessary",
+   "ru": "необходимый",
+   "ipa": "/ˈnes.ə.sər.i/",
+   "tr": "нэ́сэсэри",
+   "group": "adj",
+   "order": 68,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": "more necessary",
+    "sup": "most necessary"
+   },
+   "ex_en": "A visa is necessary here.",
+   "ex_ru": "Виза здесь необходима.",
+   "hint": "Ударение на первый слог: НЭсэсэри. It is necessary to — «нужно сделать».",
+   "builds_with": [
+    "w153",
+    "w163",
+    "w170"
+   ]
+  },
+  {
+   "id": "v199",
+   "en": "comfortable",
+   "ru": "удобный",
+   "ipa": "/ˈkʌmf.tə.bəl/",
+   "tr": "ка́мфтэбл",
+   "group": "adj",
+   "order": 69,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": "more comfortable",
+    "sup": "most comfortable"
+   },
+   "ex_en": "The hotel is comfortable.",
+   "ex_ru": "Отель удобный.",
+   "hint": "Три слога, не четыре: КАМфтэбл. Comfort — комфорт, отсюда.",
+   "builds_with": [
+    "w152",
+    "w038",
+    "w121"
+   ]
+  },
+  {
+   "id": "v200",
+   "en": "modern",
+   "ru": "современный",
+   "ipa": "/ˈmɒd.ən/",
+   "tr": "мо́дэн",
+   "group": "adj",
+   "order": 70,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": "more modern",
+    "sup": "most modern"
+   },
+   "ex_en": "The museum is modern.",
+   "ex_ru": "Музей современный.",
+   "hint": "Читается «мо́дэн», без «р». Modern — современный, а модный — fashionable.",
+   "builds_with": [
+    "w042",
+    "w046",
+    "w077"
+   ]
+  },
+  {
+   "id": "v201",
+   "en": "special",
+   "ru": "особенный",
+   "ipa": "/ˈspeʃ.əl/",
+   "tr": "спэ́шл",
+   "group": "adj",
+   "order": 71,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": "more special",
+    "sup": "most special"
+   },
+   "ex_en": "This client is special.",
+   "ex_ru": "Этот клиент особенный.",
+   "hint": "Читается «спэшл», без «ц». Special offer — специальное предложение.",
+   "builds_with": [
+    "w055",
+    "w180",
+    "w141"
+   ]
+  },
+  {
+   "id": "v202",
+   "en": "wonderful",
+   "ru": "чудесный",
+   "ipa": "/ˈwʌn.də.fəl/",
+   "tr": "уа́ндэфэл",
+   "group": "adj",
+   "order": 72,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": "more wonderful",
+    "sup": "most wonderful"
+   },
+   "ex_en": "The concert was wonderful.",
+   "ex_ru": "Концерт был чудесный.",
+   "hint": "Wonder — чудо. Первый слог звучит как one: «уа́ндэфэл».",
+   "builds_with": [
+    "w141",
+    "w147",
+    "w155"
+   ]
+  },
+  {
+   "id": "v203",
+   "en": "terrible",
+   "ru": "ужасный",
+   "ipa": "/ˈter.ə.bəl/",
+   "tr": "тэ́рэбл",
+   "group": "adj",
+   "order": 73,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": "more terrible",
+    "sup": "most terrible"
+   },
+   "ex_en": "The film was terrible.",
+   "ex_ru": "Фильм был ужасный.",
+   "hint": "Terror — ужас, отсюда. Terrible сильнее, чем bad.",
+   "builds_with": [
+    "w134",
+    "w137",
+    "w188"
+   ]
+  },
+  {
+   "id": "v204",
+   "en": "perfect",
+   "ru": "идеальный",
+   "ipa": "/ˈpɜː.fekt/",
+   "tr": "пё́фэкт",
+   "group": "adj",
+   "order": 74,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": null,
+    "sup": null
+   },
+   "ex_en": "The plan is perfect.",
+   "ex_ru": "План идеальный.",
+   "hint": "Прилагательное perfect — «пё́фэкт», глагол perfect — «пэфэ́кт». Ударение решает всё.",
+   "builds_with": [
+    "w050",
+    "w191",
+    "w054"
+   ]
+  },
+  {
+   "id": "v205",
+   "en": "nervous",
+   "ru": "нервный",
+   "ipa": "/ˈnɜː.vəs/",
+   "tr": "нё́вэс",
+   "group": "adj",
+   "order": 75,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": "more nervous",
+    "sup": "most nervous"
+   },
+   "ex_en": "The client is nervous.",
+   "ex_ru": "Клиент нервный.",
+   "hint": "Nerve — нерв, отсюда. Читается «нёвэс», без «р».",
+   "builds_with": [
+    "w055",
+    "w115",
+    "w102"
+   ]
+  },
+  {
+   "id": "v206",
+   "en": "married",
+   "ru": "женат, замужем",
+   "ipa": "/ˈmær.id/",
+   "tr": "мэ́рид",
+   "group": "adj",
+   "order": 76,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": null,
+    "sup": null
+   },
+   "ex_en": "My boss is married.",
+   "ex_ru": "Мой босс женат.",
+   "hint": "Married to somebody — женат на ком-то, именно to. Marry — жениться.",
+   "builds_with": [
+    "w048",
+    "w059",
+    "w200"
+   ]
+  },
+  {
+   "id": "v207",
+   "en": "alone",
+   "ru": "один (без других)",
+   "ipa": "/əˈləʊn/",
+   "tr": "эло́ун",
+   "group": "adj",
+   "order": 77,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": null,
+    "sup": null
+   },
+   "ex_en": "I am alone in the office.",
+   "ex_ru": "Я один в офисе.",
+   "hint": "Alone — просто один, lonely — одиноко и грустно. Внутри слышно one.",
+   "builds_with": [
+    "w047",
+    "w038",
+    "c010"
+   ]
+  },
+  {
+   "id": "v208",
+   "en": "wide",
+   "ru": "широкий",
+   "ipa": "/waɪd/",
+   "tr": "уайд",
+   "group": "adj",
+   "order": 78,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": "wider",
+    "sup": "widest"
+   },
+   "ex_en": "The balcony is wide.",
+   "ex_ru": "Балкон широкий.",
+   "hint": "Wide — широкий по расстоянию, broad — по охвату. Width — ширина.",
+   "builds_with": [
+    "w040",
+    "w022",
+    "w160"
+   ]
+  },
+  {
+   "id": "v209",
+   "en": "proud",
+   "ru": "гордый",
+   "ipa": "/praʊd/",
+   "tr": "прауд",
+   "group": "adj",
+   "order": 79,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": "prouder",
+    "sup": "proudest"
+   },
+   "ex_en": "The champion is proud.",
+   "ex_ru": "Чемпион гордый.",
+   "hint": "Proud of — гордиться чем-то. Pride — гордость.",
+   "builds_with": [
+    "w098",
+    "w095",
+    "w149"
+   ]
+  },
+  {
+   "id": "v210",
+   "en": "excited",
+   "ru": "взволнован (радостно)",
+   "ipa": "/ɪkˈsaɪ.tɪd/",
+   "tr": "икса́йтид",
+   "group": "adj",
+   "order": 80,
+   "pos": "adj",
+   "level": "b1",
+   "forms": {
+    "comp": "more excited",
+    "sup": "most excited"
+   },
+   "ex_en": "I am excited about the tour.",
+   "ex_ru": "Я взволнован туром.",
+   "hint": "Excited — приятное волнение, nervous — тревожное. Exciting — вещь, excited — человек.",
+   "builds_with": [
+    "w155",
+    "w165",
+    "w141"
+   ]
+  },
+  {
+   "id": "v211",
+   "en": "always",
+   "ru": "всегда",
+   "ipa": "/ˈɔːl.weɪz/",
+   "tr": "о́луэйз",
+   "group": "adv",
+   "order": 1,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "I always drink coffee.",
+   "ex_ru": "Я всегда пью кофе.",
+   "hint": "Место в предложении — перед глаголом: I always work. Внутри слышно all — «весь».",
+   "builds_with": [
+    "c054",
+    "w003",
+    "c047"
+   ]
+  },
+  {
+   "id": "v212",
+   "en": "never",
+   "ru": "никогда",
+   "ipa": "/ˈnev.ə/",
+   "tr": "нэ́вэ",
+   "group": "adv",
+   "order": 2,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "I never eat pizza.",
+   "ex_ru": "Я никогда не ем пиццу.",
+   "hint": "Never само себе отрицание: I never eat, без not. Читается «нэвэ», без «р».",
+   "builds_with": [
+    "c053",
+    "w001",
+    "c105"
+   ]
+  },
+  {
+   "id": "v213",
+   "en": "often",
+   "ru": "часто",
+   "ipa": "/ˈɒf.ən/",
+   "tr": "о́фэн",
+   "group": "adv",
+   "order": 3,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "We often go to the cafe.",
+   "ex_ru": "Мы часто ходим в кафе.",
+   "hint": "Буква t обычно молчит: «офэн». Ставится перед глаголом: we often go.",
+   "builds_with": [
+    "c042",
+    "w006",
+    "c015"
+   ]
+  },
+  {
+   "id": "v214",
+   "en": "sometimes",
+   "ru": "иногда",
+   "ipa": "/ˈsʌm.taɪmz/",
+   "tr": "са́мтаймз",
+   "group": "adv",
+   "order": 4,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "Sometimes I work here.",
+   "ex_ru": "Иногда я работаю здесь.",
+   "hint": "Внутри some + times — «несколько раз». Может стоять в начале фразы.",
+   "builds_with": [
+    "c047",
+    "c067",
+    "c115"
+   ]
+  },
+  {
+   "id": "v215",
+   "en": "usually",
+   "ru": "обычно",
+   "ipa": "/ˈjuː.ʒu.ə.li/",
+   "tr": "ю́жуэли",
+   "group": "adv",
+   "order": 5,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "I usually take a taxi.",
+   "ex_ru": "Я обычно беру такси.",
+   "hint": "Usual — обычный. Читается в четыре шага: Ю-жу-э-ли.",
+   "builds_with": [
+    "c049",
+    "w017",
+    "c035"
+   ]
+  },
+  {
+   "id": "v216",
+   "en": "also",
+   "ru": "тоже",
+   "ipa": "/ˈɔːl.səʊ/",
+   "tr": "о́лсоу",
+   "group": "adv",
+   "order": 6,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "I also want coffee.",
+   "ex_ru": "Я тоже хочу кофе.",
+   "hint": "Also стоит в середине фразы, too — в конце: I want it too. Смысл один.",
+   "builds_with": [
+    "c038",
+    "w003",
+    "c010"
+   ]
+  },
+  {
+   "id": "v217",
+   "en": "too",
+   "ru": "слишком",
+   "ipa": "/tuː/",
+   "tr": "ту",
+   "group": "adv",
+   "order": 7,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "The coffee is too hot.",
+   "ex_ru": "Кофе слишком горячий.",
+   "hint": "Too перед прилагательным — «слишком», а в конце фразы — «тоже»: me too.",
+   "builds_with": [
+    "w003",
+    "c073",
+    "c079"
+   ]
+  },
+  {
+   "id": "v218",
+   "en": "only",
+   "ru": "только",
+   "ipa": "/ˈəʊn.li/",
+   "tr": "о́унли",
+   "group": "adv",
+   "order": 8,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "I have only one minute.",
+   "ex_ru": "У меня только одна минута.",
+   "hint": "Внутри слышно one — «один». Only ставят прямо перед тем словом, которое ограничивают.",
+   "builds_with": [
+    "c119",
+    "w190",
+    "c030"
+   ]
+  },
+  {
+   "id": "v219",
+   "en": "well",
+   "ru": "хорошо",
+   "ipa": "/wel/",
+   "tr": "уэл",
+   "group": "adv",
+   "order": 9,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "She works well.",
+   "ex_ru": "Она работает хорошо.",
+   "hint": "Good — прилагательное, well — наречие: a good doctor works well. Ещё well — «ну» в начале фразы.",
+   "builds_with": [
+    "c047",
+    "c061",
+    "w100"
+   ]
+  },
+  {
+   "id": "v220",
+   "en": "yesterday",
+   "ru": "вчера",
+   "ipa": "/ˈjes.tə.deɪ/",
+   "tr": "е́стэдэй",
+   "group": "adv",
+   "order": 10,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "I was here yesterday.",
+   "ex_ru": "Я был здесь вчера.",
+   "hint": "Пара к tomorrow. С yesterday глагол идёт в прошедшем: was, had.",
+   "builds_with": [
+    "c004",
+    "c067",
+    "c071"
+   ]
+  },
+  {
+   "id": "v221",
+   "en": "again",
+   "ru": "снова",
+   "ipa": "/əˈɡen/",
+   "tr": "эге́н",
+   "group": "adv",
+   "order": 11,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "Say it again, please.",
+   "ex_ru": "Скажи это снова, пожалуйста.",
+   "hint": "Читается «эгэн», реже «эгэйн» — живут оба варианта. Again and again — снова и снова.",
+   "builds_with": [
+    "c046",
+    "c014",
+    "c118"
+   ]
+  },
+  {
+   "id": "v222",
+   "en": "together",
+   "ru": "вместе",
+   "ipa": "/təˈɡeð.ə/",
+   "tr": "туге́зэ",
+   "group": "adv",
+   "order": 12,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "We work together.",
+   "ex_ru": "Мы работаем вместе.",
+   "hint": "Внутри to + get + her, но смысл только «вместе». Читается «тугезэ».",
+   "builds_with": [
+    "c047",
+    "c015",
+    "w030"
+   ]
+  },
+  {
+   "id": "v223",
+   "en": "really",
+   "ru": "действительно",
+   "ipa": "/ˈrɪə.li/",
+   "tr": "ри́эли",
+   "group": "adv",
+   "order": 13,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "I really like this film.",
+   "ex_ru": "Мне действительно нравится этот фильм.",
+   "hint": "Really усиливает: I really want. В ответ на новость — «really?», то есть «правда?».",
+   "builds_with": [
+    "c040",
+    "w134",
+    "c069"
+   ]
+  },
+  {
+   "id": "v224",
+   "en": "maybe",
+   "ru": "может быть",
+   "ipa": "/ˈmeɪ.bi/",
+   "tr": "мэ́йби",
+   "group": "adv",
+   "order": 14,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "Maybe he is busy.",
+   "ex_ru": "Может быть, он занят.",
+   "hint": "Maybe — одно слово в начале фразы. May be раздельно — это глагол.",
+   "builds_with": [
+    "c012",
+    "c081",
+    "c106"
+   ]
+  },
+  {
+   "id": "v225",
+   "en": "soon",
+   "ru": "скоро",
+   "ipa": "/suːn/",
+   "tr": "сун",
+   "group": "adv",
+   "order": 15,
+   "pos": "adv",
+   "level": "a1",
+   "forms": null,
+   "ex_en": "The bus comes soon.",
+   "ex_ru": "Автобус скоро придёт.",
+   "hint": "See you soon — «до скорого». As soon as possible — «как можно скорее».",
+   "builds_with": [
+    "w027",
+    "c043",
+    "c071"
+   ]
+  },
+  {
+   "id": "v226",
+   "en": "just",
+   "ru": "только что",
+   "ipa": "/dʒʌst/",
+   "tr": "джаст",
+   "group": "adv",
+   "order": 16,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "I just read the email.",
+   "ex_ru": "Я только что прочитал имейл.",
+   "hint": "Just — «только что» о прошлом и «просто»: just a minute. Смысл ловится по фразе.",
+   "builds_with": [
+    "w075",
+    "c056",
+    "c030"
+   ]
+  },
+  {
+   "id": "v227",
+   "en": "already",
+   "ru": "уже",
+   "ipa": "/ɔːlˈred.i/",
+   "tr": "олрэ́ди",
+   "group": "adv",
+   "order": 17,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "I already know it.",
+   "ex_ru": "Я уже знаю это.",
+   "hint": "Already — в утверждении, yet — в вопросе и отрицании. Внутри all + ready.",
+   "builds_with": [
+    "c044",
+    "c014",
+    "c087"
+   ]
+  },
+  {
+   "id": "v228",
+   "en": "still",
+   "ru": "всё ещё",
+   "ipa": "/stɪl/",
+   "tr": "стил",
+   "group": "adv",
+   "order": 18,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "He is still busy.",
+   "ex_ru": "Он всё ещё занят.",
+   "hint": "Still — действие продолжается: still busy. Второй смысл — «тихий, неподвижный».",
+   "builds_with": [
+    "c081",
+    "c012",
+    "c001"
+   ]
+  },
+  {
+   "id": "v229",
+   "en": "quickly",
+   "ru": "быстро",
+   "ipa": "/ˈkwɪk.li/",
+   "tr": "куи́кли",
+   "group": "adv",
+   "order": 19,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "Answer quickly, please.",
+   "ex_ru": "Отвечай быстро, пожалуйста.",
+   "hint": "Quick + ly. Fast работает и как наречие само по себе, а quick требует -ly.",
+   "builds_with": [
+    "c118",
+    "w062",
+    "c076"
+   ]
+  },
+  {
+   "id": "v230",
+   "en": "slowly",
+   "ru": "медленно",
+   "ipa": "/ˈsləʊ.li/",
+   "tr": "сло́ули",
+   "group": "adv",
+   "order": 20,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "Speak slowly, please.",
+   "ex_ru": "Говори медленно, пожалуйста.",
+   "hint": "Slow + ly. Фраза, которая спасает в разговоре: speak slowly, please.",
+   "builds_with": [
+    "c077",
+    "c118",
+    "c046"
+   ]
+  },
+  {
+   "id": "v231",
+   "en": "carefully",
+   "ru": "внимательно",
+   "ipa": "/ˈkeə.fəl.i/",
+   "tr": "кэ́афэли",
+   "group": "adv",
+   "order": 21,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "Read the contract carefully.",
+   "ex_ru": "Читай контракт внимательно.",
+   "hint": "Care — забота, careful — внимательный, carefully — внимательно. Одна семья слов.",
+   "builds_with": [
+    "c056",
+    "w053",
+    "w060"
+   ]
+  },
+  {
+   "id": "v232",
+   "en": "early",
+   "ru": "рано",
+   "ipa": "/ˈɜː.li/",
+   "tr": "ё́ли",
+   "group": "adv",
+   "order": 22,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "The bus comes early.",
+   "ex_ru": "Автобус приходит рано.",
+   "hint": "Пара к late. Читается «ёли», без «р».",
+   "builds_with": [
+    "w027",
+    "c043",
+    "c090"
+   ]
+  },
+  {
+   "id": "v233",
+   "en": "later",
+   "ru": "позже",
+   "ipa": "/ˈleɪ.tə/",
+   "tr": "лэ́йтэ",
+   "group": "adv",
+   "order": 23,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "See you later.",
+   "ex_ru": "Увидимся позже.",
+   "hint": "See you later — «до встречи». Later — сравнительная форма от late.",
+   "builds_with": [
+    "c045",
+    "c011",
+    "c090"
+   ]
+  },
+  {
+   "id": "v234",
+   "en": "then",
+   "ru": "потом",
+   "ipa": "/ðen/",
+   "tr": "зэн",
+   "group": "adv",
+   "order": 24,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "We eat, then we go.",
+   "ex_ru": "Мы едим, потом идём.",
+   "hint": "Then — «потом» и «тогда». Не путай с than — «чем» в сравнениях.",
+   "builds_with": [
+    "c053",
+    "c042",
+    "c015"
+   ]
+  },
+  {
+   "id": "v235",
+   "en": "almost",
+   "ru": "почти",
+   "ipa": "/ˈɔːl.məʊst/",
+   "tr": "о́лмоуст",
+   "group": "adv",
+   "order": 25,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "I am almost ready.",
+   "ex_ru": "Я почти готов.",
+   "hint": "Внутри all + most — «почти всё». Almost ставится перед словом, которое смягчает.",
+   "builds_with": [
+    "c087",
+    "c116",
+    "c010"
+   ]
+  },
+  {
+   "id": "v236",
+   "en": "enough",
+   "ru": "достаточно",
+   "ipa": "/ɪˈnʌf/",
+   "tr": "ина́ф",
+   "group": "adv",
+   "order": 26,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "Two minutes is enough.",
+   "ex_ru": "Двух минут достаточно.",
+   "hint": "Пишется gh, читается «ф»: «инаф». После прилагательного: good enough.",
+   "builds_with": [
+    "w190",
+    "c120",
+    "c061"
+   ]
+  },
+  {
+   "id": "v237",
+   "en": "outside",
+   "ru": "снаружи",
+   "ipa": "/ˌaʊtˈsaɪd/",
+   "tr": "аутса́йд",
+   "group": "adv",
+   "order": 27,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "We wait outside.",
+   "ex_ru": "Мы ждём снаружи.",
+   "hint": "Out + side — «внешняя сторона». Пара: outside — inside.",
+   "builds_with": [
+    "c015",
+    "w031",
+    "c047"
+   ]
+  },
+  {
+   "id": "v238",
+   "en": "inside",
+   "ru": "внутри",
+   "ipa": "/ɪnˈsaɪd/",
+   "tr": "инса́йд",
+   "group": "adv",
+   "order": 28,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "The menu is inside.",
+   "ex_ru": "Меню внутри.",
+   "hint": "In + side — «внутренняя сторона». Русский «инсайд» — из него.",
+   "builds_with": [
+    "w011",
+    "w015",
+    "c024"
+   ]
+  },
+  {
+   "id": "v239",
+   "en": "actually",
+   "ru": "на самом деле",
+   "ipa": "/ˈæk.tʃu.ə.li/",
+   "tr": "э́кчуэли",
+   "group": "adv",
+   "order": 29,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "It is actually easy.",
+   "ex_ru": "Это на самом деле легко.",
+   "hint": "Ловушка: actually — «на самом деле», а не «актуально». Актуальный — это current.",
+   "builds_with": [
+    "c014",
+    "c086",
+    "c024"
+   ]
+  },
+  {
+   "id": "v240",
+   "en": "back",
+   "ru": "обратно",
+   "ipa": "/bæk/",
+   "tr": "бэк",
+   "group": "adv",
+   "order": 30,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "Come back tomorrow.",
+   "ex_ru": "Приходи обратно завтра.",
+   "hint": "Come back — вернуться, go back — уйти обратно. Ещё back — спина и задняя часть.",
+   "builds_with": [
+    "c043",
+    "c071",
+    "c042"
+   ]
+  },
+  {
+   "id": "v241",
+   "en": "ago",
+   "ru": "назад (о времени)",
+   "ipa": "/əˈɡəʊ/",
+   "tr": "эго́у",
+   "group": "adv",
+   "order": 31,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "Two minutes ago.",
+   "ex_ru": "Две минуты назад.",
+   "hint": "Ago ставится после срока: two days ago. И только с прошедшим временем.",
+   "builds_with": [
+    "w190",
+    "c120",
+    "c004"
+   ]
+  },
+  {
+   "id": "v242",
+   "en": "tonight",
+   "ru": "сегодня вечером",
+   "ipa": "/təˈnaɪt/",
+   "tr": "туна́йт",
+   "group": "adv",
+   "order": 32,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "The concert is tonight.",
+   "ex_ru": "Концерт сегодня вечером.",
+   "hint": "To + night — «в эту ночь». Tonight — и вечер, и ночь сегодняшнего дня.",
+   "builds_with": [
+    "w141",
+    "w086",
+    "w134"
+   ]
+  },
+  {
+   "id": "v243",
+   "en": "quite",
+   "ru": "довольно",
+   "ipa": "/kwaɪt/",
+   "tr": "куайт",
+   "group": "adv",
+   "order": 33,
+   "pos": "adv",
+   "level": "a2",
+   "forms": null,
+   "ex_en": "The film is quite good.",
+   "ex_ru": "Фильм довольно хороший.",
+   "hint": "Quite «куайт» — довольно, quiet «куа́йэт» — тихий. Буквы те же, порядок другой.",
+   "builds_with": [
+    "w134",
+    "c061",
+    "c072"
+   ]
+  },
+  {
+   "id": "v244",
+   "en": "everywhere",
+   "ru": "везде",
+   "ipa": "/ˈev.ri.weə/",
+   "tr": "э́вриуэа",
+   "group": "adv",
+   "order": 34,
+   "pos": "adv",
+   "level": "b1",
+   "forms": null,
+   "ex_en": "Tourists are everywhere here.",
+   "ex_ru": "Туристы везде здесь.",
+   "hint": "Every + where — «каждое место». Пара: everywhere — nowhere.",
+   "builds_with": [
+    "w162",
+    "w159",
+    "w160"
+   ]
+  },
+  {
+   "id": "v245",
+   "en": "somewhere",
+   "ru": "где-то",
+   "ipa": "/ˈsʌm.weə/",
+   "tr": "са́муэа",
+   "group": "adv",
+   "order": 35,
+   "pos": "adv",
+   "level": "b1",
+   "forms": null,
+   "ex_en": "The passport is somewhere here.",
+   "ex_ru": "Паспорт где-то здесь.",
+   "hint": "Some + where — «некоторое место». В вопросе чаще anywhere.",
+   "builds_with": [
+    "w163",
+    "w067",
+    "c067"
+   ]
+  },
+  {
+   "id": "v246",
+   "en": "probably",
+   "ru": "вероятно",
+   "ipa": "/ˈprɒb.ə.bli/",
+   "tr": "про́бэбли",
+   "group": "adv",
+   "order": 36,
+   "pos": "adv",
+   "level": "b1",
+   "forms": null,
+   "ex_en": "He is probably busy.",
+   "ex_ru": "Он вероятно занят.",
+   "hint": "Probably — скорее да, чем нет. Maybe — пятьдесят на пятьдесят.",
+   "builds_with": [
+    "c081",
+    "c012",
+    "w188"
+   ]
+  },
+  {
+   "id": "v247",
+   "en": "finally",
+   "ru": "наконец",
+   "ipa": "/ˈfaɪ.nəl.i/",
+   "tr": "фа́йнэли",
+   "group": "adv",
+   "order": 37,
+   "pos": "adv",
+   "level": "b1",
+   "forms": null,
+   "ex_en": "Finally, the taxi is here.",
+   "ex_ru": "Наконец, такси здесь.",
+   "hint": "Final — финал, отсюда. Finally — итог долгого ожидания.",
+   "builds_with": [
+    "w017",
+    "c067",
+    "w089"
+   ]
+  },
+  {
+   "id": "v248",
+   "en": "suddenly",
+   "ru": "внезапно",
+   "ipa": "/ˈsʌd.ən.li/",
+   "tr": "са́днли",
+   "group": "adv",
+   "order": 38,
+   "pos": "adv",
+   "level": "b1",
+   "forms": null,
+   "ex_en": "Suddenly the lift stopped.",
+   "ex_ru": "Внезапно лифт остановился.",
+   "hint": "Sudden — внезапный. Читается «саднли», буква e внутри не звучит.",
+   "builds_with": [
+    "w034",
+    "w186",
+    "w185"
+   ]
+  },
+  {
+   "id": "v249",
+   "en": "recently",
+   "ru": "недавно",
+   "ipa": "/ˈriː.sənt.li/",
+   "tr": "ри́снтли",
+   "group": "adv",
+   "order": 39,
+   "pos": "adv",
+   "level": "b1",
+   "forms": null,
+   "ex_en": "We opened the bar recently.",
+   "ex_ru": "Мы открыли бар недавно.",
+   "hint": "Recent — недавний. Recently чаще всего идёт с прошедшим временем.",
+   "builds_with": [
+    "w032",
+    "c060",
+    "w033"
+   ]
+  },
+  {
+   "id": "v250",
+   "en": "exactly",
+   "ru": "точно",
+   "ipa": "/ɪɡˈzækt.li/",
+   "tr": "игзэ́ктли",
+   "group": "adv",
+   "order": 40,
+   "pos": "adv",
+   "level": "b1",
+   "forms": null,
+   "ex_en": "This is exactly my idea.",
+   "ex_ru": "Это точно моя идея.",
+   "hint": "Exact — точный. В разговоре exactly — «вот именно».",
+   "builds_with": [
+    "w187",
+    "c017",
+    "c023"
+   ]
+  }
+ ]
+}

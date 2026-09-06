@@ -49,7 +49,7 @@ const rules = JSON.parse(readFileSync('data/rules.json', 'utf8'));
 
 words.words.length === 200 ? ok('колода 1: 200 слов') : bad(`колода 1: ${words.words.length}`);
 core.words.length === 120 ? ok('колода 2: 120 слов') : bad(`колода 2: ${core.words.length}`);
-rules.rules.length === 30 ? ok('правил: 30') : bad(`правил: ${rules.rules.length}`);
+rules.rules.length === 300 ? ok('правил: 300') : bad(`правил: ${rules.rules.length}`);
 words.false_friends.length === 30 ? ok('ложных друзей: 30') : bad(`ложных друзей: ${words.false_friends.length}`);
 
 const d1 = new Set(words.words.map(w => w.en.toLowerCase()));
@@ -101,6 +101,30 @@ mismatched.length === 0 ? ok('точный перевод согласован �
 const ffIncomplete = words.false_friends.filter(f => !f.id || !f.ipa || !f.tr || !f.ex_en || !f.hint);
 ffIncomplete.length === 0 ? ok('ложные друзья пригодны для всех механик')
   : bad(`неполных ложных друзей: ${ffIncomplete.length}`);
+
+
+console.log('\n4. Локализация');
+try {
+  const cat = JSON.parse(readFileSync('src/i18n/catalog.json', 'utf8'));
+  const keys = new Set(cat.strings);
+  const locDir = 'src/i18n/locales';
+  const files = readdirSync(locDir).filter(f => f.endsWith('.json'));
+  files.length ? ok(`локалей: ${files.length}`) : bad('нет ни одного файла перевода');
+  for (const f of files) {
+    const d = JSON.parse(readFileSync(join(locDir, f), 'utf8'));
+    const missing = [...keys].filter(k => !(k in d));
+    const empty = Object.entries(d).filter(([, v]) => !String(v).trim()).map(([k]) => k);
+    const badVars = Object.entries(d).filter(([k, v]) => {
+      const a = (k.match(/\{\w+\}/g) || []).sort().join(',');
+      const b = (String(v).match(/\{\w+\}/g) || []).sort().join(',');
+      return a !== b;
+    }).map(([k]) => k);
+    if (missing.length > keys.size * 0.05) bad(`${f}: не хватает ${missing.length} из ${keys.size} строк`);
+    else if (empty.length) bad(`${f}: пустых строк ${empty.length}`);
+    else if (badVars.length) bad(`${f}: подстановки разъехались в ${badVars.length} строках`);
+    else ok(`${f}: ${Object.keys(d).length} строк, подстановки на месте`);
+  }
+} catch (e) { bad('локали не прочитались: ' + e.message); }
 
 console.log(failures === 0 ? '\nВСЕ ПРОВЕРКИ ПРОЙДЕНЫ\n' : `\nПРОВАЛОВ: ${failures}\n`);
 process.exit(failures ? 1 : 0);

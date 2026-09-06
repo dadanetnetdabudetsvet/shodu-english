@@ -80,7 +80,7 @@ class Speech {
   }
 
   get available() {
-    return this.supported && !this.failed;
+    return this.supported && !this.failed && this.enabled;
   }
 
   /** Произнести слово. Возвращает промис, который резолвится по окончании. */

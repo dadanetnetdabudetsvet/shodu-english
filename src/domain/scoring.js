@@ -14,6 +14,12 @@ export const MODE_XP = {
   sprint: { correct: 2, streakBonus: 5, streakEvery: 5, record: 20 },
   build:  { firstTry: 8, secondTry: 4 },
   ether:  { firstListen: 4, laterListen: 2, aloud: 6, cleanBonus: 10 },
+  // Медленный режим платит меньше в минуту, иначе он станет способом
+  // фармить очки: сборка фразы занимает вчетверо больше времени, чем
+  // выбор варианта, и равная ставка перекосила бы экономику.
+  phrase: { clean: 8, oneFix: 6, hinted: 5, typedTile: 2, flawless: 10 },
+  // Чтение платит немного и часто: сорок строк за полторы минуты.
+  stream: { firstTap: 3, secondTap: 2, laterTap: 1, escaped: 1, record: 6 },
 };
 
 /** Очки за один ответ. Ошибка не отнимает никогда. */
@@ -35,6 +41,18 @@ export function answerXp(mode, ctx) {
     if (ctx.exerciseType === 'aloud') return MODE_XP.ether.aloud;
     return ctx.listens <= 1 ? MODE_XP.ether.firstListen : MODE_XP.ether.laterListen;
   }
+  if (mode === 'phrase') {
+    if (!ctx.correct) return 0;
+    let xp = ctx.attempt <= 1 ? MODE_XP.phrase.clean : MODE_XP.phrase.oneFix;
+    if (ctx.exerciseType === 'phraseType') xp += MODE_XP.phrase.typedTile;
+    return xp;
+  }
+  if (mode === 'stream') {
+    // Строка, ушедшая по времени, всё равно прочитана: за неё платят.
+    if (!ctx.correct) return MODE_XP.stream.escaped;
+    return ctx.taps === 0 ? MODE_XP.stream.firstTap
+      : ctx.taps === 1 ? MODE_XP.stream.secondTap : MODE_XP.stream.laterTap;
+  }
   return 0;
 }
 
@@ -55,7 +73,9 @@ export function sessionBonusXp({ mode, completed, mistakes, sessionsToday, isRev
   xp += SESSION_BONUS.completed;
   if (mistakes === 0) xp += SESSION_BONUS.flawless;
   if (mode === 'ether' && mistakes === 0) xp += MODE_XP.ether.cleanBonus;
+  if (mode === 'phrase' && mistakes === 0) xp += MODE_XP.phrase.flawless;
   if (mode === 'sprint' && newRecord) xp += MODE_XP.sprint.record;
+  if (mode === 'stream' && newRecord) xp += MODE_XP.stream.record;
   if (isReview) xp += SESSION_BONUS.review;
 
   const n = sessionsToday;                      // считая текущую
@@ -134,7 +154,7 @@ export function levelProgress(xp) {
 /* Грейды. Только первые четыре: остальные обещали бы то, чего контент
  * пока не даёт. Они появятся вместе со словарём. */
 export const GRADES = [
-  { from: 1, to: 2,  name: 'Начало',      line: 'Вы уже внутри' },
+  { from: 1, to: 2,  name: 'Начало',      line: 'Ты уже внутри' },
   { from: 3, to: 4,  name: 'Узнающий',    line: 'Слова перестают быть чужими' },
   { from: 5, to: 7,  name: 'Читающий',    line: 'Текст перестал быть шумом' },
   { from: 8, to: 10, name: 'Понимающий',  line: 'Смысл приходит раньше перевода' },

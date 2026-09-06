@@ -5,18 +5,19 @@
  * это самое ценное содержимое продукта, и показывать его один раз
  * в жизни было бы расточительством. */
 
-import { el, en } from '../ui/dom.js';
+import { el, en, setChildren } from '../ui/dom.js';
 import { isKnown, isLearning, newRecord } from '../domain/srs.js';
 import { speech } from '../core/speech.js';
 import { sound } from '../core/sound.js';
 import { enterCard, animate } from '../core/motion.js';
+import { t } from '../i18n/index.js';
 
 const FILTERS = [
-  { id: 'all', label: 'Все' },
-  { id: 'known', label: 'Знаю' },
-  { id: 'learning', label: 'Учу' },
-  { id: 'new', label: 'Новые' },
-  { id: 'traps', label: 'Ловушки' },
+  { id: 'all', label: t('Все') },
+  { id: 'known', label: t('Знаю') },
+  { id: 'learning', label: t('Учу') },
+  { id: 'new', label: t('Новые') },
+  { id: 'traps', label: t('Ловушки') },
 ];
 
 export function screen(store, content) {
@@ -29,7 +30,7 @@ export function screen(store, content) {
       const summary = el('div', { class: 't-sm' });
       const chips = el('div', { class: 'row', style: 'gap:6px;flex-wrap:wrap' });
       const search = el('input', {
-        class: 'option', type: 'search', placeholder: 'Найти слово…',
+        class: 'option', type: 'search', placeholder: t('Найти слово…'),
         style: 'width:100%;min-height:48px',
         onInput: (e) => { query = e.target.value.trim().toLowerCase(); render(); },
       });
@@ -42,12 +43,10 @@ export function screen(store, content) {
         }, f.label));
       }
 
-      function all() {
-        return [...content.deck1, ...content.deck2, ...content.falseFriends];
-      }
+      function all() { return content.all; }
       function recOf(w) {
-        const deck = w.deck === 'deck2' ? 'deck2' : 'deck1';
-        return (store.state.srs[deck] || {})[w.id] || newRecord();
+        const bucket = w.deck === 'core' ? 'deck2' : 'deck1';
+        return (store.state.srs[bucket] || {})[w.id] || newRecord();
       }
 
       function render() {
@@ -68,12 +67,12 @@ export function screen(store, content) {
           const r = recOf(w);
           if (isKnown(r)) known++; else if (isLearning(r)) learning++;
         }
-        summary.textContent = `${all().length} слов · ${known} знаю · ${learning} учу`;
+        summary.textContent = t('{v0} слов · {v1} знаю · {v2} учу', { v0: all().length, v1: known, v2: learning });
 
-        list.replaceChildren(...items.slice(0, 300).map(row));
+        setChildren(list, ...items.map(row));
         if (!items.length) {
           list.append(el('div', { class: 'card card--flat t-sm center' },
-            query ? 'Такого слова пока нет.' : 'Здесь появятся слова, которые ты встретишь.'));
+            query ? t('Такого слова пока нет.') : t('Здесь появятся слова, которые ты встретишь.')));
         }
       }
 
@@ -89,7 +88,7 @@ export function screen(store, content) {
               en(w.en, ''), w.falseFriend ? el('span', { class: 't-caption' }, '⚠') : null),
             el('div', { class: 't-sm' }, w.answer)),
           el('div', {
-            class: 'rhythm', 'aria-label': `Сила памяти ${strength} из 5`,
+            class: 'rhythm', 'aria-label': t('Сила памяти {v0} из 5', { v0: strength }),
           }, Array.from({ length: 5 }, (_, i) =>
             el('span', { class: 'rhythm__dot' + (i < strength ? ' rhythm__dot--done' : '') }))),
         );
@@ -103,24 +102,24 @@ export function screen(store, content) {
           role: 'dialog', 'aria-modal': 'true',
         },
           el('div', { class: 'teach' },
-            el('div', { class: 'teach__over' }, w.falseFriend ? 'ловушка' : w.topic || ''),
+            el('div', { class: 'teach__over' }, w.falseFriend ? t('ловушка') : w.topic || ''),
             en(w.en, 't-en'),
             el('div', { class: 't-ipa', 'aria-hidden': 'true' }, `${w.ipa}  ·  ${w.tr}`),
             el('div', { class: 'teach__ru' }, w.answer),
             w.bridge && w.bridge !== w.answer
-              ? el('div', { class: 't-sm' }, `похоже на «${w.bridge}»`) : null,
+              ? el('div', { class: 't-sm' }, t('похоже на «{v0}»', { v0: w.bridge })) : null,
             el('div', { class: 'teach__lesson' + (w.falseFriend ? ' teach__warn' : '') }, w.hint),
             w.ex_en ? el('div', { class: 't-sm' }, el('span', { lang: 'en' }, w.ex_en), ' — ', w.ex_ru) : null,
           ),
           el('div', { class: 'row', style: 'gap:var(--sp-2);margin-top:var(--sp-3)' },
             speech.available ? el('button', {
               class: 'btn grow', onClick: () => speech.say(w.en),
-            }, '🔊 Послушать') : null,
-            el('button', { class: 'btn btn--primary grow', onClick: close }, 'Закрыть')),
+            }, t('🔊 Послушать')) : null,
+            el('button', { class: 'btn btn--primary grow', onClick: close }, t('Понятно ✓'))),
           el('button', {
             class: 'btn btn--ghost', style: 'width:100%;margin-top:var(--sp-2);font-size:var(--fs-caption)',
             onClick: () => { report(w); close(); },
-          }, 'Сообщить об ошибке в слове'),
+          }, t('Здесь ошибка? Сообщить')),
         );
         const back = el('div', {
           style: 'position:fixed;inset:0;background:var(--overlay);z-index:79', onClick: close,
@@ -143,7 +142,7 @@ export function screen(store, content) {
       }
 
       const wrap = el('div', { class: 'screen' },
-        el('h1', { class: 't-h1' }, 'Слова'),
+        el('h1', { class: 't-h1' }, t('Слова')),
         search, chips, summary, list);
       root.append(wrap);
       render();

@@ -2,9 +2,10 @@
  * У каждого честно показано единственное отличие: продукт создаёт
  * ощущение лёгкости, но не врёт. */
 
-import { el, en } from '../ui/dom.js';
+import { el, en, setChildren } from '../ui/dom.js';
 import { sound } from '../core/sound.js';
 import { enterCard, animate } from '../core/motion.js';
+import { t } from '../i18n/index.js';
 
 export function screen(store, content) {
   return {
@@ -15,9 +16,9 @@ export function screen(store, content) {
 
       function render() {
         const done = Object.keys(store.state.rulesRead || {}).length;
-        list.replaceChildren(
+        setChildren(list, 
           el('div', { class: 'card card--flat t-sm' },
-            `${done} из ${content.rules.length} прочитано. Это те места, где английский устроен как русский.`),
+            t('{v0} из {v1} прочитано. Это те места, где английский устроен как русский.', { v0: done, v1: content.rules.length })),
           ...content.rules.map(rule),
         );
       }
@@ -48,7 +49,7 @@ export function screen(store, content) {
           el('h2', { class: 't-h2' }, r.title),
           el('p', { class: 't-body', style: 'margin-top:var(--sp-2)' }, r.idea),
           el('div', { class: 'card card--flat', style: 'margin-top:var(--sp-3)' },
-            el('div', { class: 't-caption' }, 'КАК В РУССКОМ'),
+            el('div', { class: 't-caption' }, t('КАК В РУССКОМ')),
             el('div', { class: 't-sm' }, r.ru_parallel)),
           el('div', { class: 'card card--flat', style: 'margin-top:var(--sp-2)' },
             el('div', { lang: 'en', style: 'font-weight:600' }, r.en_example),
@@ -57,12 +58,12 @@ export function screen(store, content) {
             class: 'card card--flat',
             style: 'margin-top:var(--sp-2);background:var(--answer-wrong-soft)',
           },
-            el('div', { class: 't-caption' }, 'ЕДИНСТВЕННОЕ ОТЛИЧИЕ'),
+            el('div', { class: 't-caption' }, t('ЕДИНСТВЕННОЕ ОТЛИЧИЕ')),
             el('div', { class: 't-sm' }, r.gotcha)) : null,
           el('button', {
             class: 'btn btn--primary btn--cta', style: 'margin-top:var(--sp-3)',
             onClick: close,
-          }, 'Понятно'),
+          }, t('Понятно ✓')),
         );
         const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:79', onClick: close });
         document.body.append(back, sheet);
@@ -72,8 +73,8 @@ export function screen(store, content) {
       }
 
       const wrap = el('div', { class: 'screen' },
-        el('h1', { class: 't-h1' }, 'Правила'),
-        el('p', { class: 't-sm' }, 'Коротко и только то, что устроено как у нас.'),
+        el('h1', { class: 't-h1' }, t('Правила')),
+        el('p', { class: 't-sm' }, t('Коротко и только то, что устроено как у нас.')),
         list);
       root.append(wrap);
       render();

@@ -53,7 +53,41 @@ export function evaluateMedals(counters, earned = {}) {
   return fresh;
 }
 
-/** Следующая ступень: подпись «до медали столько-то» работает сильнее самой медали. */
+/* Следующая ступень: подпись «до медали столько-то» работает сильнее
+ * самой медали. Берём БЛИЖАЙШУЮ к выполнению, а не первую по порядку:
+ * иначе человек с двадцатидневным ритмом месяцами видит «Пятёрка — пять
+ * слов в копилке» и перестаёт замечать блок целиком. */
 export function nextMedal(counters, earned = {}) {
-  return MEDALS.find(m => !earned[m.id] && !m.secret) || null;
+  const open = MEDALS.filter(m => !earned[m.id] && !m.secret);
+  if (!open.length) return null;
+  const scored = open.map(m => ({ m, p: progressOf(m, counters) }));
+  scored.sort((a, b) => b.p - a.p);
+  return scored[0].m;
+}
+
+/** Грубая доля выполнения: нужна только для выбора ближайшей медали. */
+function progressOf(medal, c) {
+  const probe = { ...c };
+  const fields = ['answersCorrect', 'sessions', 'known', 'streakBest', 'weekBest',
+                  'cleanSessions', 'corrected', 'trapsKnown', 'friends', 'returnedAfter'];
+  let best = 0;
+  for (const f of fields) {
+    const have = probe[f] || 0;
+    if (!have) continue;
+    // Подбираем минимальный порог, при котором условие выполняется.
+    let lo = 1, hi = Math.max(2, have * 40), need = null;
+    for (let i = 0; i < 22; i++) {
+      const mid = Math.ceil((lo + hi) / 2);
+      if (medal.check({ ...probe, [f]: mid }) && !medal.check({ ...probe, [f]: 0 })) { need = mid; hi = mid - 1; }
+      else lo = mid + 1;
+      if (lo > hi) break;
+    }
+    if (need) best = Math.max(best, Math.min(1, have / need));
+  }
+  return best;
+}
+
+/** Медали, которые имеет смысл показывать: близкие, а не любые. */
+export function visibleMedals(counters, earned = {}) {
+  return MEDALS.filter(m => earned[m.id] || (!m.secret && progressOf(m, counters) >= 0.25));
 }

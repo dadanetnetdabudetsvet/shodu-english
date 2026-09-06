@@ -1,142 +1,213 @@
 /* Главный экран.
  *
- * Приоритет из правил: главная метрика — ритм недели, а не стрик.
- * Кольцо стоит в строке ресурсов, стрик — цифрой при нём и мельче.
+ * Порядок продиктован сутью продукта: сначала улика (сколько слов у тебя
+ * уже есть), потом ритм, потом одна кнопка. Раньше первым элементом
+ * стоял стрик, хотя правила прямо запрещают его визуальное доминирование,
+ * а под кнопкой висели три плитки нулей, которые в первый день
+ * сообщали человеку ровно то, чего он и боится.
  *
- * Только один элемент на экране выглядит как кнопка.
+ * Пять режимов не превращают экран в меню: связка дня ведёт человека
+ * сама, а полный список живёт в шторке.
  */
 
-import { el, en, greeting } from '../ui/dom.js';
+import { el, en, greeting, setChildren } from '../ui/dom.js';
+import { t } from '../i18n/index.js';
 import { weekRhythm, weekDone, WEEK_TARGET, isSoftMode } from '../domain/streak.js';
 import { countKnown, levelInfo } from '../ui/reducer.js';
-import { tierOf } from '../domain/challenge.js';
-import { enterCard, fillBar } from '../core/motion.js';
+import { isKnown } from '../domain/srs.js';
+import { enterCard, fillBar, animate, tweenNumber } from '../core/motion.js';
 import { sound } from '../core/sound.js';
 import { speech } from '../core/speech.js';
+
+/* Слоты связки: вход, ядро, выход. Пять режимов заполняют три слота
+   по ротации, поэтому недели не повторяются, а длина дня не растёт. */
+const MODES = {
+  build:  { icon: '📘', name: 'Занятие', sub: 'новые слова', route: 'session/build', slot: 'core' },
+  sprint: { icon: '⚡', name: 'Блиц',    sub: 'на скорость', route: 'session/sprint', slot: 'in' },
+  stream: { icon: '👁', name: 'Поток',   sub: 'читай быстрее', route: 'stream',       slot: 'in' },
+  ether:  { icon: '🎧', name: 'На слух', sub: 'звучание',    route: 'session/ether',  slot: 'out' },
+  phrase: { icon: '🧱', name: 'Фраза',   sub: 'собери мысль', route: 'phrase',        slot: 'out' },
+};
 
 export function screen(store, content) {
   return {
     mount(root, ctx) {
       store.dispatch({ type: 'DAY_TICK' });
       const s = store.state;
-      const wrap = el('div', { class: 'screen' });
-      const today = s.days[s.day] || { words: 0, sessions: 0, ms: 0 };
+      const today = s.days[s.day] || { words: 0, touched: 0, sessions: 0, ms: 0 };
       const goal = s.settings.dailyGoalWords || 10;
       const { known, learning } = countKnown(s);
       const rhythm = weekRhythm(s.days, s.day);
       const doneThisWeek = weekDone(s.days, s.day);
-      const lvl = levelInfo(s);
+      const daysLived = s.day - (s.createdDay ?? s.day) + 1;
+      const chain = dayChain(s);
+      const doneToday = today.sessions;
 
-      /* Строка ресурсов: кольцо недели первым, стрик при нём. */
-      const res = el('div', { class: 'res card', style: 'padding:var(--sp-3) var(--sp-4)' },
-        el('div', { class: 'stack', style: 'gap:4px' },
-          el('div', { class: 'rhythm', role: 'img',
-                      'aria-label': `Ритм недели: ${doneThisWeek} из 7 дней` },
-            rhythm.map(d => el('span', {
-              class: 'rhythm__dot' + (d.done ? ' rhythm__dot--done' : '') + (d.isToday ? ' rhythm__dot--today' : ''),
-            }))),
-          el('div', { class: 'res__cap' },
-            doneThisWeek >= WEEK_TARGET ? 'ритм недели набран' : `ритм недели: ${doneThisWeek} из ${WEEK_TARGET}`),
-        ),
-        el('div', { class: 'grow' }),
-        s.streak.current > 0 && el('div', { class: 'res__item' },
-          el('div', { class: 'res__val', style: 'font-size:var(--fs-base)' }, `🔥 ${s.streak.current}`),
-          el('div', { class: 'res__cap' }, 'подряд')),
-        el('div', { class: 'res__item' },
-          el('div', { class: 'res__val', style: 'font-size:var(--fs-base)' }, `💎 ${s.econ.gems}`),
-          el('div', { class: 'res__cap' }, 'алмазы')),
+      /* Ритм недели простой строкой, без карточки. В первую неделю
+         показываем только прожитые дни: шесть серых точек в первый день
+         читаются как неделя провала до её начала. */
+      const dots = rhythm.slice(Math.max(0, 7 - Math.max(daysLived, 1)));
+      const rhythmRow = el('div', { class: 'row row--between', style: 'min-height:32px' },
+        el('div', { class: 'rhythm', role: 'img',
+          'aria-label': t('Ритм недели: {v0} из 7 дней', { v0: doneThisWeek }) },
+          dots.map(d => el('span', {
+            class: 'rhythm__dot' + (d.done ? ' rhythm__dot--done' : '') + (d.isToday ? ' rhythm__dot--today' : ''),
+          }))),
+        s.streak.current > 0
+          ? el('div', { class: 't-caption' }, t('🔥 {v0} подряд', { v0: s.streak.current }))
+          : el('div', { class: 't-caption' }, t('ритм недели')),
+      );
+
+      /* Улика идёт первой: это главное, что продукт доказывает. */
+      const bigNumber = el('div', {
+        class: 't-num', style: 'font-size:var(--fs-4xl);font-weight:800;line-height:1',
+      }, '0');
+      const proof = el('div', { class: 'stack', style: 'gap:2px' },
+        el('div', { class: 't-caption' }, greeting(s.profile.name)),
+        bigNumber,
+        el('div', { class: 't-body' }, known === 0
+          ? t('слов пока в работе: {v0}', { v0: learning })
+          : t('слова уже твои')),
       );
 
       const barFill = el('div', { class: 'bar__fill' });
-      const progress = el('div', { class: 'stack', style: 'gap:var(--sp-2)' },
-        el('h1', { class: 't-h1' }, greeting(s.profile.name)),
-        el('p', { class: 't-sm' },
-          today.words >= goal
-            ? `Цель дня выполнена: ${today.words} из ${goal} слов`
-            : `Сегодня ${today.words} из ${goal} слов`),
+      const goalRow = el('div', { class: 'stack', style: 'gap:6px' },
+        el('div', { class: 't-sm' }, todayWords(today) >= goal
+          ? t('Цель дня закрыта: {v0} из {v1}', { v0: todayWords(today), v1: goal })
+          : t('сегодня {v0} из {v1} слов', { v0: todayWords(today), v1: goal })),
         el('div', { class: 'bar' }, barFill),
       );
 
-      const dueCount = countDue(s, content);
+      /* Связка дня: три шага, одна кнопка, текст которой меняется. */
+      const step = Math.min(doneToday, 2);
+      const current = chain[step];
+      const chips = el('div', { class: 'row', style: 'gap:6px' },
+        ...chain.map((m, i) => el('div', {
+          class: 't-caption',
+          style: `padding:4px 10px;border-radius:var(--r-full);
+                  background:${i < doneToday ? 'var(--accent-soft)' : 'transparent'};
+                  border:1px solid ${i === step ? 'var(--accent)' : 'var(--border)'};
+                  color:${i < doneToday ? 'var(--accent)' : 'inherit'}`,
+        }, `${i < doneToday ? '✓ ' : ''}${MODES[m].icon} ${t(MODES[m].name)}`)));
+
+      const heroBtn = el('button', {
+        class: 'btn btn--onhero btn--cta',
+        onClick: () => { sound.sessionStart(); ctx.go(MODES[current].route); },
+      }, doneToday === 0 ? t('Погнали ⚡')
+        : doneToday >= 3 ? t('Ещё разок ⚡')
+        : t('Дальше: {v0} →', { v0: t(MODES[current].name) }));
+
       const hero = el('div', { class: 'card--hero stack', style: 'gap:var(--sp-3)' },
         el('div', { style: 'font-size:var(--fs-md);font-weight:700' },
-          today.sessions > 0 ? 'Ещё разок?' : 'Продолжим?'),
-        el('div', { class: 't-sm', style: 'color:rgba(255,255,255,.85)' },
-          dueCount > 0
-            ? `${dueCount} ${dueCount === 1 ? 'слово готово' : 'слов готовы'} к повторению`
-            : 'Возьмём новые слова'),
-        el('button', {
-          class: 'btn btn--onhero btn--cta',
-          onClick: () => { sound.sessionStart(); ctx.go('session/build'); },
-        }, 'Начать занятие →'),
+          doneToday === 0 ? t('Связка на сегодня') : doneToday >= 3 ? t('Связка пройдена') : t('Продолжаем')),
+        chips,
+        heroBtn,
         el('div', { class: 't-caption', style: 'color:rgba(255,255,255,.75);text-align:center' },
-          `≈ ${Math.max(2, Math.round(goal * 0.4))} мин`),
+          t('≈ {v0} мин', { v0: Math.max(2, Math.round(goal * 0.4)) })),
       );
 
-      /* Карточки режимов — карточки, а не кнопки: главная кнопка на экране одна. */
-      const modes = el('div', { style: 'display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)' },
-        modeCard('⚡', 'Блиц', 'узнавание', () => ctx.go('session/sprint')),
-        modeCard('🎧', 'На слух', 'звучание', () => ctx.go('session/ether')),
-      );
-
-      function modeCard(icon, title, sub, onClick) {
-        return el('button', { class: 'card', style: 'text-align:left', onClick: () => { sound.tap(); onClick(); } },
-          el('div', { style: 'font-size:22px' }, icon),
-          el('div', { style: 'font-weight:600' }, title),
-          el('div', { class: 't-caption' }, sub));
-      }
+      const pickLink = el('button', {
+        class: 'btn btn--ghost', style: 'align-self:flex-start;font-size:var(--fs-sm)',
+        onClick: openPicker,
+      }, t('собрать своё →'));
 
       const softNote = isSoftMode(s.lives) && el('div', { class: 'card card--flat t-sm' },
-        'Мягкий режим: задания попроще. Жизни вернутся сами, или быстрее — за разбор.');
+        t('Мягкий режим: задания попроще. Жизни вернутся сами.'));
 
-      /* Слово дня. Берётся детерминированно от номера дня: одно и то же
-         слово в течение суток, но своё у каждого дня. */
-      const wod = content.deck1[(s.day * 7919) % content.deck1.length];
-      const wordOfDay = el('div', { class: 'card row', style: 'gap:var(--sp-3)' },
+      /* Слово дня: берём только из узнаваемых, иначе оно пугает. */
+      const easy = content.deck1.filter(w => w.tier <= 2);
+      const wod = easy[(s.day * 7919) % easy.length];
+      const wordOfDay = el('button', {
+        class: 'card row', style: 'gap:var(--sp-3);text-align:left;width:100%',
+        onClick: () => { sound.tap(); if (speech.available) speech.say(wod.en); },
+      },
         el('div', { class: 'stack grow', style: 'gap:2px' },
-          el('div', { class: 't-caption' }, 'СЛОВО ДНЯ'),
+          el('div', { class: 't-caption' }, t('СЛОВО ДНЯ')),
           el('div', { class: 'row', style: 'gap:var(--sp-2)' },
             en(wod.en, 't-h2'),
-            el('span', { class: 't-ipa', 'aria-hidden': 'true' }, wod.ipa)),
-          el('div', { class: 't-sm' }, wod.ru)),
-        speech.available && el('button', {
-          class: 'qcard__speak', style: 'position:static',
-          'aria-label': `Произнести ${wod.en}`,
-          onClick: () => speech.say(wod.en),
-        }, '🔊'),
+            el('span', { class: 't-ipa', 'aria-hidden': 'true' }, wod.tr)),
+          el('div', { class: 't-sm' }, wod.answer)),
+        speech.available ? el('span', { style: 'font-size:20px' }, '🔊') : null,
       );
 
-      const stats = el('div', { class: 'row', style: 'gap:var(--sp-2)' },
-        el('div', { class: 'tile grow' },
-          el('div', { class: 'tile__val' }, String(known)),
-          el('div', { class: 'tile__cap' }, 'слов знаю')),
-        el('div', { class: 'tile grow' },
-          el('div', { class: 'tile__val' }, String(learning)),
-          el('div', { class: 'tile__cap' }, 'в работе')),
-        el('div', { class: 'tile grow' },
-          el('div', { class: 'tile__val' }, String(lvl.level)),
-          el('div', { class: 'tile__cap' }, 'уровень')),
-      );
-
-      wrap.append(res, progress, hero, modes, softNote, stats, wordOfDay,
-        el('div', { class: 't-caption center' },
-          `планка ${s.challenge.index} · ${tierOf(s.challenge.index).name}`));
-      root.append(wrap);
+      const wrap = el('div', { class: 'screen' },
+        rhythmRow, proof, goalRow, hero, pickLink, softNote, wordOfDay);
+      root.replaceChildren(wrap);
 
       enterCard(hero);
-      fillBar(barFill, 0, Math.min(1, today.words / goal));
+      tweenNumber(bigNumber, 0, known, 900);
+      fillBar(barFill, 0, Math.min(1, todayWords(today) / goal));
+
+      /* Шторка выбора: все пять режимов, подпись каждого — число из
+         данных, а не реклама. Недоступный режим не прячется и не
+         блокируется: он ведёт на экран, который умеет починить тупик. */
+      function openPicker() {
+        sound.tap();
+        const rows = Object.entries(MODES).map(([key, m]) => {
+          const info = modeInfo(key, s, content);
+          return el('button', {
+            class: 'list-row',
+            onClick: () => { close(); sound.sessionStart(); ctx.go(m.route); },
+          },
+            el('span', { style: 'font-size:22px;width:32px' }, m.icon),
+            el('span', { class: 'stack grow', style: 'gap:1px' },
+              el('span', { style: 'font-weight:600' }, t(m.name)),
+              el('span', { class: 't-caption' }, info)),
+            key === current ? el('span', { class: 't-caption' }, '•') : null,
+          );
+        });
+        const sheet = el('div', {
+          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
+          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:80;max-width:536px;margin:0 auto',
+        },
+          el('div', { style: 'font-weight:600' }, t('Чем займёмся?')),
+          ...rows,
+          el('button', { class: 'btn btn--ghost', onClick: close }, t('Закрыть')),
+        );
+        const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:79', onClick: close });
+        document.body.append(back, sheet);
+        animate(sheet, [{ transform: 'translateY(110%)' }, { transform: 'none' }],
+          { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+        const onKey = (e) => { if (e.key === 'Escape') close(); };
+        document.addEventListener('keydown', onKey);
+        function close() { sheet.remove(); back.remove(); document.removeEventListener('keydown', onKey); }
+      }
 
       return { destroy() {} };
     },
   };
 }
 
-function countDue(s, content) {
-  let n = 0;
+function todayWords(d) {
+  return (d.words || 0) + Math.floor((d.touched || 0) / 2);
+}
+
+/* Ротация связки: кто дольше не был, тот и идёт. */
+function dayChain(s) {
+  const last = s.lastModes || {};
+  const pickSlot = (slot) => Object.entries(MODES)
+    .filter(([, m]) => m.slot === slot)
+    .sort((a, b) => (last[a[0]] || 0) - (last[b[0]] || 0))[0][0];
+  return [pickSlot('in'), 'build', pickSlot('out')];
+}
+
+/* Подпись режима — всегда число из состояния, никогда не реклама. */
+function modeInfo(key, s, content) {
+  let due = 0, ready = 0;
   for (const deck of ['deck1', 'deck2']) {
     for (const rec of Object.values(s.srs[deck] || {})) {
-      if (rec.box >= 1 && rec.dueDay <= s.day) n++;
+      if (rec.box >= 1 && rec.dueDay <= s.day) due++;
+      if (isKnown(rec)) ready++;
     }
   }
-  return n;
+  if (key === 'build') return t('{v0} слов ждут повторения', { v0: due });
+  if (key === 'sprint') return t('{v0} знакомых слов', { v0: ready });
+  if (key === 'stream') return s.profile.readWpm
+    ? t('{v0} слов в минуту · 100 секунд', { v0: s.profile.readWpm })
+    : t('первый замер скорости чтения');
+  if (key === 'ether') return t('{v0} слов на слух', { v0: ready });
+  if (key === 'phrase') return ready >= 4
+    ? t('{v0} фраз можно собрать', { v0: Math.min(7, ready) })
+    : t('нужно ещё немного знакомых слов');
+  return '';
 }

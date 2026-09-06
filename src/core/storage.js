@@ -46,6 +46,7 @@ export function emptyState() {
       speech: true, speechRate: 0.95,
       haptics: true,
       fontScale: 'm',
+      lang: null,               // null = взять из браузера
       dailyGoalWords: 10,
       reminderTime: null,       // 'HH:MM' — только для файла календаря
       autoChallenge: true,
@@ -72,6 +73,7 @@ export function emptyState() {
     },
     medals: {},                 // { [id]: номер дня получения }
     rulesRead: {},              // { [id правила]: номер дня }
+    baseline: null,             // первая проверка: точка отсчёта роста
     keys: {},                   // открытые «ключи» соответствий, -tion → -ция
     flags: { onboarded: false, installPromptSeen: false, deck2Unlocked: false },
   };

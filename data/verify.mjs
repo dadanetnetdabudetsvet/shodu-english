@@ -81,12 +81,44 @@ const cross=W.false_friends.filter(f=>ids.length&&W.words.some(w=>w.en===f.en)).
 ok(cross.length===0,'пересечений с основной колодой по en нет'+(cross.length?': '+cross.join(', '):''));
 
 line('9. Правила');
-ok(R.rules.length===30,`правил ровно 30 (факт: ${R.rules.length})`);
-ok(R.version===2,`version = 2 (факт: ${R.version})`);
+ok(R.rules.length===300,`правил ровно 300 (факт: ${R.rules.length})`);
+ok(R.version===3,`version = 3 (факт: ${R.version})`);
+const rIds=R.rules.map(r=>r.id);
+ok(new Set(rIds).size===300,'дублей по id нет');
+const ordSorted=R.rules.map(r=>r.order).slice().sort((a,b)=>a-b);
+ok(ordSorted.every((v,i)=>v===i+1),'order — перестановка 1..300 без пропусков');
+ok(R.rules.every((r,i)=>r.order===i+1),'массив отсортирован по order');
+const RREQ=['id','order','level','topic','title','idea','ru_parallel','en_example','ru_example','en_example2','ru_example2','difficulty','why_easy'];
 const rEmpty=[];
-R.rules.forEach(r=>['id','title','idea','ru_parallel','en_example','ru_example','gotcha','difficulty'].forEach(k=>{
-  if(r[k]===undefined||r[k]===null||String(r[k]).trim()==='')rEmpty.push(r.id+'.'+k);}));
-ok(rEmpty.length===0,'нет пустых полей и null-gotcha'+(rEmpty.length?': '+rEmpty.join(', '):''));
+R.rules.forEach(r=>{
+  RREQ.forEach(k=>{if(r[k]===undefined||r[k]===null||String(r[k]).trim()==='')rEmpty.push(r.id+'.'+k);});
+  if(!('gotcha' in r))rEmpty.push(r.id+'.gotcha (поля нет)');
+  if(r.gotcha!==null&&String(r.gotcha).trim()==='')rEmpty.push(r.id+'.gotcha (пусто)');
+});
+ok(rEmpty.length===0,'нет пустых обязательных полей'+(rEmpty.length?': '+rEmpty.slice(0,20).join(', '):''));
+ok(R.rules.every(r=>['a1','a2','b1','b2'].includes(r.level)),'level только из a1/a2/b1/b2');
+ok(R.rules.every(r=>Number.isInteger(r.difficulty)&&r.difficulty>=1&&r.difficulty<=5),'difficulty — целое 1..5');
+// Р10: gotcha=null допустим только там, где отличий действительно нет — таких единицы
+const nullG=R.rules.filter(r=>r.gotcha===null);
+ok(nullG.length/R.rules.length<0.05,`gotcha: null у ${nullG.length} правил (${(nullG.length/3).toFixed(1)}%), порог 5%`);
+// difficulty не противоречит order
+const badEasy=R.rules.filter(r=>r.difficulty>=4&&r.order<=60);
+const badHard=R.rules.filter(r=>r.difficulty<=2&&r.order>=250);
+ok(badEasy.length===0,'нет difficulty>=4 в первых 60'+(badEasy.length?': '+badEasy.map(r=>r.id).join(', '):''));
+ok(badHard.length===0,'нет difficulty<=2 после 250'+(badHard.length?': '+badHard.map(r=>r.id).join(', '):''));
+const lvCount={};R.rules.forEach(r=>lvCount[r.level]=(lvCount[r.level]||0)+1);
+console.log('       уровни: '+Object.entries(lvCount).map(([k,v])=>k+' '+v).join(', '));
+const tpCount={};R.rules.forEach(r=>tpCount[r.topic]=(tpCount[r.topic]||0)+1);
+console.log('       тем: '+Object.keys(tpCount).length);
+// Р9: запрещённые слова
+const RBAN=['урок','задание','домашка','тест','ошибочка','молодец','не сдавайся'];
+const rBanHits=[];
+R.rules.forEach(r=>['title','idea','ru_parallel','ru_example','ru_example2','why_easy','gotcha'].forEach(k=>{
+  const v=r[k]; if(typeof v!=='string')return;
+  RBAN.forEach(b=>{if(new RegExp('(^|[^а-яёa-z])'+b+'[а-яё]*([^а-яёa-z]|$)','i').test(v))rBanHits.push(r.id+'.'+k+':'+b);});
+}));
+ok(rBanHits.length===0,'запрещённых слов Р9 нет'+(rBanHits.length?': '+rBanHits.join(', '):''));
+
 ok(true,'JSON обоих файлов валиден (файлы распарсились)');
 
 console.log('\n'+'='.repeat(60));

@@ -1,3 +1,4 @@
+import { t } from '../i18n/index.js';
 /* Маленькие помощники вместо фреймворка. */
 
 export function el(tag, props = {}, ...children) {
@@ -32,18 +33,18 @@ export function plural(n, one, few, many) {
   return many;
 }
 
-export const words = (n) => `${n} ${plural(n, 'слово', 'слова', 'слов')}`;
-export const days = (n) => `${n} ${plural(n, 'день', 'дня', 'дней')}`;
+export const words = (n) => t('{v0} {v1}', { v0: n, v1: plural(n, 'слово', 'слова', 'слов') });
+export const days = (n) => t('{v0} {v1}', { v0: n, v1: plural(n, 'день', 'дня', 'дней') });
 
 export function greeting(name) {
   const h = new Date().getHours();
-  const part = h < 5 ? 'Доброй ночи' : h < 12 ? 'Доброе утро' : h < 18 ? 'Добрый день' : 'Добрый вечер';
+  const part = h < 5 ? t('Доброй ночи') : h < 12 ? t('Доброе утро') : h < 18 ? t('Добрый день') : t('Добрый вечер');
   return name ? `${part}, ${name}` : part;
 }
 
 export function fmtMinutes(ms) {
   const m = Math.round(ms / 60000);
-  return `${m} ${plural(m, 'минута', 'минуты', 'минут')}`;
+  return t('{v0} {v1}', { v0: m, v1: plural(m, 'минута', 'минуты', 'минут') });
 }
 
 /** Ловушка фокуса для шторок и модальных окон. */
@@ -59,4 +60,19 @@ export function trapFocus(container) {
   };
   container.addEventListener('keydown', onKey);
   return () => container.removeEventListener('keydown', onKey);
+}
+
+/**
+ * Безопасная замена содержимого.
+ *
+ * Родной replaceChildren принимает узлы и строки, а всё остальное
+ * приводит к строке: `null` превращается в видимое слово «null».
+ * Условная вёрстка вида `cond ? el(...) : null` из-за этого печатала
+ * мусор прямо в интерфейсе.
+ */
+export function setChildren(node, ...children) {
+  node.replaceChildren(
+    ...children.flat().filter(c => c != null && c !== false && c !== '')
+  );
+  return node;
 }

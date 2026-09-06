@@ -125,11 +125,24 @@ export function intervalDays(box, rnd = Math.random) {
 
 /** Продуктивные типы: требуют воспроизведения, а не узнавания. */
 export function isProductive(type) {
-  return ['type', 'letters', 'audioType', 'stress', 'audioChoice', 'phrase'].includes(type);
+  return ['type', 'letters', 'audioType', 'stress', 'audioChoice', 'phrase', 'reverse4'].includes(type);
 }
 
-/** Слово считается известным: коробка не ниже третьей и есть продуктивный успех. */
+/* Статус слова двухступенчатый.
+ *
+ * Раньше «знаю» требовало сразу и коробки, и продуктивного успеха, а на
+ * стартовой планке продуктивных заданий не выдавалось вовсе. В итоге
+ * приложение ежедневно сообщало человеку, что он не выучил ничего, —
+ * ровно противоположное тому, ради чего оно сделано.
+ */
+
+/** Знаю: слово трижды подтверждено и отложено минимум на три дня. */
 export function isKnown(rec) {
+  return rec.box >= COGNATE_SKIP;
+}
+
+/** Знаю твёрдо: сверх того есть успех в задании на воспроизведение. */
+export function isKnownFirmly(rec) {
   return rec.box >= COGNATE_SKIP && rec.prodOk >= 1;
 }
 
@@ -238,10 +251,15 @@ export class SessionQueue {
     this.items = items.slice();
     this.pos = 0;
     this.retries = new Set();
+    // Знаменатель фиксируется на старте: повтор ошибочного слова не должен
+    // отодвигать финиш. Иначе ошибка выглядит как наказание длиной сессии.
+    this.plannedTotal = items.length;
   }
   get current() { return this.items[this.pos] || null; }
-  get total() { return this.items.length; }
+  get total() { return this.plannedTotal; }
+  get realTotal() { return this.items.length; }
   get done() { return this.pos >= this.items.length; }
+  get shownIndex() { return Math.min(this.pos + 1, this.plannedTotal); }
 
   advance() { this.pos++; return this.current; }
 

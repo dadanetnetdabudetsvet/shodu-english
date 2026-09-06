@@ -13,10 +13,15 @@ body {
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
-  /* Автономный режим: контент не должен уезжать под часы и под индикатор. */
-  padding: var(--safe-t) 0 var(--safe-b);
-  min-height: 100dvh;
+  min-height: 100svh;
 }
+
+/* Безопасные зоны живут на .app, а не на body: раньше отступы складывались
+   с полной высотой вьюпорта и давали примерно 93 px мёртвого скролла. */
+.app { padding-top: var(--safe-t); padding-bottom: var(--safe-b); }
+
+/* Фон не скроллится, когда открыта шторка. Без единой строки на JS. */
+body:has(> [role="dialog"]) { overflow: hidden; }
 
 /* Ничего не выделяется случайным долгим тапом, кроме полей ввода. */
 body, button, .tile { -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -27,15 +32,15 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 a { color: var(--accent); }
 
 :focus-visible {
-  outline: var(--ring-w) solid var(--accent);
-  outline-offset: 2px;
-  border-radius: var(--r-sm);
+  outline: none;
+  box-shadow: var(--sh-focus);   /* токен был объявлен и не использовался */
+  border-radius: inherit;        /* прежний r-sm ломал форму круглых кнопок */
 }
 
 .app {
   max-width: 560px;
   margin: 0 auto;
-  min-height: 100dvh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
 }
@@ -62,7 +67,12 @@ a { color: var(--accent); }
 .t-micro { font-size: var(--fs-micro); color: var(--text-2); }
 .t-caption { font-size: var(--fs-caption); color: var(--text-3); }
 .t-num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
-.t-en { font-size: var(--fs-word); font-weight: var(--fw-bold); letter-spacing: var(--ls-tight); overflow-wrap: anywhere; }
+.t-en {
+  font-size: var(--fs-word); font-weight: var(--fw-black);
+  letter-spacing: var(--ls-word); line-height: var(--lh-word);
+  overflow-wrap: break-word;
+  margin-right: -.042em;   /* компенсация треккинга последней буквы при центровке */
+}
 .t-ipa { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--text-2); }
 .t-dim { color: var(--text-2); }
 
@@ -165,3 +175,41 @@ a { color: var(--accent); }
   .card { border: 1px solid var(--border-strong); }
   .btn { outline: 1px solid var(--border-strong); }
 }
+
+/* Всплывающая подсказка. Раньше у неё не было ни одной строки стилей,
+   при том что через неё проходит отмена удаления прогресса. */
+.toast {
+  position: fixed; left: 12px; right: 12px;
+  bottom: calc(var(--safe-b) + var(--tabbar-h) + 20px);
+  max-width: 536px; margin: 0 auto;
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--sh-4);
+  border: 1px solid var(--border);
+  font-size: var(--fs-sm);
+  z-index: 95;
+  animation: toast-in 260ms cubic-bezier(.22,1,.36,1) both;
+}
+.toast--warn { border-color: var(--answer-wrong-border); background: var(--answer-wrong-soft); }
+.toast__action {
+  margin-left: auto; flex: none;
+  min-height: 36px; padding: 0 var(--sp-3);
+  border-radius: var(--r-sm);
+  background: var(--accent); color: var(--on-accent);
+  font-weight: var(--fw-semi); font-size: var(--fs-sm);
+}
+@keyframes toast-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* Строки списков: хайрлайн вместо двухсот карточек с тенями подряд. */
+.list-row {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-2);
+  text-align: left; width: 100%;
+  border-bottom: 1px solid var(--border);
+  background: none;
+}
+.list-row:active { background: var(--surface-2); }
+@media (min-resolution: 2dppx) { .list-row { border-bottom-width: .5px; } }

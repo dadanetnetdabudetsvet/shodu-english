@@ -5,7 +5,7 @@
  * быть не может.
  */
 
-import { el } from '../ui/dom.js';
+import { el, setChildren } from '../ui/dom.js';
 import { takeResult } from './session.js';
 import { countKnown, levelInfo } from '../ui/reducer.js';
 import { VOTE_REPLY, tierOf } from '../domain/challenge.js';
@@ -13,6 +13,7 @@ import { makeProof } from '../domain/referral.js';
 import { popIn, tweenNumber } from '../core/motion.js';
 import { confetti } from '../core/confetti.js';
 import { sound } from '../core/sound.js';
+import { t } from '../i18n/index.js';
 
 export function screen(store, content) {
   return {
@@ -27,36 +28,36 @@ export function screen(store, content) {
       const emoji = el('div', { class: 'results__emoji' },
         r.mistakes === 0 && r.answered > 0 ? '🎯' : r.completed ? '🎉' : '👌');
 
-      const title = !r.completed ? 'Занятие прервано'
-        : r.mistakes === 0 && r.answered > 0 ? 'Чисто. Ни одной ошибки'
-        : r.newWords > 0 ? `Готово. ${r.newWords} ${plural(r.newWords)} новых`
-        : 'Занятие закрыто';
+      const title = !r.completed ? t('Остановился на середине. Всё, что успел, засчитано')
+        : r.mistakes === 0 && r.answered > 0 ? t('Чисто. Ни одного промаха')
+        : r.newWords > 0 ? t('Готово. {v0} {v1} новых', { v0: r.newWords, v1: plural(r.newWords) })
+        : t('Готово. Плюс к копилке');
 
       const xpEl = el('div', { class: 'tile__val t-num' }, '0');
       const wordsEl = el('div', { class: 'tile__val t-num' }, '0');
       const minEl = el('div', { class: 'tile__val t-num' }, '0');
 
       const tiles = el('div', { class: 'results__tiles' },
-        el('div', { class: 'tile' }, xpEl, el('div', { class: 'tile__cap' }, 'очков')),
-        el('div', { class: 'tile' }, wordsEl, el('div', { class: 'tile__cap' }, 'узнал сразу')),
-        el('div', { class: 'tile' }, minEl, el('div', { class: 'tile__cap' }, 'минут')),
+        el('div', { class: 'tile' }, xpEl, el('div', { class: 'tile__cap' }, t('очков'))),
+        el('div', { class: 'tile' }, wordsEl, el('div', { class: 'tile__cap' }, t('узнал сразу'))),
+        el('div', { class: 'tile' }, minEl, el('div', { class: 'tile__cap' }, t('минут'))),
       );
 
       /* Главная строка: накопление, а не оценка. */
-      const stateLine = el('p', { class: 't-body center' }, `Всего у тебя ${known} слов.`);
+      const stateLine = el('p', { class: 't-body center' }, t('В копилке уже {v0} слов.', { v0: known }));
 
       const goalLine = today.words >= goal
-        ? el('div', { class: 'card card--flat center t-sm' }, 'Дневная цель выполнена.')
+        ? el('div', { class: 'card card--flat center t-sm' }, t('Дневная цель выполнена.'))
         : el('div', { class: 'card card--flat center t-sm' },
-            `До цели дня: ${goal - today.words} ${plural(goal - today.words)}.`);
+            t('До цели дня: {v0} {v1}.', { v0: goal - today.words, v1: plural(goal - today.words) }));
 
       /* Голос по планке. Формулировки не сообщают, что человек не справился. */
       const voteBox = el('div', { class: 'stack', style: 'gap:var(--sp-2)' },
-        el('div', { class: 't-sm center' }, 'Как зашло?'),
+        el('div', { class: 't-sm center' }, t('Ну как, зашло?')),
         el('div', { class: 'vote' },
-          voteBtn('easy', 'Легко'),
-          voteBtn('normal', 'Нормально'),
-          voteBtn('hard', 'Сложно'),
+          voteBtn('easy', t('Легко 😎')),
+          voteBtn('normal', t('В самый раз 🙂')),
+          voteBtn('hard', t('Было сложно 😅')),
         ),
       );
       const voteReply = el('div', { class: 't-caption center' });
@@ -67,9 +68,9 @@ export function screen(store, content) {
           onClick: () => {
             sound.tap();
             store.dispatch({ type: 'CHALLENGE_VOTE', vote: kind });
-            voteBox.replaceChildren(el('div', { class: 't-sm center' }, VOTE_REPLY[kind]));
+            setChildren(voteBox, el('div', { class: 't-sm center' }, t(VOTE_REPLY[kind])));
             const idx = store.state.challenge.index;
-            voteReply.textContent = `планка ${idx} · ${tierOf(idx).name}`;
+            voteReply.textContent = t('сложность {v0} · {v1}', { v0: idx, v1: t(tierOf(idx).name) });
           },
         }, label);
       }
@@ -83,8 +84,8 @@ export function screen(store, content) {
         store.dispatch({ type: 'REFERRAL_NEWCOMER_PAID' });
         const proof = makeProof(ref.invitedBy, ref.selfCode);
         handshake = el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
-          el('div', { style: 'font-weight:600' }, 'Тебя позвал друг'),
-          el('div', { class: 't-sm' }, 'Тебе начислено 100 алмазов. Отправь этот код тому, кто позвал, — ему тоже начислят.'),
+          el('div', { style: 'font-weight:600' }, t('Тебя позвал друг')),
+          el('div', { class: 't-sm' }, t('Тебе начислено 100 алмазов. Отправь этот код тому, кто позвал, — ему тоже начислят.')),
           el('div', {
             class: 'card card--flat center t-num',
             style: 'font-size:var(--fs-xl);font-weight:800;letter-spacing:.08em',
@@ -92,13 +93,13 @@ export function screen(store, content) {
           el('button', {
             class: 'btn btn--primary',
             onClick: async () => {
-              const text = `Мой код в Шоду: ${proof}`;
+              const text = t('Мой код в Сходу: {v0}', { v0: proof });
               try {
                 if (navigator.share) await navigator.share({ text });
                 else { await navigator.clipboard.writeText(proof); }
               } catch { /* отмена шаринга это не ошибка */ }
             },
-          }, 'Отправить код'),
+          }, t('Отправить код другу 📤')),
         );
       }
 
@@ -106,8 +107,8 @@ export function screen(store, content) {
         el('button', {
           class: 'btn btn--primary btn--cta',
           onClick: () => { sound.sessionStart(); ctx.go('session/' + (r.mode || 'build')); },
-        }, 'Ещё одно занятие'),
-        el('button', { class: 'btn btn--ghost btn--cta', onClick: () => ctx.go('home') }, 'На сегодня хватит'),
+        }, t('Ещё разок ⚡')),
+        el('button', { class: 'btn btn--ghost btn--cta', onClick: () => ctx.go('home') }, t('Хватит на сегодня 👌')),
       );
 
       root.append(el('div', { class: 'screen screen--full results' },
@@ -116,7 +117,7 @@ export function screen(store, content) {
         tiles,
         stateLine,
         goalLine,
-        r.maxCombo >= 5 ? el('div', { class: 't-sm center' }, `Лучшая серия: ${r.maxCombo} подряд`) : null,
+        r.maxCombo >= 5 ? el('div', { class: 't-sm center' }, t('Лучшая серия: {v0} подряд', { v0: r.maxCombo })) : null,
         voteBox, voteReply,
         handshake,
         el('div', { class: 'grow' }),
@@ -150,8 +151,8 @@ export function screen(store, content) {
 
 function plural(n) {
   const a = Math.abs(n) % 100, b = a % 10;
-  if (a > 10 && a < 20) return 'слов';
-  if (b > 1 && b < 5) return 'слова';
-  if (b === 1) return 'слово';
-  return 'слов';
+  if (a > 10 && a < 20) return t('слов');
+  if (b > 1 && b < 5) return t('слова');
+  if (b === 1) return t('слово');
+  return t('слов');
 }

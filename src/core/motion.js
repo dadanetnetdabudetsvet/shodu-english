@@ -70,17 +70,17 @@ const QUINT = 'cubic-bezier(.22,1,.36,1)';
 /** A1: появление карточки вопроса. */
 export function enterCard(el) {
   return animate(el, [
-    { opacity: 0, transform: 'translateY(24px) scale(.94)' },
+    { opacity: 0, transform: 'translateY(14px)' },
     { opacity: 1, transform: 'none' },
-  ], { duration: 340, easing: SPRING, fill: 'both' });
+  ], { duration: 280, easing: QUINT, fill: 'both' });
 }
 
 /** A2: каскадное появление вариантов ответа. */
 export function enterOptions(els) {
   return stagger(els, [
-    { opacity: 0, transform: 'translateY(80px)' },
+    { opacity: 0, transform: 'translateY(10px)' },
     { opacity: 1, transform: 'none' },
-  ], { duration: 260, easing: SPRING, fill: 'both' }, 50);
+  ], { duration: 200, easing: QUINT, fill: 'both' }, 30);
 }
 
 /** A3: нажатие. */
@@ -101,18 +101,16 @@ export function popCorrect(el) {
   ], { duration: 420, easing: SPRING });
 }
 
-/** A5: шейк ошибки. Около 7 Гц с затуханием 0.72. Экран не краснеет целиком. */
+/**
+ * A5 переосмыслен. Тряска на 7 Гц — это жест «нет», и он громче любого
+ * красного цвета, который правило Р1 запрещает. Вместо неё вариант
+ * просто теряет плотность: он не стал неправильным, он остался
+ * непроявленным.
+ */
 export function shakeWrong(el) {
-  if (prefersReduced()) {
-    // Замена канала: без сдвига, но с заметной вспышкой рамки.
-    return animate(el, [{ opacity: 1 }, { opacity: .55 }, { opacity: 1 }], { duration: 220 });
-  }
   return animate(el, [
-    { transform: 'translateX(0)' },   { transform: 'translateX(-10px)', offset: .14 },
-    { transform: 'translateX(9px)',  offset: .28 }, { transform: 'translateX(-7px)', offset: .44 },
-    { transform: 'translateX(5px)',  offset: .60 }, { transform: 'translateX(-3px)', offset: .78 },
-    { transform: 'translateX(0)' },
-  ], { duration: 400, easing: 'linear' });
+    { opacity: 1 }, { opacity: .45, offset: .4 }, { opacity: .55 },
+  ], { duration: 260, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' });
 }
 
 /** A7: всплеск множителя комбо. */

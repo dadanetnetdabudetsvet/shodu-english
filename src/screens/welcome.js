@@ -21,6 +21,7 @@ import { sound } from '../core/sound.js';
 import { haptics } from '../core/haptics.js';
 import { confetti } from '../core/confetti.js';
 import { speech } from '../core/speech.js';
+import { t } from '../i18n/index.js';
 
 const QUIZ_SIZE = 10;
 
@@ -49,11 +50,11 @@ export function screen(store, content) {
       function renderHello() {
         const card = el('div', { class: 'stack', style: 'gap:var(--sp-5);padding-top:var(--sp-12)' },
           el('div', { style: 'font-size:56px;line-height:1' }, '👋'),
-          el('h1', { class: 't-h1' }, 'Ты знаешь английских слов больше, чем думаешь'),
-          el('p', { class: 't-body t-dim' }, 'Сейчас посчитаем. Две минуты, десять слов.'),
-          el('p', { class: 't-sm' }, 'Здесь нет оценок, нет таймера и никто не слушает.'),
+          el('h1', { class: 't-h1' }, t('Ты знаешь английских слов больше, чем думаешь')),
+          el('p', { class: 't-body t-dim' }, t('Сейчас проверим. Две минуты, десять слов, никакой зубрёжки.')),
+          el('p', { class: 't-sm' }, t('Оценок нет, таймера нет, никто не смотрит через плечо.')),
           el('div', { class: 'grow' }),
-          el('button', { class: 'btn btn--primary btn--cta', onClick: () => { sound.tap(); step = 1; startQuiz(); } }, 'Начать'),
+          el('button', { class: 'btn btn--primary btn--cta', onClick: () => { sound.tap(); step = 1; startQuiz(); } }, t('Посчитать, сколько я уже знаю 🔍')),
         );
         wrap.append(card);
         enterCard(card);
@@ -74,12 +75,12 @@ export function screen(store, content) {
         let answered = false;
 
         const card = el('div', { class: 'qcard' },
-          el('div', { class: 'qcard__hint' }, `${qi + 1} из ${QUIZ_SIZE}`),
+          el('div', { class: 'qcard__hint' }, t('{v0} из {v1}', { v0: qi + 1, v1: QUIZ_SIZE })),
           en(word.en, 't-en'),
           el('div', { class: 't-ipa', 'aria-hidden': 'true' }, word.ipa),
         );
 
-        const opts = el('div', { class: 'options', role: 'radiogroup', 'aria-label': 'Выбери перевод' });
+        const opts = el('div', { class: 'options', role: 'radiogroup', 'aria-label': t('Выбери перевод') });
         for (const o of options) {
           const btn = el('button', {
             class: 'option', role: 'radio', 'aria-checked': 'false',
@@ -88,10 +89,23 @@ export function screen(store, content) {
           opts.append(btn);
         }
 
+        const shownAt = performance.now();
+
         function choose(btn, o) {
           if (answered) return;
           answered = true;
           const right = o.id === word.id;
+
+          /* Ответ засчитывается в прогресс. Иначе человек видит «8 из 10
+             узнал сразу», а через полминуты — «слов знаю 0», и те же слова
+             подаются ему как новые. Это подтасовка с обратной силой. */
+          store.dispatch({
+            type: 'ANSWER_GRADED',
+            wordId: word.id, deck: word.deck, correct: right, typoOnly: false,
+            elapsedMs: performance.now() - shownAt, mode: 'build', exerciseType: 'choice4',
+            usedHint: false, isCognate: true, comboAfter: 0, attempt: 1, listens: 1,
+          });
+
           if (right) {
             correct++;
             btn.classList.add('option--right');
@@ -112,8 +126,19 @@ export function screen(store, content) {
 
         wrap.append(
           el('div', { class: 'stack', style: 'gap:var(--sp-4)' },
-            el('p', { class: 't-sm center' }, 'Просто узнай слово. Ошибиться тут не страшно.'),
+            el('p', { class: 't-sm center' }, t('Просто узнавай слова. Промахнёшься — ничего не будет 🙂')),
             card, opts,
+            el('button', {
+              class: 'qskip',
+              onClick: () => {
+                if (answered) return;
+                answered = true;
+                const rightBtn = [...opts.children][options.findIndex(x => x.id === word.id)];
+                rightBtn.classList.add('option--right');
+                rightBtn.append(el('span', { class: 'option__mark' }, '✓'));
+                setTimeout(() => { qi++; if (qi >= quiz.length) step = 2; render(); }, 900);
+              },
+            }, t('не знаю 🤷')),
           )
         );
         enterCard(card);
@@ -127,24 +152,24 @@ export function screen(store, content) {
 
         // Поведение при слабом результате прописано явно.
         const line = correct >= 8
-          ? 'Эти слова ты знал и раньше. Они уже зачтены.'
+          ? t('Ты знал их и до нас. Считай, что они уже в кармане.')
           : correct >= 5
-            ? 'Половина уже твоя. Остальное узнаётся быстрее, чем кажется.'
-            : 'Отлично, значит есть куда расти. Начнём с самых простых.';
+            ? t('Половина уже твоя. Вторая догонит быстрее, чем ты думаешь.')
+            : t('И это уже слова, за которые не надо садиться за учебник.');
 
         const card = el('div', { class: 'results' },
           emoji,
           el('div', { class: 'stack center', style: 'gap:2px' },
             num,
-            el('div', { class: 't-sm' }, `из ${QUIZ_SIZE} слов узнал сразу`),
+            el('div', { class: 't-sm' }, t('из {v0} узнал не задумываясь', { v0: QUIZ_SIZE })),
           ),
           el('p', { class: 't-body center' }, line),
-          el('p', { class: 't-sm center' }, 'Это не курс с нуля. Это ревизия того, что уже лежит у тебя в голове.'),
+          el('p', { class: 't-sm center' }, t('Ты и так знаешь английский на уровне, о котором не догадывался.')),
           el('div', { class: 'grow' }),
           el('button', {
             class: 'btn btn--primary btn--cta',
             onClick: () => { sound.tap(); step = 3; render(); },
-          }, 'Дальше'),
+          }, t('Так, и что дальше →')),
         );
         wrap.append(card);
         popIn(emoji);
@@ -157,9 +182,9 @@ export function screen(store, content) {
          и его место в профиле. */
       function renderGoal() {
         const choices = [
-          { n: 5,  cap: 'примерно 2 минуты', note: 'Спокойно' },
-          { n: 10, cap: 'примерно 4 минуты', note: 'Обычно' },
-          { n: 20, cap: 'примерно 8 минут',  note: 'Плотно' },
+          { n: 5,  cap: t('примерно 2 минуты'), note: t('Спокойно') },
+          { n: 10, cap: t('примерно 4 минуты'), note: t('Обычно') },
+          { n: 20, cap: t('примерно 8 минут'),  note: t('Плотно') },
         ];
         const list = el('div', { class: 'stack' });
         for (const c of choices) {
@@ -168,7 +193,7 @@ export function screen(store, content) {
             onClick: () => { goal = c.n; sound.tap(); renderGoalList(); },
           },
             el('span', { class: 'grow' },
-              el('div', { style: 'font-weight:600' }, `${c.n} слов в день`),
+              el('div', { style: 'font-weight:600' }, t('{v0} слов в день', { v0: c.n })),
               el('div', { class: 't-caption' }, `${c.cap} · ${c.note}`)),
           );
           list.append(btn);
@@ -178,8 +203,8 @@ export function screen(store, content) {
         }
 
         wrap.append(el('div', { class: 'stack', style: 'gap:var(--sp-5);padding-top:var(--sp-8)' },
-          el('h1', { class: 't-h1' }, 'Сколько слов в день тебе комфортно?'),
-          el('p', { class: 't-sm' }, 'Это можно поменять в любой момент, бесплатно и без предупреждений.'),
+          el('h1', { class: 't-h1' }, t('Сколько слов в день потянешь?')),
+          el('p', { class: 't-sm' }, t('Передумаешь — поменяешь в любой момент, никто слова не скажет.')),
           list,
           el('div', { class: 'grow' }),
           el('button', {
@@ -187,11 +212,16 @@ export function screen(store, content) {
             onClick: () => {
               sound.sessionStart();
               store.dispatch({ type: 'SETTINGS_SET', patch: { dailyGoalWords: goal } });
-              // Аванс прогресса: полоса первого уровня уже не пуста.
-              store.dispatch({ type: 'ONBOARDED', bonusXp: 30 + correct * 3 });
-              ctx.go('home');
+              /* Точка отсчёта: те же десять слов и результат. По ней потом
+                 считается «было шесть, стало десять» — единственное место,
+                 где виден рост способности, а не накопления. */
+              store.dispatch({
+                type: 'ONBOARDED',
+                baseline: { day: store.state.day, ids: quiz.map(w => w.id), correct },
+              });
+              ctx.go('session/build');
             },
-          }, 'Готово'),
+          }, t('Всё, поехали 🚀')),
         ));
       }
 

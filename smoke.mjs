@@ -48,6 +48,9 @@ window.fetch = async (url) => {
   return { ok: true, json: async () => JSON.parse(text), text: async () => text };
 };
 window.prompt = () => 'Тестовое имя';
+// Тест написан на русских строках, поэтому язык фиксируем.
+Object.defineProperty(window.navigator, 'languages', { value: ['ru-RU', 'ru'], configurable: true });
+Object.defineProperty(window.navigator, 'language', { value: 'ru-RU', configurable: true });
 window.alert = () => {};
 
 /* Пробрасываем в глобальную область: модули приложения пишут на window/document. */
@@ -88,7 +91,7 @@ console.log('\nОНБОРДИНГ');
 const click = (el) => { el.dispatchEvent(new window.MouseEvent('click', { bubbles: true })); };
 const btn = (text) => [...root.querySelectorAll('button')].find(b => b.textContent.includes(text));
 
-click(btn('Начать'));
+click(btn('Посчитать') || btn('Начать'));
 await sleep(200);
 step('шаг проверки: ' + (root.querySelector('.qcard')?.textContent.slice(0, 40) || '—'));
 
@@ -100,9 +103,9 @@ for (let i = 0; i < 12; i++) {
 }
 step('после десяти ответов: ' + (root.querySelector('h1')?.textContent || root.textContent.slice(0, 40)));
 
-let next = btn('Дальше');
+let next = btn('дальше') || btn('Дальше');
 if (next) { click(next); await sleep(200); }
-const done = btn('Готово');
+const done = btn('поехали') || btn('Готово');
 if (!done) fail('нет кнопки завершения онбординга');
 else { click(done); await sleep(400); }
 
@@ -139,13 +142,14 @@ if (!root.querySelector('.session')) fail('экран занятия не смо
 else step('занятие открыто');
 
 let answered = 0;
-for (let i = 0; i < 40; i++) {
-  const know = btn('Знаю') || btn('Понял, не перепутаю');
+let stalled = null;
+for (let i = 0; i < 60; i++) {
+  const know = btn('Знаю это') || btn('не перепутаю');
   if (know) { click(know); await sleep(120); continue; }
   const opts = root.querySelectorAll('.option');
   if (opts.length && !opts[0].disabled && opts[0].tagName === 'BUTTON') {
     click(opts[0]); answered++; await sleep(120);
-    const nx = btn('Дальше'); if (nx) { click(nx); await sleep(120); }
+    const nx = btn('дальше'); if (nx) { click(nx); await sleep(120); }
     continue;
   }
   const check = btn('Проверить');
@@ -153,17 +157,23 @@ for (let i = 0; i < 40; i++) {
     const input = root.querySelector('input[type="text"]');
     if (input) { input.value = 'zzz'; }
     click(check); await sleep(120);
-    const nx = btn('Дальше'); if (nx) { click(nx); await sleep(120); }
+    const nx2 = btn('дальше'); if (nx2) { click(nx2); await sleep(120); }
     continue;
   }
   if (root.querySelector('.results')) break;
+  stalled = root.textContent.slice(0, 120);
   break;
 }
+if (stalled) step('прогон остановился на: ' + stalled.replace(/\s+/g, ' '));
 step('отвечено заданий: ' + answered);
 
 if (!root.querySelector('.results')) {
   const close = root.querySelector('.session__close');
-  if (close) { click(close); await sleep(400); }
+  if (close) {
+    click(close); await sleep(300);
+    const leave = [...document.querySelectorAll('button')].find(b => b.textContent.includes('хватит'));
+    if (leave) { click(leave); await sleep(400); }
+  }
 }
 step('экран итогов: ' + (root.querySelector('.results') ? 'да' : 'нет'));
 step('очков всего: ' + store.state.econ.xpTotal + ' · слов в работе: ' +
@@ -193,6 +203,96 @@ if (!raw) fail('состояние не записалось');
 else step('записано ' + (raw.length / 1024).toFixed(1) + ' КБ');
 const parsed = JSON.parse(raw);
 step('дней в истории: ' + Object.keys(parsed.days).length + ' · уровень: ' + parsed.profile.level);
+
+/* ── новые режимы ──────────────────────────────────────────── */
+console.log('\nНОВЫЕ РЕЖИМЫ');
+{
+  window.location.hash = '#/phrase';
+  await sleep(600);
+  const txt = root.textContent;
+  if (root.querySelector('.shelf')) {
+    const tiles = root.querySelectorAll('.bank .tile-word').length;
+    const slots = root.querySelectorAll('.shelf .tile-slot, .shelf .tile-word').length;
+    step(`Фраза: касса ${tiles} плиток, полка ${slots} гнёзд`);
+    // собираем фразу правильно
+    const bankBtns = [...root.querySelectorAll('.bank .tile-word')];
+    for (let k = 0; k < 8 && root.querySelectorAll('.shelf .tile-slot').length; k++) {
+      const free = [...root.querySelectorAll('.bank .tile-word')].filter(b => !b.disabled);
+      if (!free.length) break;
+      click(free[0]); await sleep(60);
+    }
+    const check = [...root.querySelectorAll('button')].find(b => /Проверить|поставь/.test(b.textContent));
+    if (check && !check.disabled) { click(check); await sleep(400); step('Фраза: проверка отработала'); }
+    else step('Фраза: полка заполнена не до конца, это допустимо');
+  } else if (txt.includes('собирается из знакомых слов')) {
+    step('Фраза: показан честный экран «пока мало слов» с кнопкой выхода');
+  } else fail('Фраза: неизвестное состояние — ' + txt.slice(0, 80));
+
+  window.location.hash = '#/stream';
+  await sleep(500);
+  const st = root.textContent;
+  if (st.includes('читается по знакомым')) {
+    step('Поток: честный экран «нужно больше слов» с кнопкой выхода');
+  } else if (root.querySelector('.stream-mode')) {
+    const go = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Ровный темп'));
+    if (go) {
+      click(go); await sleep(500);
+      const words = root.querySelectorAll('.stream-word').length;
+      if (words) step('Поток: строка из ' + words + ' слов на табло');
+      else if (st.includes('читается по знакомым')) step('Поток: честный экран «нужно больше слов»');
+      else fail('Поток: строка не отрисовалась');
+    } else if (st.includes('читается по знакомым')) {
+      step('Поток: честный экран «нужно больше слов»');
+    } else fail('Поток: нет кнопки старта');
+  } else fail('Поток: экран не смонтирован');
+}
+
+/* ── режимы на наполненном словаре ─────────────────────────── */
+console.log('\nРЕЖИМЫ НА НАПОЛНЕННОМ СЛОВАРЕ');
+{
+  // Наполняем прогресс так, будто человек занимается третью неделю.
+  const { content } = window.__shodu;
+  const st = store.state;
+  for (const w of content.deck1.slice(0, 60)) {
+    st.srs.deck1[w.id] = { box: 4, dueDay: st.day, seen: 8, ok: 7, fail: 1,
+                           streak: 3, failRow: 0, leech: false, lastMs: 1200, lastDay: st.day - 1, prodOk: 2 };
+  }
+  store.dispatch({ type: 'CHALLENGE_SET', index: 16 });
+
+  window.location.hash = '#/phrase';
+  await sleep(700);
+  if (!root.querySelector('.shelf')) fail('Фраза не запустилась при 60 знакомых словах: ' + root.textContent.slice(0, 70));
+  else {
+    const slots = root.querySelectorAll('.shelf .tile-slot').length;
+    const tiles = root.querySelectorAll('.bank .tile-word').length;
+    step(`Фраза: ${slots} гнёзд, ${tiles} плиток в кассе`);
+    for (let k = 0; k < 10 && root.querySelectorAll('.shelf .tile-slot').length; k++) {
+      const free = [...root.querySelectorAll('.bank .tile-word')].filter(b => !b.disabled);
+      if (!free.length) break;
+      click(free[0]); await sleep(50);
+    }
+    const check = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Проверить'));
+    if (!check) fail('Фраза: кнопка проверки не появилась');
+    else { click(check); await sleep(600); step('Фраза: проверка отработала, очков всего ' + store.state.econ.xpTotal); }
+  }
+
+  window.location.hash = '#/stream';
+  await sleep(600);
+  const go = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Ровный темп'));
+  if (!go) fail('Поток не запустился при 60 знакомых словах: ' + root.textContent.slice(0, 70));
+  else {
+    click(go); await sleep(600);
+    const words = [...root.querySelectorAll('.stream-word')];
+    if (!words.length) fail('Поток: строка не отрисовалась');
+    else {
+      step('Поток: строка из ' + words.length + ' слов');
+      const before = store.state.econ.xpTotal;
+      for (const wnode of words) { click(wnode); await sleep(60); }
+      await sleep(500);
+      step('Поток: после тапов очков ' + store.state.econ.xpTotal + ' (было ' + before + ')');
+    }
+  }
+}
 
 /* ── второй тупик: всё повторено ───────────────────────────── */
 console.log('\nКОГДА ВСЁ ПОВТОРЕНО');
@@ -259,7 +359,7 @@ console.log('\nПРИГЛАШЕНИЕ ДРУЗЕЙ');
 
 window.location.hash = '#/profile';
 await sleep(400);
-if (!root.textContent.includes('Друзья')) fail('в профиле нет блока друзей');
+if (!root.textContent.includes('Зови своих')) fail('в профиле нет блока друзей');
 else step('блок друзей в профиле отрисован');
 
 console.log('\n' + (errors.length ? `ОШИБОК: ${errors.length}\n` + errors.slice(0, 12).join('\n') : 'ОШИБОК НЕТ'));

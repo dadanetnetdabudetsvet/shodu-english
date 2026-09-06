@@ -1,3 +1,4 @@
+import { t } from '../i18n/index.js';
 /* Загрузка и нормализация контента.
  *
  * Загрузчик терпим к версии файла: поля ru_bridge и флаги формы
@@ -9,24 +10,82 @@ let cache = null;
 
 export async function loadContent() {
   if (cache) return cache;
-  const [w, c, r] = await Promise.all([
-    fetch('./data/words.json').then(x => x.json()),
-    fetch('./data/core-words.json').then(x => x.json()),
-    fetch('./data/rules.json').then(x => x.json()),
-  ]);
 
-  const deck1 = w.words.map((x, i) => normalizeWord(x, i, 'deck1'));
-  const deck2 = c.words.map((x, i) => normalizeWord(x, i, 'deck2'));
-  const falseFriends = (w.false_friends || []).map((x, i) => normalizeFalseFriend(x, i));
+  /* Шесть колод собирались отдельно и пересекаются по написанию.
+     Приоритет фиксированный: чем ближе слово к русскому, тем раньше оно
+     должно попасться человеку. Дубли снимаются строго по написанию —
+     два разных ответа на одно английское слово сделали бы задание
+     «выбери перевод» неразрешимым. */
+  const FILES = [
+    ['./data/words.json', 'cognates'],
+    ['./data/core-words.json', 'core'],
+    ['./data/deck3-cognates.json', 'cognates2'],
+    ['./data/deck4-actions.json', 'actions'],
+    ['./data/deck5-nouns.json', 'nouns'],
+    ['./data/deck6-topup.json', 'topup'],
+  ];
+
+  const loaded = await Promise.all(FILES.map(([url, deck]) =>
+    fetch(url).then(r => (r.ok ? r.json() : null)).catch(() => null).then(j => ({ deck, j }))));
+  const rules = await fetch('./data/rules.json').then(r => r.json()).catch(() => ({ rules: [] }));
+
+  const first = loaded.find(x => x.deck === 'cognates')?.j;
+  const rawTraps = (first && first.false_friends) || [];
+
+  const seen = new Set();
+  const all = [];
+  const push = (item, deck, index) => {
+    const key = String(item.en || '').toLowerCase().trim();
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    all.push(normalizeWord(item, index, deck));
+  };
+
+  // Ложные друзья идут третьими по приоритету: они дороже общей лексики.
+  const traps = [];
+  for (const [i, t] of rawTraps.entries()) {
+    const key = String(t.en || '').toLowerCase().trim();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    traps.push(normalizeFalseFriend(t, i));
+  }
+
+  let idx = 0;
+  for (const { deck, j } of loaded) {
+    if (!j || !j.words) continue;
+    if (deck === 'cognates2' || deck === 'actions' || deck === 'nouns' || deck === 'topup') {
+      // после ловушек
+    }
+    for (const item of j.words) push(item, deck, idx++);
+  }
+
+  const byDeck = (name) => all.filter(x => x.deck === name);
+  const deck1 = byDeck('cognates');
+  const deck2 = byDeck('core');
+  const extra = all.filter(x => !['cognates', 'core'].includes(x.deck));
 
   cache = {
-    deck1, deck2, falseFriends,
-    patterns: c.patterns || [],
-    rules: r.rules || [],
-    byId: new Map([...deck1, ...deck2, ...falseFriends].map(x => [x.id, x])),
-    version: { words: w.version, core: c.version, rules: r.version },
+    deck1, deck2, extra, falseFriends: traps,
+    all: all.concat(traps),
+    patterns: (loaded.find(x => x.deck === 'core')?.j?.patterns) || [],
+    rules: rules.rules || [],
+    byId: new Map([...all, ...traps].map(x => [x.id, x])),
+    counts: {
+      total: all.length + traps.length,
+      cognates: deck1.length, core: deck2.length,
+      traps: traps.length, extra: extra.length,
+    },
   };
   return cache;
+}
+
+/* У новых колод нет поля tier: они не про близость к русскому.
+   Выводим его из уровня, чтобы подбор по сложности работал единообразно. */
+function tierFromLevel(level, deck) {
+  if (deck === 'core') return 1;
+  if (level === 'a1') return 3;
+  if (level === 'a2') return 4;
+  return 5;
 }
 
 function normalizeWord(x, index, deck) {
@@ -35,7 +94,7 @@ function normalizeWord(x, index, deck) {
     ...x,
     deck,
     index,
-    tier: x.tier ?? 2,
+    tier: x.tier ?? tierFromLevel(x.level, deck),
     // Слово-мостик никогда не становится правильным ответом.
     // Правильный ответ — только точный перевод.
     bridge: x.ru_bridge ?? x.ru,
@@ -56,13 +115,13 @@ function normalizeFalseFriend(x, i) {
     bridge: x.looks_like,
     ipa: x.ipa || '',
     tr: x.tr || '',
-    hint: x.hint || `Не «${x.looks_like}». ${x.en} — это ${x.actual_ru}.`,
+    hint: x.hint || t('Не «{v0}». {v1} — это {v2}.', { v0: x.looks_like, v1: x.en, v2: x.actual_ru }),
     note: x.note || '',
     ex_en: x.ex_en || '',
     ex_ru: x.ex_ru || '',
     deck: 'falseFriends',
     tier: 4,
-    topic: 'ложные друзья',
+    topic: t('ложные друзья'),
     pos: x.pos || 'noun',
     falseFriend: true,
     stressShift: false, syllableDrop: false, spellingTrap: false,
@@ -102,10 +161,15 @@ function guessSpellingTrap(x) {
 
 /** Все слова, доступные при текущей планке. */
 export function poolForChallenge(content, sources) {
+  // Низкая сложность — только самые узнаваемые когнаты.
   let pool = content.deck1.filter(w => w.tier <= 2);
-  if (sources.includes('tier34')) pool = content.deck1;
+  if (sources.includes('tier34')) {
+    pool = content.deck1.concat(content.extra.filter(w => w.deck === 'cognates2'));
+  }
   if (sources.includes('falseFriends')) pool = pool.concat(content.falseFriends);
-  if (sources.includes('deck2')) pool = pool.concat(content.deck2);
+  if (sources.includes('deck2')) {
+    pool = pool.concat(content.deck2, content.extra.filter(w => w.deck !== 'cognates2'));
+  }
   return pool;
 }
 

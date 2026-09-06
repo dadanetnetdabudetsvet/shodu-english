@@ -9,7 +9,10 @@ import { refreshStreak, completeDay, costsLife, loseLife, regenLives,
          isSoftMode, grantEmergencyFreeze } from '../domain/streak.js';
 import { applyVote, autoAdjust, setManual, clampIndex } from '../domain/challenge.js';
 import { makeSelfCode, verifyProof, rewardFor, NEWCOMER_GEMS } from '../domain/referral.js';
+import { evaluateMedals } from '../domain/medals.js';
+import { weekDone } from '../domain/streak.js';
 import { fx } from './store.js';
+import { t } from '../i18n/index.js';
 
 export function rootReducer(state, action) {
   switch (action.type) {
@@ -25,7 +28,7 @@ export function rootReducer(state, action) {
         if (e.type === 'freezeUsed') {
           // Правило Р6: валюта не тратится молча.
           effects.push(fx.toast(
-            e.count === 1 ? 'Заморозка спасла ритм за вчера.' : `Заморозки спасли ритм за ${e.count} дня.`,
+            e.count === 1 ? t('Заморозка спасла ритм за вчера.') : t('Заморозки спасли ритм за {v0} дня.', { v0: e.count }),
             'info'));
         }
         if (e.type === 'paused') {
@@ -45,21 +48,33 @@ export function rootReducer(state, action) {
 
     case 'ANSWER_GRADED': {
       const { wordId, deck, correct, elapsedMs, mode, exerciseType,
-              usedHint, typoOnly, isCognate, comboAfter, attempt, listens } = action;
+              usedHint, typoOnly, isCognate, comboAfter, attempt, listens, softMiss } = action;
       const day = state.day;
-      const key = deck === 'deck2' ? 'deck2' : 'deck1';
+      const key = deck === 'core' ? 'deck2' : 'deck1';
       const srs = { ...state.srs, [key]: { ...state.srs[key] } };
       const rec = { ...(srs[key][wordId] || newRecord()) };
       const boxBefore = rec.box;
 
-      grade(rec, correct || typoOnly, elapsedMs, {
-        day, mode, exerciseType, boxBefore, isCognate,
-      });
+      if (softMiss && !correct) {
+        /* Строка уехала по времени. «Не успел» — это не «не знал»:
+           ронять коробку за скорость значит подкручивать оценку знания. */
+        rec.seen++; rec.lastDay = day; rec.dueDay = day;
+      } else {
+        grade(rec, correct || typoOnly, elapsedMs, {
+          day, mode, exerciseType, boxBefore, isCognate,
+        });
+      }
       srs[key][wordId] = rec;
 
       const soft = isSoftMode(state.lives);
-      let xp = answerXp(mode, { correct: correct || typoOnly, comboAfter, attempt, listens, exerciseType });
-      if (usedHint && xp > 0) xp = Math.round(xp / 2);
+      let xp = answerXp(mode, {
+        correct: correct || typoOnly, comboAfter, attempt, listens, exerciseType,
+        taps: action.taps || 0,
+      });
+      /* Правило Р8: подсказка не наказывается, это половина очков, а не ноль.
+         Раньше сдача давала строго ноль, потому что множитель применялся
+         только к уже ненулевому значению. */
+      if (usedHint) xp = Math.max(1, Math.round(answerXp(mode, { correct: true, comboAfter: 0, attempt: 2, listens: 3, exerciseType }) / 2));
       if (soft) xp = Math.round(xp * SOFT_MODE_XP_FACTOR);
 
       let lives = state.lives;
@@ -87,6 +102,11 @@ export function rootReducer(state, action) {
       const days = { ...state.days };
       const d = { ...(days[day] || emptyDay()) };
       d.answered++;
+      /* Дневная цель считает ЗАТРОНУТЫЕ слова, а не только новые.
+         Новые слова кончаются примерно на двенадцатый день, и цель
+         становилась недостижимой навсегда ровно в тот момент, когда
+         складывается привычка. */
+      d.touched = (d.touched || 0) + 1;
       if (correct || typoOnly) d.correct++;
       if (attempt <= 1 && (correct || typoOnly)) d.firstTry++;
       d.xp += xp;
@@ -104,6 +124,8 @@ export function rootReducer(state, action) {
       const days = { ...state.days };
       const d = { ...(days[day] || emptyDay()) };
       d.sessions++;
+      // Отметка режима: связка дня чередует их по давности.
+      const lastModes = { ...(state.lastModes || {}), [mode]: day };
       d.ms += ms;
       d.words += newWords;
       days[day] = d;
@@ -130,18 +152,33 @@ export function rootReducer(state, action) {
         }
       }
 
-      // Дневная цель измеряется в словах.
+      // Дневная цель измеряется в словах: новые плюс повторённые.
       const goal = state.settings.dailyGoalWords || 10;
-      const wordsToday = d.words;
+      const wordsToday = (d.words || 0) + Math.floor((d.touched || 0) / 2);
       if (wordsToday >= goal && !d.goalPaid) {
         d.goalPaid = true;
         econ.gems += GEMS.dailyGoal;
         effects.push(fx.sound('gems', 5));
       }
 
+      /* Медали выдаются здесь, а не при заходе в профиль. Раньше человек,
+         который не открывал профиль, не получал ни одной медали и ни одного
+         алмаза за них. */
+      const counters = medalCounters({ ...state, days, streak });
+      const fresh = evaluateMedals(counters, state.medals);
+      const medals = { ...state.medals };
+      for (const m of fresh) {
+        medals[m.id] = day;
+        econ.gems += m.gems;
+        effects.push(fx.toast(`Медаль: ${m.name} · +${m.gems} 💎`, 'info'));
+      }
+      if (fresh.length) effects.push(fx.sound('medal'), fx.confetti({ count: 70 }));
+
       const level = levelForXp(econ.xpTotal);
       return {
-        state: { ...state, days, econ, streak, profile: { ...state.profile, level } },
+        state: { ...state, days, econ, streak, medals, lastModes,
+                 profile: { ...state.profile, level },
+                 lastMedals: fresh.map(m => m.id) },
         effects: [...effects, fx.save()],
       };
     }
@@ -223,7 +260,7 @@ export function rootReducer(state, action) {
         state: {
           ...state,
           flags: { ...state.flags, onboarded: true },
-          econ: { ...state.econ, xpTotal: state.econ.xpTotal + (action.bonusXp || 0) },
+          baseline: action.baseline || null,
         },
         effects: [fx.save()],
       };
@@ -240,7 +277,30 @@ export function rootReducer(state, action) {
 }
 
 function emptyDay() {
-  return { ms: 0, xp: 0, words: 0, sessions: 0, correct: 0, answered: 0, firstTry: 0, goalPaid: false };
+  return { ms: 0, xp: 0, words: 0, touched: 0, sessions: 0, correct: 0, answered: 0, firstTry: 0, goalPaid: false };
+}
+
+/** Счётчики для медалей. Считаются из состояния, ничего не выдумывают. */
+export function medalCounters(state) {
+  let answersCorrect = 0, corrected = 0, known = 0;
+  for (const deck of ['deck1', 'deck2']) {
+    for (const rec of Object.values(state.srs[deck] || {})) {
+      answersCorrect += rec.ok || 0;
+      corrected += Math.min(rec.ok || 0, rec.fail || 0);
+      if (isKnown(rec)) known++;
+    }
+  }
+  const days = Object.values(state.days || {});
+  return {
+    answersCorrect, corrected, known,
+    sessions: days.reduce((a, d) => a + (d.sessions || 0), 0),
+    cleanSessions: days.filter(d => d.answered > 0 && d.answered === d.correct).length,
+    streakBest: state.streak.best || 0,
+    weekBest: weekDone(state.days || {}, state.day),
+    trapsKnown: 0,
+    friends: (state.referral?.friends || []).length,
+    returnedAfter: state.flags?.returnedAfter || 0,
+  };
 }
 
 /* ── производные величины для экранов ──────────────────────────── */

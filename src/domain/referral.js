@@ -131,7 +131,7 @@ export function shareTargets(url, text = INVITE_TEXT) {
   const u = encodeURIComponent(url);
   const t = encodeURIComponent(text);
   const tu = encodeURIComponent(`${text} ${url}`);
-  const ttl = encodeURIComponent('Шоду — английский, который уже у тебя');
+  const ttl = encodeURIComponent('Сходу — английский, который уже у тебя');
   return [
     { id: 'telegram', label: 'Telegram', icon: '✈️', href: `https://t.me/share/url?url=${u}&text=${t}` },
     { id: 'whatsapp', label: 'WhatsApp', icon: '💬', href: `https://api.whatsapp.com/send?text=${tu}` },

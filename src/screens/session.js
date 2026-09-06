@@ -13,7 +13,7 @@
  *  — таймер только в блице и только по выбору.
  */
 
-import { el, en } from '../ui/dom.js';
+import { el, en, setChildren } from '../ui/dom.js';
 import { buildSession, SessionQueue, newRecord, maintenance } from '../domain/srs.js';
 import { selectByChallenge, allowedExerciseTypes, allowedSources, tierOf } from '../domain/challenge.js';
 import { isSoftMode, MAX_LIVES } from '../domain/streak.js';
@@ -22,8 +22,9 @@ import { enterCard, enterOptions, popCorrect, shakeWrong, popCombo, fillBar, ani
 import { sound } from '../core/sound.js';
 import { speech } from '../core/speech.js';
 import { haptics } from '../core/haptics.js';
+import { t } from '../i18n/index.js';
 
-const MODE_TITLES = { build: 'Занятие', sprint: 'Блиц', ether: 'На слух' };
+const MODE_TITLES = { build: t('Занятие'), sprint: t('Блиц'), ether: t('На слух') };
 
 export function screen(store, content) {
   return {
@@ -39,13 +40,13 @@ export function screen(store, content) {
       const s0 = store.state;
       const startedAt = Date.now();
 
-      /* Подбор слов: приоритет у алгоритма повторений, планка управляет
+      /* Подбор слов: приоритет у алгоритма повторений, сложность управляет
          только свободными слотами. */
       const sources = allowedSources(s0.challenge.index);
       const basePool = poolForChallenge(content, sources);
       const withRecs = basePool.map(w => ({
         id: w.id, word: w,
-        rec: (s0.srs[w.deck === 'deck2' ? 'deck2' : 'deck1'] || {})[w.id] || newRecord(),
+        rec: (s0.srs[w.deck === 'core' ? 'deck2' : 'deck1'] || {})[w.id] || newRecord(),
       }));
       const banded = selectByChallenge(withRecs, s0.challenge.index);
       const pool = mergeUnique(withRecs.filter(p => p.rec.box >= 1 && p.rec.dueDay <= s0.day), banded);
@@ -99,15 +100,18 @@ export function screen(store, content) {
       const stage = el('div', { class: 'stack grow', style: 'gap:var(--sp-4)' });
       const feedback = el('div', { class: 'feedback', hidden: true });
 
+      const modeTag = el('div', { class: 't-caption', style: 'text-align:center' },
+        t(MODE_TITLES[mode] || 'Занятие'));
+
       const top = el('div', { class: 'session__top' },
-        el('button', { class: 'session__close', 'aria-label': 'Выйти', onClick: () => finish(false) }, '✕'),
+        el('button', { class: 'session__close', 'aria-label': t('Выйти'), onClick: confirmExit }, '✕'),
         el('div', { class: 'bar bar--thin grow', role: 'progressbar',
-                    'aria-label': `Слово 1 из ${queue.total}` }, bar),
+                    'aria-label': t('Слово 1 из {v0}', { v0: queue.total }) }, bar),
         counter,
         mode === 'build' ? sparks : null,
       );
 
-      const wrap = el('div', { class: 'session' }, top, combo, stage, feedback);
+      const wrap = el('div', { class: 'session' }, top, modeTag, combo, stage, feedback);
       root.replaceChildren(wrap);   // пересборка на месте не должна копить экраны
       renderSparks();
       next();
@@ -117,9 +121,9 @@ export function screen(store, content) {
       function renderSparks() {
         if (mode !== 'build') return;
         const lives = store.state.lives.count;
-        sparks.replaceChildren(...Array.from({ length: MAX_LIVES }, (_, i) =>
+        setChildren(sparks, ...Array.from({ length: MAX_LIVES }, (_, i) =>
           el('span', { class: 'spark' + (i < lives ? '' : ' spark--out') })));
-        sparks.setAttribute('aria-label', `Жизней: ${lives} из ${MAX_LIVES}`);
+        sparks.setAttribute('aria-label', t('Жизней: {v0} из {v1}', { v0: lives, v1: MAX_LIVES }));
       }
 
       function next() {
@@ -127,7 +131,7 @@ export function screen(store, content) {
         const item = queue.current;
         if (!item) { finish(true); return; }
 
-        counter.textContent = `${Math.min(queue.pos + 1, queue.total)}/${queue.total}`;
+        counter.textContent = `${queue.shownIndex}/${queue.total}`;
         fillBar(bar, queue.pos / queue.total, (queue.pos + 1) / queue.total);
 
         if (item.phase === 'teach') renderTeach(item);
@@ -140,24 +144,24 @@ export function screen(store, content) {
       function renderTeach(item) {
         const w = item.word;
         const lesson = w.falseFriend ? w.hint
-          : w.stressShift ? `Осторожно: ударение не там, где в русском. ${w.tr}`
-          : w.syllableDrop ? `Слогов меньше, чем кажется: ${w.tr}`
+          : w.stressShift ? t('Осторожно: ударение не там, где в русском. {v0}', { v0: w.tr })
+          : w.syllableDrop ? t('Слогов меньше, чем кажется: {v0}', { v0: w.tr })
           : w.hint;
 
         const card = el('div', { class: 'qcard' },
           el('div', { class: 'teach', },
-            el('div', { class: 'teach__over' }, w.falseFriend ? 'внимание, ловушка' : 'ты это уже знаешь'),
+            el('div', { class: 'teach__over' }, w.falseFriend ? t('внимание, ловушка') : t('ты это уже знаешь')),
             en(w.en, 't-en'),
             el('div', { class: 't-ipa', 'aria-hidden': 'true' }, w.ipa + '  ·  ' + w.tr),
             el('div', { class: 'teach__ru' }, w.answer),
             el('div', { class: 'teach__lesson' + (w.falseFriend ? ' teach__warn' : '') }, lesson),
           ));
 
-        stage.replaceChildren(card,
+        setChildren(stage, card,
           el('button', {
             class: 'btn btn--primary btn--cta',
             onClick: () => { sound.tap(); stats.newWords++; queue.advance(); next(); },
-          }, w.falseFriend ? 'Понял, не перепутаю' : 'Знаю'));
+          }, w.falseFriend ? t('Понял, не перепутаю 🪤') : t('Знаю это ✅')));
 
         enterCard(card);
         if (speech.available) setTimeout(() => speech.say(w.en), 320);
@@ -170,7 +174,7 @@ export function screen(store, content) {
         let answered = false;
 
         const speakBtn = speech.available ? el('button', {
-          class: 'qcard__speak', 'aria-label': `Произнести ${w.en}`,
+          class: 'qcard__speak', 'aria-label': t('Произнести {v0}', { v0: w.en }),
           onClick: () => speech.say(w.en),
         }, '🔊') : null;
 
@@ -178,7 +182,7 @@ export function screen(store, content) {
 
         if (type === 'audioChoice') {
           card = el('div', { class: 'qcard' },
-            el('div', { class: 'qcard__hint' }, 'Слушай и выбери перевод'),
+            el('div', { class: 'qcard__hint' }, t('Слушай и выбери перевод')),
             el('button', { class: 'btn btn--primary', style: 'min-height:72px;font-size:28px',
                            onClick: () => speech.say(w.en) }, '▶'),
           );
@@ -186,12 +190,12 @@ export function screen(store, content) {
           setTimeout(() => speech.say(w.en), 300);
         } else if (type === 'type') {
           card = el('div', { class: 'qcard' }, speakBtn,
-            el('div', { class: 'qcard__hint' }, 'Напиши по-английски'),
+            el('div', { class: 'qcard__hint' }, t('Напиши по-английски')),
             el('div', { class: 'qcard__ru' }, w.answer));
           controls = typeInput(w, onAnswer);
         } else if (type === 'reverse4') {
           card = el('div', { class: 'qcard' },
-            el('div', { class: 'qcard__hint' }, 'Выбери английское слово'),
+            el('div', { class: 'qcard__hint' }, t('Выбери английское слово')),
             el('div', { class: 'qcard__ru' }, w.answer));
           controls = choiceOptions(w, w.en, 4, onAnswer, x => x.en, true);
         } else {
@@ -205,9 +209,9 @@ export function screen(store, content) {
         const skip = el('button', {
           class: 'qskip',
           onClick: () => onAnswer(null, { gaveUp: true }),
-        }, 'не помню →');
+        }, t('не помню 🤷'));
 
-        stage.replaceChildren(card, controls, skip);
+        setChildren(stage, card, controls, skip);
         enterCard(card);
         if (controls.children.length) enterOptions(controls.children);
 
@@ -226,7 +230,7 @@ export function screen(store, content) {
             stats.maxCombo = Math.max(stats.maxCombo, stats.combo);
             if (stats.combo >= 3) {
               combo.hidden = false;
-              combo.textContent = `×${stats.combo} КОМБО 🔥`;
+              combo.textContent = t('×{v0} КОМБО 🔥', { v0: stats.combo });
               popCombo(combo);
             }
           } else {
@@ -252,7 +256,7 @@ export function screen(store, content) {
       function choiceOptions(w, correctText, count, onAnswer, label = x => x.answer, compareEn = false) {
         const distract = pickDistractors(w, contentPoolFor(w), count - 1);
         const options = shuffle([w, ...distract]);
-        const box = el('div', { class: 'options', role: 'radiogroup', 'aria-label': 'Варианты ответа' });
+        const box = el('div', { class: 'options', role: 'radiogroup', 'aria-label': t('Варианты ответа') });
         options.forEach((o, i) => {
           const btn = el('button', {
             class: 'option', role: 'radio', 'aria-checked': 'false',
@@ -289,7 +293,7 @@ export function screen(store, content) {
         const input = el('input', {
           class: 'option', type: 'text', inputmode: 'latin', autocapitalize: 'off',
           autocomplete: 'off', spellcheck: 'false', lang: 'en',
-          placeholder: 'по-английски…', style: 'width:100%',
+          placeholder: t('по-английски…'), style: 'width:100%',
         });
         const submit = () => {
           const v = input.value.trim().toLowerCase();
@@ -302,7 +306,7 @@ export function screen(store, content) {
         };
         input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
         const box = el('div', { class: 'options' }, input,
-          el('button', { class: 'btn btn--primary', onClick: submit }, 'Проверить'));
+          el('button', { class: 'btn btn--primary', onClick: submit }, t('Проверить ✓')));
         setTimeout(() => input.focus(), 120);
         return box;
       }
@@ -311,39 +315,70 @@ export function screen(store, content) {
         feedback.className = 'feedback ' + (right || typo ? 'feedback--right' : 'feedback--wrong');
         feedback.hidden = false;
 
-        const title = typo ? 'Считаю верным, это опечатка'
-          : right ? pick(['Верно', 'Точно', 'Есть', 'Так и есть', 'В точку'])
-          : gaveUp ? 'Честно' : pick(['Не совсем', 'Почти', 'Мимо']);
+        const title = typo ? t('Считаю верным, это опечатка')
+          : right ? pick([t('Верно'), t('Точно'), t('Есть'), t('Так и есть'), t('В точку')])
+          : gaveUp ? t('Честно') : pick([t('Не совсем'), t('Почти'), t('Мимо')]);
 
         const note = right && !typo
           ? `${w.en} — ${w.answer}`
-          : `${w.en} — ${w.answer}. ${gaveUp ? 'Покажем ещё раз попозже.' : 'Верну его в конце, посмотрим ещё раз.'}`;
+          : t('{v0} — {v1}. {v2}', { v0: w.en, v1: w.answer, v2: gaveUp ? 'Покажем ещё раз попозже.' : 'Верну его в конце, посмотрим ещё раз.' });
 
-        feedback.replaceChildren(
+        setChildren(feedback, 
           el('div', { class: 'feedback__title', role: 'status', 'aria-live': 'assertive' }, title),
           el('div', { class: 'feedback__note' }, note),
           w.tier >= 3 && (w.stressShift || w.syllableDrop)
-            ? el('div', { class: 't-caption' }, `звучит так: ${w.tr}`) : null,
+            ? el('div', { class: 't-caption' }, t('звучит так: {v0}', { v0: w.tr })) : null,
           el('button', {
             class: 'btn btn--primary btn--cta',
             onClick: () => { sound.tap(); queue.advance(); next(); },
-          }, 'Дальше'),
+          }, right || typo
+              ? pick([t('Красота, дальше →'), t('Ещё давай →'), t('Идём дальше →'), t('Поехали дальше →')])
+              : t('Понял, дальше →')),
         );
         animate(feedback, [{ transform: 'translateY(100%)' }, { transform: 'none' }],
           { duration: 300, easing: 'cubic-bezier(.22,1,.36,1)' });
         if (!right && !typo && speech.available) setTimeout(() => speech.saySlow(w.en), 260);
       }
 
+      /* Дистракторы берём из той же колоды: путать существительное
+         с наречием бессмысленно, различать похожие слова одного класса —
+         и есть учебная работа. */
       function contentPoolFor(w) {
-        return w.deck === 'deck2' ? content.deck2 : content.deck1;
+        const same = content.all.filter(x => x.deck === w.deck);
+        return same.length >= 8 ? same : content.all;
+      }
+
+      /* Выход подтверждается, а половина занятия засчитывается как день.
+         Раньше касание крестика на семнадцатом задании из восемнадцати
+         стирало день целиком. */
+      function confirmExit() {
+        const half = queue.pos >= Math.ceil(queue.total / 2);
+        if (queue.pos === 0) { finish(false); return; }
+        const sheet = el('div', {
+          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
+          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:90;max-width:536px;margin:0 auto',
+        },
+          el('div', { style: 'font-weight:600' }, t('Уходим?')),
+          el('div', { class: 't-sm' }, half
+            ? t('Больше половины уже сделано — день засчитаю.')
+            : t('Всё, что успел, сохранится. День засчитается со второй половины.')),
+          el('button', { class: 'btn btn--primary btn--cta', onClick: () => { close(); } }, t('Остаюсь ⚡')),
+          el('button', { class: 'btn btn--ghost', onClick: () => { close(); finish(half); } }, t('Всё, на сегодня хватит')),
+        );
+        const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:89', onClick: close });
+        document.body.append(back, sheet);
+        function close() { sheet.remove(); back.remove(); }
       }
 
       function finish(completed) {
         const ms = Date.now() - startedAt;
+        const bestBefore = store.state.profile.sprintBest || 0;
+        const isRecord = mode === 'sprint' && stats.correctFirstTry > bestBefore;
+        if (isRecord) store.dispatch({ type: 'PROFILE_SET', patch: { sprintBest: stats.correctFirstTry } });
         store.dispatch({
           type: 'SESSION_FINISHED',
-          mode, completed, ms,
-          mistakes: stats.mistakes, newWords: stats.newWords, isReview: false,
+          mode, completed, ms, newRecord: isRecord,
+          mistakes: stats.mistakes, newWords: stats.newWords, isReview: extraPractice,
         });
         const median = stats.times.length
           ? stats.times.slice().sort((a, b) => a - b)[Math.floor(stats.times.length / 2)] : 9999;
@@ -364,6 +399,8 @@ export function screen(store, content) {
    монтируется отдельно и не должен лезть в чужое состояние. */
 export let sessionResult = null;
 export function takeResult() { const r = sessionResult; sessionResult = null; return r; }
+/** Новые режимы живут в своих экранах, но отдают итог сюда же. */
+export function setResult(r) { sessionResult = r; }
 
 function pickType(w, item, allowed, mode, soft) {
   if (mode === 'sprint') return 'choice2';
@@ -387,7 +424,7 @@ function mergeUnique(a, b) {
 
 /* Экран, который раньше был тупиком.
  *
- * Прежний текст отправлял человека «поднять планку в профиле» — то есть
+ * Прежний текст отправлял человека «поднять сложность в профиле» — то есть
  * уйти с экрана, найти настройку и вернуться. Это ровно то место, где
  * люди закрывают приложение.
  *
@@ -395,22 +432,22 @@ function mergeUnique(a, b) {
  * и в одно касание. Главная кнопка на экране всегда одна. */
 function deadEndFix({ mode, ctx, store, content, hasAnyProgress, onRetry }) {
   const s = store.state;
-  const modeName = { sprint: 'Блиц', ether: 'Режим «На слух»', build: 'Занятие' }[mode] || 'Занятие';
+  const modeName = { sprint: t('Блиц'), ether: t('Режим «На слух»'), build: t('Занятие') }[mode] || t('Занятие');
 
   // Причина первая: человек ещё ничего не учил, а блиц и слух работают
   // только по знакомым словам. Это самый частый вход в тупик.
   if (!hasAnyProgress) {
     return el('div', { class: 'screen center stack', style: 'justify-content:center;gap:var(--sp-4)' },
       el('div', { style: 'font-size:48px' }, '🌱'),
-      el('h1', { class: 't-h1' }, `${modeName} — для слов, которые ты уже видел`),
+      el('h1', { class: 't-h1' }, t('{v0} — для слов, которые ты уже видел', { v0: modeName })),
       el('p', { class: 't-sm' },
-        'Сейчас их ещё нет. Возьмём первый десяток, это минуты четыре. ' +
-        'После этого сюда можно возвращаться сколько угодно.'),
+        t('Сейчас их ещё нет. Возьмём первый десяток, это минуты четыре. ') +
+        t('После этого сюда можно возвращаться сколько угодно.')),
       el('button', {
         class: 'btn btn--primary btn--cta',
         onClick: () => { sound.sessionStart(); ctx.go('session/build'); },
-      }, 'Взять первые слова'),
-      el('button', { class: 'btn btn--ghost', onClick: () => ctx.go('home') }, 'Не сейчас'),
+      }, t('Взять первые слова 🌱')),
+      el('button', { class: 'btn btn--ghost', onClick: () => ctx.go('home') }, t('Не сейчас')),
     );
   }
 
@@ -419,19 +456,19 @@ function deadEndFix({ mode, ctx, store, content, hasAnyProgress, onRetry }) {
   const bar = tierOfIndex(store);
   return el('div', { class: 'screen center stack', style: 'justify-content:center;gap:var(--sp-4)' },
     el('div', { style: 'font-size:48px' }, '🌤'),
-    el('h1', { class: 't-h1' }, 'Всё повторено'),
-    el('p', { class: 't-sm' }, 'На сегодня слова закончились. Можно остановиться — или взять ещё, прямо отсюда.'),
+    el('h1', { class: 't-h1' }, t('Всё повторено')),
+    el('p', { class: 't-sm' }, t('На сегодня слова закончились. Можно остановиться — или взять ещё, прямо отсюда.')),
 
     el('button', {
       class: 'btn btn--primary btn--cta',
       onClick: () => { sound.sessionStart(); onRetry({ extraPractice: true }); },
-    }, 'Позаниматься ещё'),
+    }, t('Ещё разок ⚡')),
 
     el('div', { class: 'card stack', style: 'gap:var(--sp-2);width:100%' },
       el('div', { class: 'row row--between' },
-        el('div', { class: 't-sm' }, `Планка ${s.challenge.index} · ${bar.name}`),
-        el('div', { class: 't-caption' }, 'сложность подбора')),
-      el('div', { class: 't-caption' }, 'Выше планка — в подбор попадают слова потруднее и новые типы заданий.'),
+        el('div', { class: 't-sm' }, t('Сложность {v0} · {v1}', { v0: s.challenge.index, v1: t(bar.name) })),
+        el('div', { class: 't-caption' }, t('сложность подбора'))),
+      el('div', { class: 't-caption' }, t('Выше сложность — в подбор попадают слова потруднее и новые типы заданий.')),
       el('button', {
         class: 'btn',
         onClick: () => {
@@ -439,14 +476,14 @@ function deadEndFix({ mode, ctx, store, content, hasAnyProgress, onRetry }) {
           store.dispatch({ type: 'CHALLENGE_SET', index: Math.min(30, s.challenge.index + 3) });
           onRetry();
         },
-      }, 'Поднять планку и попробовать'),
+      }, t('Поднять сложность 📈')),
     ),
 
     mode !== 'build' ? el('button', {
       class: 'btn', onClick: () => { sound.sessionStart(); ctx.go('session/build'); },
-    }, 'Взять новые слова') : null,
+    }, t('Взять новые слова 🌱')) : null,
 
-    el('button', { class: 'btn btn--ghost', onClick: () => ctx.go('home') }, 'На сегодня хватит'),
+    el('button', { class: 'btn btn--ghost', onClick: () => ctx.go('home') }, t('Хватит на сегодня 👌')),
   );
 }
 

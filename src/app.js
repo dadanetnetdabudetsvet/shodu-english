@@ -10,10 +10,12 @@ import { confetti } from './core/confetti.js';
 import { registerServiceWorker } from './core/sw-update.js';
 import { loadContent } from './data/content.js';
 import { readRefFromUrl } from './domain/referral.js';
+import { detectLanguage, setLanguage } from './i18n/index.js';
 import { createStore } from './ui/store.js';
 import { createRouter } from './ui/router.js';
 import { rootReducer } from './ui/reducer.js';
 import { toast } from './ui/toast.js';
+import { t } from './i18n/index.js';
 
 const root = document.getElementById('root');
 const tabbar = document.getElementById('tabbar');
@@ -21,6 +23,9 @@ const tabbar = document.getElementById('tabbar');
 async function boot() {
   const state = storage.load();
   state.day = reconcileDay(state.day, today());
+
+  // Язык: сохранённый выбор человека, иначе язык браузера.
+  await setLanguage(state.settings.lang || detectLanguage());
 
   applySettings(state.settings);
 
@@ -42,13 +47,15 @@ async function boot() {
       welcome: () => import('./screens/welcome.js').then(m => m.screen(store, content)),
       home:    () => import('./screens/home.js').then(m => m.screen(store, content)),
       session: () => import('./screens/session.js').then(m => m.screen(store, content)),
+      phrase:  () => import('./screens/phrase.js').then(m => m.screen(store, content)),
+      stream:  () => import('./screens/stream.js').then(m => m.screen(store, content)),
       results: () => import('./screens/results.js').then(m => m.screen(store, content)),
       words:   () => import('./screens/words.js').then(m => m.screen(store, content)),
       rules:   () => import('./screens/rules.js').then(m => m.screen(store, content)),
       profile: () => import('./screens/profile.js').then(m => m.screen(store, content)),
     },
     onChange: (name) => {
-      const inSession = name === 'session' || name === 'welcome' || name === 'results';
+      const inSession = ['session', 'phrase', 'stream', 'welcome', 'results'].includes(name);
       tabbar.hidden = inSession;
       for (const el of tabbar.querySelectorAll('[data-tab]')) {
         el.toggleAttribute('aria-current', el.dataset.tab === name);
@@ -71,7 +78,7 @@ async function boot() {
   registerServiceWorker({
     onUpdateReady: (apply) => {
       toast('Доступна новая версия', {
-        action: { label: 'Обновить', fn: () => { storage.flush(); storage.flush(); apply(); } },
+        action: { label: t('Обновить'), fn: () => { storage.flush(); storage.flush(); apply(); } },
         sticky: true,
       });
     },
@@ -111,8 +118,8 @@ function wireStoragePersistence(store) {
   });
   storage.addEventListener('nostorage', (e) => {
     toast(e.detail?.quota
-      ? 'Память браузера переполнена. Прогресс держится только в этой вкладке.'
-      : 'Браузер не даёт сохранять. Прогресс держится только в этой вкладке.',
+      ? t('Память браузера переполнена. Прогресс держится только в этой вкладке.')
+      : t('Браузер не даёт сохранять. Прогресс держится только в этой вкладке.'),
       { kind: 'warn', sticky: true });
   });
   storage.addEventListener('readonly', () => {
@@ -130,7 +137,7 @@ function wirePlatformWarnings() {
 
 boot().catch((err) => {
   console.error(err);
-  root.innerHTML = `<div class="screen"><h1 class="t-h1">Что-то пошло не так</h1>
-    <p class="t-sm">Прогресс на месте. Попробуй перезагрузить страницу.</p>
+  root.innerHTML = `<div class="screen"><h1 class="t-h1">${t('Что-то пошло не так')}</h1>
+    <p class="t-sm">${t('Прогресс на месте. Попробуй перезагрузить страницу.')}</p>
     <pre class="t-caption" style="white-space:pre-wrap">${String(err && err.message || err)}</pre></div>`;
 });
