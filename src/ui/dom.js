@@ -1,4 +1,4 @@
-import { t } from '../i18n/index.js';
+import { t, currentLanguage } from '../i18n/index.js';
 /* Маленькие помощники вместо фреймворка. */
 
 export function el(tag, props = {}, ...children) {

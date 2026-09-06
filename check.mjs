@@ -75,6 +75,22 @@ firstIds === 'w001,w002,w003' && lastIds === 'w198,w199,w200'
 
 
 // Инварианты данных, каждый из которых был нарушен и починен.
+const DECK_FILES = ['data/words.json', 'data/core-words.json', 'data/deck3-cognates.json',
+                    'data/deck4-actions.json', 'data/deck5-nouns.json', 'data/deck6-topup.json'];
+const allDeckWords = DECK_FILES.flatMap(f => (JSON.parse(readFileSync(f, 'utf8')).words || []));
+const uniqueEn = new Set(allDeckWords.map(w => String(w.en).toLowerCase()));
+uniqueEn.size + words.false_friends.length === 1000
+  ? ok(`в базе ровно 1000 уникальных слов`)
+  : bad(`в базе ${uniqueEn.size + words.false_friends.length} слов, ожидалась 1000`);
+
+const rhoticAll = allDeckWords.filter(w => w.tr && w.ipa && /р/.test(w.tr) && !/r/.test(w.ipa));
+rhoticAll.length === 0 ? ok('транскрипция согласована с IPA во всех колодах')
+  : bad(`ротичность разъехалась в ${rhoticAll.length} записях: ${rhoticAll.slice(0,4).map(w => w.en).join(', ')}`);
+
+const stressAll = allDeckWords.filter(w => w.tr && (w.tr.match(/\u0301/g) || []).length > 1);
+stressAll.length === 0 ? ok('одно ударение на слово во всех колодах')
+  : bad(`двойных ударений: ${stressAll.length}`);
+
 const rhotic = words.words.filter(w => /р/.test(w.tr) && !/r/.test(w.ipa));
 rhotic.length === 0 ? ok('транскрипция согласована с IPA по «р»')
   : bad(`ротичность разъехалась: ${rhotic.slice(0, 5).map(w => w.id + ':' + w.tr).join(' ')}`);

@@ -130,8 +130,41 @@ export function screen(store, content) {
         speech.available ? el('span', { style: 'font-size:20px' }, '🔊') : null,
       );
 
+      /* Пересчёт: единственное место, где видно изменение способности,
+         а не накопление. Предлагается с седьмого дня и дальше раз в
+         четыре недели. «Не сейчас» есть всегда, ничего не сгорает. */
+      const recheckCard = shouldOfferRecheck(s) && el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
+        el('div', { style: 'font-weight:600' }, t('Проверим, что изменилось 📏')),
+        el('div', { class: 't-sm' },
+          t('Те же десять слов, что в первый день. Полторы минуты, чтобы увидеть разницу.')),
+        el('button', {
+          class: 'btn btn--primary', onClick: () => { sound.tap(); ctx.go('recheck'); },
+        }, t('Пересчитать 📏')),
+        el('button', {
+          class: 'btn btn--ghost', style: 'font-size:var(--fs-sm)',
+          onClick: () => { store.dispatch({ type: 'RECHECK_SNOOZE' }); ctx.go('home'); },
+        }, t('Не сейчас')),
+      );
+
+      /* Установка на домашний экран: не косметика, а сохранность
+         прогресса. Браузер стирает данные сайтов после недели без
+         открытия, а установленное приложение считает свою неделю
+         отдельно. Предлагаем на седьмой день, когда есть что терять. */
+      const installCard = shouldOfferInstall(s) && el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
+        el('div', { style: 'font-weight:600' }, t('Положи на домашний экран 📲')),
+        el('div', { class: 't-sm' },
+          t('Браузер стирает данные сайтов после недели без открытия. Твои {v0} слов живут вот в этом браузере.', { v0: known })),
+        el('div', { class: 't-caption' },
+          t('На айфоне: «Поделиться» → «На экран Домой». На Андроиде появится предложение установить.')),
+        el('button', {
+          class: 'btn btn--ghost', style: 'font-size:var(--fs-sm)',
+          onClick: () => { store.dispatch({ type: 'INSTALL_SEEN' }); ctx.go('home'); },
+        }, t('Понятно ✓')),
+      );
+
       const wrap = el('div', { class: 'screen' },
-        rhythmRow, proof, goalRow, hero, pickLink, softNote, wordOfDay);
+        rhythmRow, proof, goalRow, hero, pickLink,
+        recheckCard, installCard, softNote, wordOfDay);
       root.replaceChildren(wrap);
 
       enterCard(hero);
@@ -176,6 +209,25 @@ export function screen(store, content) {
       return { destroy() {} };
     },
   };
+}
+
+/* Пересчёт предлагается с седьмого дня и потом раз в четыре недели. */
+function shouldOfferRecheck(s) {
+  if (!s.baseline) return false;
+  const lived = s.day - (s.createdDay ?? s.day);
+  if (lived < 7) return false;
+  if (s.recheckSnoozedDay && s.day - s.recheckSnoozedDay < 3) return false;
+  const last = (s.rechecks || []).slice(-1)[0];
+  if (!last) return true;
+  return s.day - last.day >= 28;
+}
+
+/* Подсказка про установку показывается один раз, на седьмой день. */
+function shouldOfferInstall(s) {
+  if (s.flags?.installPromptSeen) return false;
+  if (typeof matchMedia === 'function' && matchMedia('(display-mode: standalone)').matches) return false;
+  if (navigator.standalone) return false;
+  return (s.day - (s.createdDay ?? s.day)) >= 6;
 }
 
 function todayWords(d) {

@@ -79,8 +79,9 @@ export function screen(store, content) {
       function row(w) {
         const r = recOf(w);
         const strength = Math.min(5, r.box);
+        // Двести карточек с тенями подряд — это не список, а шум.
         return el('button', {
-          class: 'card row', style: 'gap:var(--sp-3);text-align:left;padding:var(--sp-3)',
+          class: 'list-row',
           onClick: () => openCard(w, r),
         },
           el('div', { class: 'stack grow', style: 'gap:1px' },

@@ -8,11 +8,11 @@
 import { el, setChildren } from '../ui/dom.js';
 import { LANGUAGES, currentLanguage, setLanguage } from '../i18n/index.js';
 import { countKnown, levelInfo } from '../ui/reducer.js';
-import { MEDALS, evaluateMedals, nextMedal } from '../domain/medals.js';
+import { MEDALS, evaluateMedals, nextMedal, visibleMedals } from '../domain/medals.js';
 import { gradeForLevel } from '../domain/scoring.js';
 import { tierOf, MIN_INDEX, MAX_INDEX } from '../domain/challenge.js';
 import { weekDone } from '../domain/streak.js';
-import { WEEKDAY_SHORT, weekdayIndex } from '../core/day.js';
+import { weekdayShort, weekdayIndex } from '../core/day.js';
 import { inviteUrl, shareTargets, INVITE_TEXT } from '../domain/referral.js';
 import { sound } from '../core/sound.js';
 import { storage } from '../core/storage.js';
@@ -74,12 +74,37 @@ export function screen(store, content) {
         );
       }
 
+      /* Нативный prompt в приложении с домашнего экрана выглядит как
+         системная ошибка. Своя шторка. */
       function editName(s) {
-        const val = prompt('Как тебя звать?', s.profile.name || '');
-        if (val == null) return;
-        const clean = sanitizeName(val);
-        store.dispatch({ type: 'PROFILE_SET', patch: { name: clean } });
-        render();
+        sound.tap();
+        const input = el('input', {
+          class: 'option', type: 'text', value: s.profile.name || '',
+          placeholder: t('Как тебя звать?'), maxlength: '20',
+          style: 'width:100%;min-height:48px',
+        });
+        const sheet = el('div', {
+          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
+          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:90;max-width:536px;margin:0 auto',
+        },
+          el('div', { style: 'font-weight:600' }, t('Как тебя звать?')),
+          el('div', { class: 't-caption' }, t('Можно оставить пустым — это ни на что не влияет.')),
+          input,
+          el('button', {
+            class: 'btn btn--primary btn--cta',
+            onClick: () => {
+              store.dispatch({ type: 'PROFILE_SET', patch: { name: sanitizeName(input.value) } });
+              close(); render();
+            },
+          }, t('Готово ✓')),
+          el('button', { class: 'btn btn--ghost', onClick: close }, t('Отмена')),
+        );
+        const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:89', onClick: close });
+        document.body.append(back, sheet);
+        setTimeout(() => input.focus(), 120);
+        const onKey = (e) => { if (e.key === 'Escape') close(); };
+        document.addEventListener('keydown', onKey);
+        function close() { sheet.remove(); back.remove(); document.removeEventListener('keydown', onKey); }
       }
 
       /* ── статистика ────────────────────────────────────────── */
@@ -103,7 +128,10 @@ export function screen(store, content) {
 
       /* ── график по минутам ─────────────────────────────────── */
       function chart(s) {
-        const N = 14;
+        // Не рисуем дни, которых у человека ещё не было: тринадцать
+        // пеньков на второй день читаются как провал, а не как старт.
+        const lived = s.day - (s.createdDay ?? s.day) + 1;
+        const N = Math.max(3, Math.min(14, lived));
         const bars = [];
         let max = 0;
         for (let i = N - 1; i >= 0; i--) {
@@ -146,7 +174,7 @@ export function screen(store, content) {
             t.setAttribute('text-anchor', 'middle');
             t.setAttribute('font-size', '9');
             t.setAttribute('fill', 'var(--text-3)');
-            t.textContent = WEEKDAY_SHORT[weekdayIndex(b.day)];
+            t.textContent = weekdayShort(weekdayIndex(b.day), currentLanguage());
             svg.append(t);
           }
         });
@@ -170,9 +198,9 @@ export function screen(store, content) {
         }
         const next = nextMedal(counters, earned);
 
-        // Показываем только то, что не дальше удвоенного текущего прогресса:
-        // витрина недостижимого сообщает человеку о его недостаточности.
-        const visible = MEDALS.filter(m => earned[m.id] || !m.secret);
+        /* Показываем только близкое. Витрина недостижимого сообщает
+           человеку о его недостаточности — это ровно то, что запрещено. */
+        const visible = visibleMedals(counters, earned);
 
         return el('div', { class: 'card stack' },
           el('div', { class: 'row row--between' },
@@ -367,7 +395,7 @@ export function screen(store, content) {
         const desc = el('div', { class: 't-caption' }, t(tierOf(s.challenge.index).desc));
         const input = el('input', {
           type: 'range', min: MIN_INDEX, max: MAX_INDEX, value: s.challenge.index,
-          style: 'width:100%', 'aria-label': t('Сложность сложности'),
+          style: 'width:100%', 'aria-label': t('Ручка сложности'),
           onInput: (e) => {
             val.textContent = e.target.value;
             desc.textContent = t(tierOf(Number(e.target.value)).desc);
@@ -517,23 +545,64 @@ export function screen(store, content) {
           el('button', {
             class: 'btn', style: 'background:none;box-shadow:none;border:1px solid var(--border-strong);align-self:flex-start',
             onClick: () => {
-              const typed = prompt('Это нельзя отменить.\nНапиши УДАЛИТЬ заглавными, если точно решил.');
-              if (typed !== t('УДАЛИТЬ')) { toast('Ничего не тронул.', { kind: 'info' }); return; }
-              let cancelled = false;
-              toast('Прогресс будет удалён через 10 секунд.', {
-                sticky: true, kind: 'warn',
-                action: { label: t('Вернуть'), fn: () => { cancelled = true; toast('Отменил. Всё на месте.', { kind: 'info' }); } },
-              });
-              setTimeout(() => {
-                if (cancelled) return;
-                storage.wipe();
-                location.hash = '#/welcome';
-                location.reload();
-              }, 10000);
+              openWipeSheet();
             },
           }, t('Начать заново')),
         );
         return el('div', { style: 'margin-top:var(--sp-4)' }, head, inner);
+      }
+
+      /* Третий барьер: ввод слова целиком, без нативного диалога,
+         с крупной безопасной кнопкой в фокусе. */
+      function openWipeSheet() {
+        const WORD = t('УДАЛИТЬ');
+        const input = el('input', {
+          class: 'option', type: 'text', placeholder: WORD,
+          style: 'width:100%;min-height:48px;text-transform:uppercase;letter-spacing:.12em',
+        });
+        const go = el('button', {
+          class: 'btn', disabled: true,
+          style: 'background:none;box-shadow:none;border:1px solid var(--border-strong)',
+          onClick: () => { close(); startWipe(); },
+        }, t('Да, стереть всё'));
+        input.addEventListener('input', () => {
+          go.disabled = input.value.trim().toUpperCase() !== WORD.toUpperCase();
+        });
+
+        const sheet = el('div', {
+          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
+          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:90;max-width:536px;margin:0 auto',
+        },
+          el('div', { style: 'font-weight:600' }, t('Это нельзя отменить')),
+          el('div', { class: 't-sm' }, t('Напиши {v0} заглавными, если точно решил.', { v0: WORD })),
+          input,
+          el('button', { class: 'btn btn--primary btn--cta', onClick: close }, t('Оставить как есть')),
+          go,
+        );
+        const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:89', onClick: close });
+        document.body.append(back, sheet);
+        setTimeout(() => input.focus(), 120);
+        const onKey = (e) => { if (e.key === 'Escape') close(); };
+        document.addEventListener('keydown', onKey);
+        function close() { sheet.remove(); back.remove(); document.removeEventListener('keydown', onKey); }
+      }
+
+      /* Четвёртый барьер: окно отмены. Данные стираются не сразу. */
+      function startWipe() {
+        let cancelled = false;
+        toast(t('Прогресс будет удалён через 10 секунд.'), {
+          sticky: true, kind: 'warn',
+          action: {
+            label: t('Вернуть'),
+            fn: () => { cancelled = true; toast(t('Отменил. Всё на месте.'), { kind: 'info' }); },
+          },
+        });
+        setTimeout(() => {
+          if (cancelled) return;
+          storage.wipe();
+          location.hash = '#/welcome';
+          location.reload();
+        }, 10000);
       }
 
       function buildCounters(s, agg) {

@@ -17,6 +17,7 @@ const core = read('data/core-words.json');
 const cog2 = read('data/deck3-cognates.json');
 const acts = read('data/deck4-actions.json');
 const nouns = read('data/deck5-nouns.json');
+const topup = read('data/deck6-topup.json');
 
 const sources = [
   { deck: 'cognates',  items: w.words,           priority: 1 },
@@ -25,6 +26,7 @@ const sources = [
   { deck: 'cognates2', items: cog2.words,        priority: 4 },
   { deck: 'actions',   items: acts.words,        priority: 5 },
   { deck: 'nouns',     items: nouns.words,       priority: 6 },
+  { deck: 'topup',     items: topup.words,       priority: 7 },
 ];
 
 const seen = new Map();

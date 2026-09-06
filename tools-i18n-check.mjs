@@ -1,73 +1,93 @@
-/* Проверка переводов против каталога.
+/* Проверка файлов локализации. Запуск: node tools-i18n-check.mjs
  *
- * Проверяет ровно то, что можно проверить механически:
- *  1) JSON валиден;
- *  2) множество ключей совпадает с каталогом, ни одного лишнего и ни одного пропущенного;
- *  3) ни одна строка не пустая и ни одна не равна русскому оригиналу;
- *  4) набор подстановок {…} в переводе совпадает с набором в оригинале;
- *  5) хвостовой пробел сохранён там, где строка склеивается со следующей.
+ * Ловит четыре класса поломок, каждый из которых виден пользователю:
+ * пропущенный ключ (человек увидит русскую строку), пустое значение,
+ * потерянную подстановку (человек увидит «{v0}» или число исчезнет)
+ * и строку, оставшуюся русской.
+ *
+ * Совпадения с оригиналом перечислены явно: между русским и украинским
+ * есть слова, которые совпадают буква в букву, и это не брак перевода.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 
-const LOCALES = ['en', 'es', 'pt', 'fr', 'it'];
-const catalog = JSON.parse(readFileSync('src/i18n/catalog.json', 'utf8')).strings;
-const catalogSet = new Set(catalog);
+const LANGS = ['de', 'pl', 'uk', 'tr', 'id'];
 
-const vars = (s) => (s.match(/\{\w+\}/g) || []).slice().sort().join(',');
+/* Слова, которые в целевом языке пишутся так же, как в русском.
+   Каждое исключение обосновано, список закрыт. */
+const SAME_AS_SOURCE_OK = {
+  '*': {
+    '+{v0} 💎': 'в строке нет слов: число, плюс и эмодзи одинаковы во всех языках',
+  },
+  uk: {
+    'слова': 'форма числівника 2–4: «два слова» — так само, як у російській',
+    'слово': 'форма числівника 1: «одне слово» — так само, як у російській',
+  },
+};
+
+const catalog = JSON.parse(readFileSync('src/i18n/catalog.json', 'utf8'));
+const keys = catalog.strings;
+const keySet = new Set(keys);
+const vars = (s) => [...s.matchAll(/\{(\w+)\}/g)].map(m => m[1]).sort().join(',');
 
 let failures = 0;
-console.log(`каталог: ${catalog.length} строк\n`);
+const fail = (m) => { failures++; console.log('  FAIL ' + m); };
+const ok = (m) => console.log('  ok   ' + m);
 
-for (const code of LOCALES) {
-  const path = `src/i18n/locales/${code}.json`;
+console.log(`каталог: ${keys.length} строк (поле count: ${catalog.count})`);
+if (keys.length !== catalog.count) fail(`count=${catalog.count}, а строк ${keys.length}`);
+if (keys.length !== new Set(keys).size) fail('в каталоге есть повторяющиеся ключи');
+
+for (const lang of LANGS) {
+  const path = `src/i18n/locales/${lang}.json`;
+  console.log(`\n── ${lang} ─ ${path}`);
+  if (!existsSync(path)) { fail('файла нет'); continue; }
+
   let dict;
-  try {
-    dict = JSON.parse(readFileSync(path, 'utf8'));
-  } catch (e) {
-    console.log(`${code}: JSON НЕВАЛИДЕН — ${e.message}`);
-    failures++;
-    continue;
+  try { dict = JSON.parse(readFileSync(path, 'utf8')); }
+  catch (e) { fail('невалидный JSON: ' + e.message); continue; }
+  ok('JSON валиден');
+
+  const own = Object.keys(dict);
+  const missing = keys.filter(k => !(k in dict));
+  const extra = own.filter(k => !keySet.has(k));
+  if (own.length === keys.length && !missing.length && !extra.length) {
+    ok(`ключей ${own.length}, множество совпадает с каталогом`);
+  } else {
+    fail(`ключей ${own.length} против ${keys.length} в каталоге`);
+    if (missing.length) fail(`нет перевода у ${missing.length}: ` + missing.slice(0, 10).map(s => JSON.stringify(s)).join(', '));
+    if (extra.length) fail(`лишние ключи (${extra.length}): ` + extra.slice(0, 10).map(s => JSON.stringify(s)).join(', '));
   }
 
-  const keys = Object.keys(dict);
-  const missing = catalog.filter(k => !(k in dict));
-  const extra = keys.filter(k => !catalogSet.has(k));
-  const empty = keys.filter(k => String(dict[k]).trim() === '');
-  const same = keys.filter(k => dict[k] === k);
-  const badVars = keys.filter(k => vars(k) !== vars(String(dict[k])));
-  const tailSpace = catalog
-    .filter(k => k.endsWith(' ') && k in dict)
-    .filter(k => !String(dict[k]).endsWith(' '));
+  const empty = own.filter(k => !String(dict[k]).trim());
+  empty.length ? fail(`пустых значений: ${empty.length} — ` + empty.map(s => JSON.stringify(s)).join(', '))
+               : ok('пустых значений нет');
 
-  const ok = !missing.length && !extra.length && !empty.length
-    && !same.length && !badVars.length && !tailSpace.length && keys.length === catalog.length;
+  const same = own.filter(k => dict[k] === k);
+  const allowed = { ...(SAME_AS_SOURCE_OK['*'] || {}), ...(SAME_AS_SOURCE_OK[lang] || {}) };
+  const unexpected = same.filter(k => !(k in allowed));
+  if (unexpected.length) fail(`совпадает с русским (${unexpected.length}): ` + unexpected.map(s => JSON.stringify(s)).join(', '));
+  else ok(`не переведённых строк нет` + (same.length ? `; совпадений по языку: ${same.length} — ` + same.map(k => `${JSON.stringify(k)} (${allowed[k]})`).join('; ') : ''));
 
-  console.log(`${code}.json  JSON: ок  ключей: ${keys.length}/${catalog.length}  ` +
-    `пропущено: ${missing.length}  лишних: ${extra.length}  ` +
-    `пустых: ${empty.length}  равных оригиналу: ${same.length}  ` +
-    `подстановки разошлись: ${badVars.length}  потерян хвостовой пробел: ${tailSpace.length}  ` +
-    `→ ${ok ? 'ЧИСТО' : 'ЕСТЬ НАРУШЕНИЯ'}`);
+  const broken = own.filter(k => vars(k) !== vars(dict[k]));
+  if (broken.length) {
+    fail(`подстановки разошлись (${broken.length}):`);
+    for (const k of broken) console.log(`        ${JSON.stringify(k)} {${vars(k)}} → ${JSON.stringify(dict[k])} {${vars(dict[k])}}`);
+  } else ok('набор подстановок {…} совпадает во всех строках');
 
-  const dump = (label, list) => {
-    if (!list.length) return;
-    console.log(`  ${label}:`);
-    for (const k of list.slice(0, 20)) {
-      console.log(`    ${JSON.stringify(k)}  →  ${JSON.stringify(dict[k])}`);
-      if (label.includes('подстановки')) {
-        console.log(`      оригинал: [${vars(k)}]   перевод: [${vars(String(dict[k]))}]`);
-      }
-    }
-    if (list.length > 20) console.log(`    …ещё ${list.length - 20}`);
-  };
-  dump('пропущенные ключи', missing.map(k => k));
-  dump('лишние ключи', extra);
-  dump('пустые строки', empty);
-  dump('равны русскому оригиналу', same);
-  dump('подстановки разошлись', badVars);
-  dump('потерян хвостовой пробел', tailSpace);
+  /* Р9: не больше одного восклицательного знака и одного эмодзи на строку. */
+  const emoji = /\p{Extended_Pictographic}/gu;
+  const loud = own.filter(k => (dict[k].match(/!/g) || []).length > 1);
+  const noisy = own.filter(k => (dict[k].match(emoji) || []).length > 1);
+  const added = own.filter(k => (dict[k].match(emoji) || []).length > (k.match(emoji) || []).length);
+  loud.length ? fail(`больше одного «!»: ` + loud.map(k => JSON.stringify(dict[k])).join(', ')) : ok('не больше одного «!» на строку');
+  noisy.length ? fail(`больше одного эмодзи: ` + noisy.map(k => JSON.stringify(dict[k])).join(', ')) : ok('не больше одного эмодзи на строку');
+  added.length ? fail(`эмодзи добавлены сверх оригинала: ` + added.map(k => JSON.stringify(dict[k])).join(', ')) : ok('новых эмодзи сверх оригинала нет');
 
-  if (!ok) failures++;
+  /* Английские слова-материал не должны появляться в служебных строках. */
+  const trailing = keys.filter(k => /\s$/.test(k) && !/\s$/.test(dict[k]));
+  trailing.length ? fail('потерян хвостовой пробел (строки склеиваются): ' + trailing.map(s => JSON.stringify(s)).join(', '))
+                  : ok('хвостовые пробелы сохранены');
 }
 
-console.log(`\nитог: ${failures === 0 ? 'все пять файлов чистые' : `файлов с нарушениями — ${failures}`}`);
-process.exit(failures === 0 ? 0 : 1);
+console.log(failures ? `\nПРОВАЛЕНО проверок: ${failures}` : '\nВсе проверки пройдены.');
+process.exit(failures ? 1 : 0);

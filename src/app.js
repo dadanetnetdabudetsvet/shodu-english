@@ -49,13 +49,14 @@ async function boot() {
       session: () => import('./screens/session.js').then(m => m.screen(store, content)),
       phrase:  () => import('./screens/phrase.js').then(m => m.screen(store, content)),
       stream:  () => import('./screens/stream.js').then(m => m.screen(store, content)),
+      recheck: () => import('./screens/recheck.js').then(m => m.screen(store, content)),
       results: () => import('./screens/results.js').then(m => m.screen(store, content)),
       words:   () => import('./screens/words.js').then(m => m.screen(store, content)),
       rules:   () => import('./screens/rules.js').then(m => m.screen(store, content)),
       profile: () => import('./screens/profile.js').then(m => m.screen(store, content)),
     },
     onChange: (name) => {
-      const inSession = ['session', 'phrase', 'stream', 'welcome', 'results'].includes(name);
+      const inSession = ['session', 'phrase', 'stream', 'welcome', 'results', 'recheck'].includes(name);
       tabbar.hidden = inSession;
       for (const el of tabbar.querySelectorAll('[data-tab]')) {
         el.toggleAttribute('aria-current', el.dataset.tab === name);

@@ -55,4 +55,15 @@ export function weekdayIndex(n) {
   return (d.getDay() + 6) % 7;
 }
 
-export const WEEKDAY_SHORT = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+/* Сокращения дней недели берём у платформы: свой список пришлось бы
+   переводить на двадцать языков, а Intl уже знает их все. */
+export function weekdayShort(index, lang) {
+  const base = new Date(Date.UTC(2024, 0, 1));   // понедельник
+  base.setUTCDate(base.getUTCDate() + index);
+  try {
+    return new Intl.DateTimeFormat(lang || undefined, { weekday: 'short', timeZone: 'UTC' })
+      .format(base).replace(/\.$/, '');
+  } catch {
+    return ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'][index] || '';
+  }
+}

@@ -321,7 +321,10 @@ export function screen(store, content) {
 
         const note = right && !typo
           ? `${w.en} — ${w.answer}`
-          : t('{v0} — {v1}. {v2}', { v0: w.en, v1: w.answer, v2: gaveUp ? 'Покажем ещё раз попозже.' : 'Верну его в конце, посмотрим ещё раз.' });
+          : t('{v0} — {v1}. {v2}', {
+              v0: w.en, v1: w.answer,
+              v2: gaveUp ? t('Покажем ещё раз попозже.') : t('Верну его в конце, посмотрим ещё раз.'),
+            });
 
         setChildren(feedback, 
           el('div', { class: 'feedback__title', role: 'status', 'aria-live': 'assertive' }, title),

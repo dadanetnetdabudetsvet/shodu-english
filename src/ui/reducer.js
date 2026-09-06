@@ -164,6 +164,11 @@ export function rootReducer(state, action) {
       /* Медали выдаются здесь, а не при заходе в профиль. Раньше человек,
          который не открывал профиль, не получал ни одной медали и ни одного
          алмаза за них. */
+      // Снимок для честной дельты. Без него строку «неделю назад было
+      // столько-то» пришлось бы выдумывать, а это запрещено.
+      d.knownAtEnd = countKnownIn({ ...state, srs: state.srs });
+      days[day] = d;
+
       const counters = medalCounters({ ...state, days, streak });
       const fresh = evaluateMedals(counters, state.medals);
       const medals = { ...state.medals };
@@ -265,6 +270,24 @@ export function rootReducer(state, action) {
         effects: [fx.save()],
       };
 
+    case 'RECHECK_SNOOZE':
+      return { state: { ...state, recheckSnoozedDay: state.day }, effects: [fx.save()] };
+
+    case 'INSTALL_SEEN':
+      return {
+        state: { ...state, flags: { ...state.flags, installPromptSeen: true } },
+        effects: [fx.save()],
+      };
+
+    case 'RECHECK_DONE':
+      return {
+        state: {
+          ...state,
+          rechecks: [...(state.rechecks || []), { day: state.day, correct: action.correct }].slice(-12),
+        },
+        effects: [fx.save()],
+      };
+
     case 'RULE_READ':
       return {
         state: { ...state, rulesRead: { ...state.rulesRead, [action.id]: state.day } },
@@ -304,6 +327,14 @@ export function medalCounters(state) {
 }
 
 /* ── производные величины для экранов ──────────────────────────── */
+
+function countKnownIn(state) {
+  let n = 0;
+  for (const deck of ['deck1', 'deck2']) {
+    for (const rec of Object.values(state.srs[deck] || {})) if (isKnown(rec)) n++;
+  }
+  return n;
+}
 
 export function countKnown(state) {
   let known = 0, learning = 0;

@@ -18,7 +18,7 @@ export function screen(store, content) {
         const done = Object.keys(store.state.rulesRead || {}).length;
         setChildren(list, 
           el('div', { class: 'card card--flat t-sm' },
-            t('{v0} из {v1} прочитано. Это те места, где английский устроен как русский.', { v0: done, v1: content.rules.length })),
+            t('{v0} из {v1} разобрано. Первые — там, где английский устроен ровно как русский.', { v0: done, v1: content.rules.length })),
           ...content.rules.map(rule),
         );
       }
@@ -26,7 +26,7 @@ export function screen(store, content) {
       function rule(r) {
         const isRead = !!(store.state.rulesRead || {})[r.id];
         return el('button', {
-          class: 'card row', style: 'gap:var(--sp-3);text-align:left;padding:var(--sp-3)',
+          class: 'list-row',
           onClick: () => open(r),
         },
           el('div', {
@@ -41,7 +41,9 @@ export function screen(store, content) {
 
       function open(r) {
         sound.tap();
-        store.dispatch({ type: 'RULE_READ', id: r.id });
+        // Правило засчитывается по закрытию, а не по открытию:
+        // иначе счётчик считает касания, а не прочитанное.
+        let counted = false;
         const sheet = el('div', {
           class: 'card', role: 'dialog', 'aria-modal': 'true',
           style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:80;max-width:536px;margin:0 auto;max-height:80dvh;overflow:auto',
@@ -69,7 +71,10 @@ export function screen(store, content) {
         document.body.append(back, sheet);
         animate(sheet, [{ transform: 'translateY(110%)' }, { transform: 'none' }],
           { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)' });
-        function close() { sheet.remove(); back.remove(); render(); }
+        function close() {
+          if (!counted) { counted = true; store.dispatch({ type: 'RULE_READ', id: r.id }); }
+          sheet.remove(); back.remove(); render();
+        }
       }
 
       const wrap = el('div', { class: 'screen' },

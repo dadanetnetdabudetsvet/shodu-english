@@ -26,7 +26,8 @@ for (const f of walk('src')) {
 // строки из доменного слоя переводятся на уровне экранов, но в каталог
 // должны попасть: это названия медалей, ступеней планки, ответы на голос
 const DOMAIN_STRINGS = [];
-for (const f of ['src/domain/medals.js', 'src/domain/challenge.js', 'src/domain/referral.js', 'src/domain/scoring.js']) {
+for (const f of ['src/domain/medals.js', 'src/domain/challenge.js', 'src/domain/referral.js',
+                 'src/domain/scoring.js', 'src/screens/home.js', 'src/screens/session.js']) {
   const src = readFileSync(f, 'utf8').replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/.*$/gm, '$1 ');
   for (const m of src.matchAll(/'((?:[^'\\\n]|\\.)*)'/g)) {
     const v = m[1];
