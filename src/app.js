@@ -1,7 +1,7 @@
 /* Точка входа. Собирает хранилище, стор, исполнителей эффектов и роутер. */
 
 import { storage } from './core/storage.js';
-import { today, reconcileDay } from './core/day.js';
+import { today } from './core/day.js';
 import { sound } from './core/sound.js';
 import { speech } from './core/speech.js';
 import { haptics } from './core/haptics.js';
@@ -10,19 +10,17 @@ import { confetti } from './core/confetti.js';
 import { registerServiceWorker } from './core/sw-update.js';
 import { loadContent } from './data/content.js';
 import { readRefFromUrl } from './domain/referral.js';
-import { detectLanguage, setLanguage, onLanguageChange } from './i18n/index.js';
+import { detectLanguage, setLanguage, onLanguageChange, t } from './i18n/index.js';
 import { createStore } from './ui/store.js';
 import { createRouter } from './ui/router.js';
 import { rootReducer } from './ui/reducer.js';
 import { toast } from './ui/toast.js';
-import { t } from './i18n/index.js';
 
 const root = document.getElementById('root');
 const tabbar = document.getElementById('tabbar');
 
 async function boot() {
   const state = storage.load();
-  state.day = reconcileDay(state.day, today());
 
   // Язык: сохранённый выбор человека, иначе язык браузера.
   await setLanguage(state.settings.lang || detectLanguage());
@@ -68,6 +66,12 @@ async function boot() {
       if (!inSession) sound.screen();
     },
   });
+
+  /* Пересчёт дня делается ДО первой отрисовки и до того, как что-то
+     перезапишет state.day. Раньше день присваивался здесь же, и
+     редьюсер выходил на первой строке: стрик не пересчитывался,
+     жизни не восстанавливались. */
+  store.dispatch({ type: 'DAY_TICK' });
 
   if (!location.hash) location.hash = state.flags.onboarded ? '#/home' : '#/welcome';
   await router.render();
@@ -117,7 +121,17 @@ function wireEffects(store, content) {
   store.onEffect('haptic', (e) => haptics.fire(e.name));
   store.onEffect('speak', (e) => speech.say(e.text, e.opts));
   store.onEffect('confetti', (e) => confetti.burst(e.opts || {}));
-  store.onEffect('toast', (e) => toast(e.text, { kind: e.kind }));
+  store.onEffect('toast', (e) => {
+    // Редьюсер чист и языка не знает: он передаёт ключ и подстановки,
+    // а перевод и подстановок, и самой фразы делается здесь.
+    let text = e.text;
+    if (text && text.i18n) {
+      const vars = { ...(text.vars || {}) };
+      for (const k of (text.tr || [])) if (k in vars) vars[k] = t(String(vars[k]));
+      text = t(text.i18n, vars);
+    }
+    toast(text, { kind: e.kind });
+  });
   store.onEffect('navigate', (e) => { location.hash = '#/' + String(e.route).replace(/^#?\/?/, ''); });
   store.onEffect('save', () => storage.touch());
   store.onEffect('settings', () => applySettings(store.state.settings));
@@ -139,7 +153,10 @@ function wireStoragePersistence(store) {
     toast('Прогресс записан более новой версией приложения. Пока только чтение.', { kind: 'warn', sticky: true });
   });
   storage.addEventListener('external', () => {
-    toast('Прогресс обновился в другой вкладке.', { kind: 'info' });
+    // Раньше показывался тост, а состояние оставалось прежним:
+    // человек видел сообщение и никаких изменений.
+    store.hydrate(storage.state);
+    toast(t('Прогресс обновился в другой вкладке.'), { kind: 'info' });
   });
 }
 

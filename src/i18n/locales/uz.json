@@ -362,5 +362,21 @@
  "Это нельзя отменить": "Buni orqaga qaytarib boʻlmaydi",
  "Это твой собственный код.": "Bu sening oʻz koding.",
  "Этот друг уже зачтён.": "Bu doʻst allaqachon hisobga olingan.",
- "Язык интерфейса 🌍": "Interfeys tili 🌍"
+ "Язык интерфейса 🌍": "Interfeys tili 🌍",
+ "Дом": "Bosh sahifa",
+ "Профиль": "Profil",
+ "Доступна новая версия": "Yangi versiya bor",
+ "Пересчёт пропустим": "Qayta sanoqni oʻtkazamiz",
+ "Показать ещё · осталось {v0}": "Yana koʻrsat · {v0} qoldi",
+ "Прогресс записан более новой версией приложения. Пока только чтение.": "Yutuqlaring yangiroq versiyada saqlangan. Hozircha faqat oʻqish.",
+ "Прогресс обновился в другой вкладке.": "Boshqa oynada yutuqlar yangilandi.",
+ "Спасибо, отметил. Поправим.": "Belgilab qoʻydim. Tuzatamiz.",
+ "Часть слов из первой проверки поменялась, сравнивать было бы нечестно.": "Birinchi sanoqdagi ayrim soʻzlar oʻzgargan, taqqoslash toʻgʻri boʻlmaydi.",
+ "{v0} · +{v1} 💎": "{v0} · +{v1} 💎",
+ "Медаль: {v0} · +{v1} 💎": "Nishon: {v0} · +{v1} 💎",
+ "Бонус за приглашение: +{v0} алмазов": "Taklif bonusi: +{v0} olmos",
+ "Друг зачтён. +{v0} алмазов": "Doʻst hisobga olindi. +{v0} olmos",
+ "Заморозка получена. Ритм под защитой.": "Muzlatish olding. Maroming himoyada.",
+ "Лучший ритм: {v0} дней. Он остаётся твоим.": "Eng yaxshi marom: {v0} kun. U sening boʻlib qoladi.",
+ "Ритм на паузе. Он вернётся с первого же занятия.": "Marom pauzada. Bitta mashgʻulot uni qaytaradi."
 }

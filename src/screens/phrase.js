@@ -70,6 +70,7 @@ export function screen(store, content) {
         fillBar(bar, i / tasks.length, (i + 1) / tasks.length);
 
         let attempt = 0;
+        let resolved = false;
         const placed = new Array(task.slots).fill(null);
         const shownAt = performance.now();
 
@@ -116,6 +117,7 @@ export function screen(store, content) {
         }
 
         check.addEventListener('click', () => {
+          if (resolved) return;
           attempt++;
           const res = checkPlacement(placed, task.answer);
           if (res.ok) return succeed(attempt === 1);
@@ -139,12 +141,17 @@ export function screen(store, content) {
         });
 
         function solve() {
+          if (resolved) return;
           for (let k = 0; k < task.answer.length; k++) placed[k] = { text: task.answer[k] };
           drawShelf();
           succeed(false, true);
         }
 
         function succeed(firstTry, hinted = false) {
+          if (resolved) return;
+          resolved = true;
+          check.disabled = true;
+          skip.remove();
           stats.answered++;
           stats.times.push(performance.now() - shownAt);
           if (firstTry) stats.correctFirstTry++;
@@ -175,16 +182,19 @@ export function screen(store, content) {
           }, 1400);
         }
 
+        const skip = el('button', { class: 'qskip', onClick: () => solve() }, t('не помню 🤷'));
         drawShelf(); drawBank();
         const card = el('div', { class: 'stack', style: 'gap:var(--sp-3)' },
           el('div', { class: 'phrase-ru' }, task.ru),
-          shelf, bank, check,
-          el('button', { class: 'qskip', onClick: () => solve() }, t('не помню 🤷')));
+          shelf, bank, check, skip);
         setChildren(stage, card);
         enterCard(card);
       }
 
+      let finished = false;
       function finish(completed) {
+        if (finished) return;
+        finished = true;
         const ms = Date.now() - startedAt;
         store.dispatch({
           type: 'SESSION_FINISHED', mode: 'phrase', completed, ms,

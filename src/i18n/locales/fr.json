@@ -362,5 +362,21 @@
  "Это нельзя отменить": "Impossible de revenir en arrière",
  "Это твой собственный код.": "C’est ton propre code.",
  "Этот друг уже зачтён.": "Cet ami est déjà compté.",
- "Язык интерфейса 🌍": "Langue de l’appli 🌍"
+ "Язык интерфейса 🌍": "Langue de l’appli 🌍",
+ "Дом": "Accueil",
+ "Профиль": "Profil",
+ "Доступна новая версия": "Nouvelle version dispo",
+ "Пересчёт пропустим": "On saute le recomptage",
+ "Показать ещё · осталось {v0}": "Voir plus · encore {v0}",
+ "Прогресс записан более новой версией приложения. Пока только чтение.": "Ta progression vient d’une version plus récente. Lecture seule pour l’instant.",
+ "Прогресс обновился в другой вкладке.": "Ta progression a bougé dans un autre onglet.",
+ "Спасибо, отметил. Поправим.": "Noté. On corrige.",
+ "Часть слов из первой проверки поменялась, сравнивать было бы нечестно.": "Certains mots du premier test ont changé, comparer ne serait pas honnête.",
+ "{v0} · +{v1} 💎": "{v0} · +{v1} 💎",
+ "Медаль: {v0} · +{v1} 💎": "Médaille : {v0} · +{v1} 💎",
+ "Бонус за приглашение: +{v0} алмазов": "Bonus d’invitation : +{v0} gemmes",
+ "Друг зачтён. +{v0} алмазов": "Ami compté. +{v0} gemmes",
+ "Заморозка получена. Ритм под защитой.": "Gel obtenu. Ton rythme est couvert.",
+ "Лучший ритм: {v0} дней. Он остаётся твоим.": "Meilleure série : {v0} jours. Elle reste à toi.",
+ "Ритм на паузе. Он вернётся с первого же занятия.": "Ton rythme est en pause. Une séance le relance."
 }

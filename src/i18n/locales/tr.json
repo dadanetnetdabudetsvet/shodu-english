@@ -362,5 +362,21 @@
  "Это нельзя отменить": "Bu geri alınamaz",
  "Это твой собственный код.": "Bu senin kendi kodun.",
  "Этот друг уже зачтён.": "Bu arkadaş zaten sayıldı.",
- "Язык интерфейса 🌍": "Uygulama dili 🌍"
+ "Язык интерфейса 🌍": "Uygulama dili 🌍",
+ "Дом": "Ana sayfa",
+ "Профиль": "Profil",
+ "Доступна новая версия": "Yeni sürüm hazır",
+ "Пересчёт пропустим": "Yeniden saymayı atlıyoruz",
+ "Показать ещё · осталось {v0}": "Daha fazla · {v0} kaldı",
+ "Прогресс записан более новой версией приложения. Пока только чтение.": "İlerlemeni daha yeni bir sürüm kaydetmiş. Şimdilik salt okunur.",
+ "Прогресс обновился в другой вкладке.": "İlerleme başka sekmede güncellendi.",
+ "Спасибо, отметил. Поправим.": "Not aldım. Düzelteceğiz.",
+ "Часть слов из первой проверки поменялась, сравнивать было бы нечестно.": "İlk turdaki bazı kelimeler değişmiş, karşılaştırmak dürüst olmaz.",
+ "{v0} · +{v1} 💎": "{v0} · +{v1} 💎",
+ "Медаль: {v0} · +{v1} 💎": "Rozet: {v0} · +{v1} 💎",
+ "Бонус за приглашение: +{v0} алмазов": "Davet bonusu: +{v0} elmas",
+ "Друг зачтён. +{v0} алмазов": "Arkadaş sayıldı. +{v0} elmas",
+ "Заморозка получена. Ритм под защитой.": "Dondurma kazandın. Ritmin güvende.",
+ "Лучший ритм: {v0} дней. Он остаётся твоим.": "En iyi seri: {v0} gün. Senin kalıyor.",
+ "Ритм на паузе. Он вернётся с первого же занятия.": "Ritmin duraklatıldı. İlk turda geri gelir."
 }

@@ -42,7 +42,8 @@ export function buildStreamLine(target, pool, opts = {}) {
     if (FUNCTION_SWAPS[low]) candidates.push({ i, kind: 'function', options: FUNCTION_SWAPS[low] });
     if (low === String(target.en).toLowerCase()) {
       const near = pool
-        .filter(w => w.topic === target.topic && w.id !== target.id && w.en)
+        .filter(w => w.id !== target.id && w.en
+          && (target.topic ? w.topic === target.topic : w.deck === target.deck))
         .slice(0, 20)
         .map(w => w.en);
       if (near.length) candidates.push({ i, kind: 'topic', options: near });

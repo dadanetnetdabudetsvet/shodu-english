@@ -21,6 +21,8 @@ export function screen(store, content) {
     mount(root, ctx) {
       const s = store.state;
       const base = s.baseline;
+      const timers = new Set();
+      const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.add(id); return id; };
       const wrap = el('div', { class: 'screen screen--full' });
       root.replaceChildren(wrap);
 
@@ -30,10 +32,20 @@ export function screen(store, content) {
           el('h1', { class: 't-h1' }, t('Пересчёт будет позже')),
           el('p', { class: 't-sm' }, t('Точку отсчёта ставит первая проверка. Она у тебя ещё впереди.')),
           el('button', { class: 'btn btn--primary btn--cta', onClick: () => ctx.go('home') }, t('Понятно ✓'))));
-        return { destroy() {} };
+        return { destroy() { for (const id of timers) clearTimeout(id); } };
       }
 
       const quiz = base.ids.map(id => content.byId.get(id)).filter(Boolean);
+      // Сравнивать восемь из десяти с одним из семи нельзя: это сообщит
+      // о падении там, где его нет.
+      if (quiz.length !== base.ids.length) {
+        setChildren(wrap, el('div', { class: 'stack center', style: 'justify-content:center;flex:1;gap:var(--sp-4)' },
+          el('div', { style: 'font-size:44px' }, '📏'),
+          el('h1', { class: 't-h1' }, t('Пересчёт пропустим')),
+          el('p', { class: 't-sm' }, t('Часть слов из первой проверки поменялась, сравнивать было бы нечестно.')),
+          el('button', { class: 'btn btn--primary btn--cta', onClick: () => ctx.go('home') }, t('Понятно ✓'))));
+        return { destroy() { for (const id of timers) clearTimeout(id); } };
+      }
       let i = 0, correct = 0;
       render();
 
@@ -63,9 +75,9 @@ export function screen(store, content) {
           else {
             btn.classList.add('option--wrong');
             const rb = [...opts.children][options.findIndex(x => x.id === word.id)];
-            setTimeout(() => rb.classList.add('option--right'), 240);
+            later(() => rb.classList.add('option--right'), 240);
           }
-          setTimeout(() => { i++; render(); }, right ? 520 : 1000);
+          later(() => { i++; render(); }, right ? 520 : 1000);
         }
 
         setChildren(wrap, el('div', { class: 'stack', style: 'gap:var(--sp-4)' },
@@ -111,7 +123,7 @@ export function screen(store, content) {
         if (grew) { sound.medal(); confetti.burst({ count: 80 }); } else sound.sessionDone();
       }
 
-      return { destroy() {} };
+      return { destroy() { for (const id of timers) clearTimeout(id); } };
     },
   };
 }

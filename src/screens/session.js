@@ -24,7 +24,9 @@ import { speech } from '../core/speech.js';
 import { haptics } from '../core/haptics.js';
 import { t } from '../i18n/index.js';
 
-const MODE_TITLES = { build: t('Занятие'), sprint: t('Блиц'), ether: t('На слух') };
+/* Названия переводятся при отрисовке, а не при загрузке модуля:
+   на уровне модуля язык ещё не выбран, и они остались бы русскими. */
+const MODE_TITLES = { build: 'Занятие', sprint: 'Блиц', ether: 'На слух' };
 
 export function screen(store, content) {
   return {
@@ -373,7 +375,10 @@ export function screen(store, content) {
         function close() { sheet.remove(); back.remove(); }
       }
 
+      let finished = false;
       function finish(completed) {
+        if (finished) return;      // переход асинхронный, тап успевает трижды
+        finished = true;
         const ms = Date.now() - startedAt;
         const bestBefore = store.state.profile.sprintBest || 0;
         const isRecord = mode === 'sprint' && stats.correctFirstTry > bestBefore;

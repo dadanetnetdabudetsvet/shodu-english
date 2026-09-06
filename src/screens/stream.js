@@ -30,6 +30,10 @@ export function screen(store, content) {
       const stats = { answered: 0, correctFirstTry: 0, mistakes: 0, newWords: 0, times: [], maxCombo: 0 };
       let steady = false;
       let timer = null, rafId = null;
+      // Отложенные переходы между строками: без учёта они продолжали
+      // начислять очки уже после ухода с экрана.
+      const pending = new Set();
+      const later = (fn, ms) => { const id = setTimeout(() => { pending.delete(id); fn(); }, ms); pending.add(id); return id; };
 
       const sources = allowedSources(s0.challenge.index);
       const pool = poolForChallenge(content, sources)
@@ -97,7 +101,7 @@ export function screen(store, content) {
         animate(row, [{ opacity: 0, transform: 'translateY(18px)' }, { opacity: 1, transform: 'none' }],
           { duration: 260, easing: 'cubic-bezier(.22,1,.36,1)' });
 
-        timer = setTimeout(() => escape(), tempo);
+        timer = later(() => escape(), tempo);
 
         function onTap(idx) {
           if (resolved) return;
@@ -113,7 +117,7 @@ export function screen(store, content) {
             node.classList.add('stream-word--fixed');
             if (speech.available) speech.say(line.tokens.map((tk, k) => (k === idx ? line.correct : tk.text)).join(' '));
             grade(true, xp, performance.now() - shownAt, taps);
-            setTimeout(() => nextLine(), 700);
+            later(() => nextLine(), 700);
           } else {
             // Не ошибка, а сужение поиска: слово остаётся подчёркнутым.
             tapped.add(idx);
@@ -130,7 +134,7 @@ export function screen(store, content) {
           node.classList.add('stream-word--fixed');
           ru.textContent = t('Вот оно');
           grade(false, STREAM_XP.escaped, performance.now() - shownAt);
-          setTimeout(() => nextLine(), 900);
+          later(() => nextLine(), 900);
         }
 
         function grade(found, xp, elapsed, taps = 0) {
@@ -164,8 +168,13 @@ export function screen(store, content) {
           el('button', { class: 'btn btn--ghost', onClick: () => finish(true) }, t('Хватит на сегодня 👌'))));
       }
 
+      let finished = false;
       function finish(completed) {
+        if (finished) return;
+        finished = true;
         clearTimeout(timer);
+        for (const id of pending) clearTimeout(id);
+        pending.clear();
         if (rafId) cancelAnimationFrame(rafId);
         const ms = Date.now() - startedAt;
         const wpm = wordsPerMinute(wordsRead, readMs);
@@ -183,7 +192,13 @@ export function screen(store, content) {
         });
       }
 
-      return { destroy() { clearTimeout(timer); speech.cancel(); } };
+      return { destroy() {
+        finished = true;
+        clearTimeout(timer);
+        for (const id of pending) clearTimeout(id);
+        pending.clear();
+        speech.cancel();
+      } };
     },
   };
 }

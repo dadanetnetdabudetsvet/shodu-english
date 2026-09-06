@@ -2,8 +2,14 @@
 const el = document.getElementById('toast');
 let timer = null;
 
+let locked = false;
+
 export function toast(text, { kind = 'info', action = null, sticky = false, ms = 3200 } = {}) {
   if (!el) return;
+  // Окно отмены удаления прогресса не должно затираться случайным
+  // тостом: оно живёт до истечения срока или до нажатия.
+  if (locked && !action) return;
+  locked = !!(action && sticky);
   clearTimeout(timer);
   el.className = `toast toast--${kind}`;
   el.replaceChildren();
@@ -24,5 +30,6 @@ export function toast(text, { kind = 'info', action = null, sticky = false, ms =
 }
 
 export function hide() {
+  locked = false;
   if (el) el.hidden = true;
 }

@@ -190,11 +190,11 @@ export function screen(store, content) {
       function medalsBlock(s, agg) {
         const counters = buildCounters(s, agg);
         const earned = s.medals || {};
-        const fresh = evaluateMedals(counters, earned);
-        if (fresh.length) {
-          // Выдаём молча в состоянии, показываем как открытые.
-          for (const m of fresh) earned[m.id] = s.day;
-          store.dispatch({ type: 'PROFILE_SET', patch: {} });
+        /* Выдача идёт одним действием: раньше экран мутировал состояние
+           напрямую и присваивал медали с нулём алмазов, после чего
+           редьюсер их уже не выдавал. */
+        if (evaluateMedals(counters, earned).length) {
+          store.dispatch({ type: 'MEDALS_CLAIM', counters });
         }
         const next = nextMedal(counters, earned);
 
@@ -629,7 +629,12 @@ export function screen(store, content) {
 
       render();
       enterCard(wrap);
-      const off = store.subscribe(st => st, render);
+      /* Раньше подписка стояла на всё состояние, и профиль
+         перерисовывался на каждый диспатч, включая чужие. */
+      const off = store.subscribe(
+        st => ({ xp: st.econ.xpTotal, gems: st.econ.gems, medals: Object.keys(st.medals || {}).length,
+                 name: st.profile.name, avatar: st.profile.avatarIdx, ch: st.challenge.index }),
+        render);
       return { destroy() { off(); } };
     },
   };

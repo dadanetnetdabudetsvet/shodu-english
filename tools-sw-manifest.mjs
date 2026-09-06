@@ -20,13 +20,25 @@ const files = [
 ].filter(f => !f.includes('/verify.mjs'));
 
 const sw = readFileSync('service-worker.js', 'utf8');
+
+/* Версия кэша поднимается автоматически по содержимому файлов: при
+   ручном бампе про него забывали, и установленное приложение
+   продолжало отдавать старую версию из кэша навсегда. */
+import { createHash } from 'node:crypto';
+const hash = createHash('sha1');
+for (const f of files) {
+  try { hash.update(readFileSync(f.replace('./', '') || 'index.html')); } catch { hash.update(f); }
+}
+const version = 'v' + hash.digest('hex').slice(0, 10);
 const list = files.map(f => `  '${f}',`).join('\n');
-const next = sw.replace(/const SHELL = \[[\s\S]*?\n\];/,
-  `const SHELL = [\n${list}\n];`);
+const next = sw
+  .replace(/const SHELL = \[[\s\S]*?\n\];/, `const SHELL = [\n${list}\n];`)
+  .replace(/const VERSION = '[^']*';/, `const VERSION = '${version}';`);
 writeFileSync('service-worker.js', next);
 
 const bytes = files.reduce((a, f) => {
   try { return a + statSync(f.replace('./', '')).size; } catch { return a; }
 }, 0);
+console.log('версия кэша:', version);
 console.log('файлов в кэше:', files.length);
 console.log('суммарный вес:', (bytes / 1024 / 1024).toFixed(2), 'МБ');

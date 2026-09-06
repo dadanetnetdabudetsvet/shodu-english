@@ -27,16 +27,16 @@ export function rootReducer(state, action) {
       for (const e of events) {
         if (e.type === 'freezeUsed') {
           // Правило Р6: валюта не тратится молча.
-          effects.push(fx.toast(
-            e.count === 1 ? t('Заморозка спасла ритм за вчера.') : t('Заморозки спасли ритм за {v0} дня.', { v0: e.count }),
-            'info'));
+          effects.push(fx.toast(e.count === 1
+            ? { i18n: 'Заморозка спасла ритм за вчера.' }
+            : { i18n: 'Заморозки спасли ритм за {v0} дня.', vars: { v0: e.count } }, 'info'));
         }
         if (e.type === 'paused') {
-          effects.push(fx.toast('Ритм на паузе. Он вернётся с первого же занятия.', 'info'));
+          effects.push(fx.toast({ i18n: 'Ритм на паузе. Он вернётся с первого же занятия.' }, 'info'));
         }
         if (e.type === 'softRestart') {
           // Ноль на счётчике не показывается. Показывается рекорд.
-          effects.push(fx.toast(`Лучший ритм: ${e.best} дней. Он остаётся твоим.`, 'info'));
+          effects.push(fx.toast({ i18n: 'Лучший ритм: {v0} дней. Он остаётся твоим.', vars: { v0: e.best } }, 'info'));
         }
       }
       // Заморозка при угрозе ритму выдаётся безусловно, без оглядки на баланс.
@@ -77,7 +77,10 @@ export function rootReducer(state, action) {
       if (usedHint) xp = Math.max(1, Math.round(answerXp(mode, { correct: true, comboAfter: 0, attempt: 2, listens: 3, exerciseType }) / 2));
       if (soft) xp = Math.round(xp * SOFT_MODE_XP_FACTOR);
 
-      let lives = state.lives;
+      // Жизни восстанавливаются по времени при каждом ответе: раньше это
+      // жило только в пересчёте дня, который не срабатывал, и человек
+      // оставался в мягком режиме навсегда.
+      let lives = regenLives(state.lives, action.at, false);
       const effects = [];
 
       if (!correct && !typoOnly) {
@@ -102,11 +105,15 @@ export function rootReducer(state, action) {
       const days = { ...state.days };
       const d = { ...(days[day] || emptyDay()) };
       d.answered++;
-      /* Дневная цель считает ЗАТРОНУТЫЕ слова, а не только новые.
+      /* Дневная цель считает РАЗНЫЕ затронутые слова, а не ответы.
          Новые слова кончаются примерно на двенадцатый день, и цель
-         становилась недостижимой навсегда ровно в тот момент, когда
-         складывается привычка. */
-      d.touched = (d.touched || 0) + 1;
+         становилась недостижимой ровно тогда, когда складывается
+         привычка. Но и двадцать ответов на одно слово не должны её
+         закрывать. */
+      const touchedIds = new Set(d.touchedIds || []);
+      touchedIds.add(wordId);
+      d.touchedIds = [...touchedIds];
+      d.touched = touchedIds.size;
       if (correct || typoOnly) d.correct++;
       if (attempt <= 1 && (correct || typoOnly)) d.firstTry++;
       d.xp += xp;
@@ -134,15 +141,20 @@ export function rootReducer(state, action) {
         mode, completed, mistakes, sessionsToday: d.sessions, isReview, newRecord: rec,
       });
       const econ = { ...state.econ, xpTotal: state.econ.xpTotal + bonus };
+      d.xp = (d.xp || 0) + bonus;
 
       const effects = [fx.sound('sessionDone')];
       let streak = state.streak;
 
       if (completed) {
+        const gapBefore = state.streak.lastDay == null ? 0 : day - state.streak.lastDay - 1;
+        if (gapBefore >= 30) {
+          state = { ...state, flags: { ...state.flags, returnedAfter: gapBefore } };
+        }
         const res = completeDay(state.streak, day);
         streak = res.streak;
         for (const e of res.events) {
-          if (e.type === 'freezeEarned') effects.push(fx.toast('Заморозка получена. Ритм под защитой.', 'info'));
+          if (e.type === 'freezeEarned') effects.push(fx.toast({ i18n: 'Заморозка получена. Ритм под защитой.' }, 'info'));
         }
         const ms2 = milestoneFor(streak.current);
         if (ms2) {
@@ -175,11 +187,16 @@ export function rootReducer(state, action) {
       for (const m of fresh) {
         medals[m.id] = day;
         econ.gems += m.gems;
-        effects.push(fx.toast(`Медаль: ${m.name} · +${m.gems} 💎`, 'info'));
+        effects.push(fx.toast({ i18n: 'Медаль: {v0} · +{v1} 💎', vars: { v0: m.name, v1: m.gems }, tr: ['v0'] }, 'info'));
       }
       if (fresh.length) effects.push(fx.sound('medal'), fx.confetti({ count: 70 }));
 
+      const levelBefore = levelForXp(state.econ.xpTotal);
       const level = levelForXp(econ.xpTotal);
+      if (level > levelBefore) {
+        econ.gems += GEMS.levelUp;
+        effects.push(fx.sound('levelUp'), fx.confetti({ count: 70 }));
+      }
       return {
         state: { ...state, days, econ, streak, medals, lastModes,
                  profile: { ...state.profile, level },
@@ -208,14 +225,16 @@ export function rootReducer(state, action) {
           referral: { ...r, newcomerPaid: true },
           econ: { ...state.econ, gems: state.econ.gems + NEWCOMER_GEMS },
         },
-        effects: [fx.sound('gems', 5), fx.toast(`Бонус за приглашение: +${NEWCOMER_GEMS} алмазов`, 'info'), fx.save()],
+        effects: [fx.sound('gems', 5), fx.toast({ i18n: 'Бонус за приглашение: +{v0} алмазов', vars: { v0: NEWCOMER_GEMS } }, 'info'), fx.save()],
       };
     }
 
     case 'REFERRAL_CONFIRM': {
       const r = state.referral;
       const res = verifyProof(r.selfCode, action.proof, r.friends);
-      if (!res.ok) return { state, effects: [fx.toast(res.reason, 'warn')] };
+      // Причина отказа приходит из чистого модуля литералом: перевод
+      // делается здесь, в слое, который знает про язык.
+      if (!res.ok) return { state, effects: [fx.toast({ i18n: res.reason }, 'warn')] };
       const nth = r.friends.length + 1;
       const gems = rewardFor(nth);
       return {
@@ -226,7 +245,7 @@ export function rootReducer(state, action) {
         },
         effects: [
           fx.sound('medal'), fx.confetti({ count: 90 }),
-          fx.toast(`Друг зачтён. +${gems} алмазов`, 'info'), fx.save(),
+          fx.toast({ i18n: 'Друг зачтён. +{v0} алмазов', vars: { v0: gems } }, 'info'), fx.save(),
         ],
       };
     }
@@ -237,11 +256,15 @@ export function rootReducer(state, action) {
         effects: [fx.save()],
       };
 
-    case 'CHALLENGE_AUTO':
+    case 'CHALLENGE_AUTO': {
+      // Поле autoAdjust живёт в настройках, а функция ждала его в самом
+      // состоянии сложности. Автоподстройка не работала ни разу.
+      const ch = { ...state.challenge, autoAdjust: state.settings.autoChallenge !== false };
       return {
-        state: { ...state, challenge: autoAdjust(state.challenge, action.stats, state.day) },
+        state: { ...state, challenge: autoAdjust(ch, action.stats, state.day) },
         effects: [fx.save()],
       };
+    }
 
     case 'CHALLENGE_SET':
       return {
@@ -269,6 +292,24 @@ export function rootReducer(state, action) {
         },
         effects: [fx.save()],
       };
+
+    case 'MEDALS_CLAIM': {
+      const fresh = evaluateMedals(action.counters, state.medals);
+      if (!fresh.length) return { state, effects: [] };
+      const medals = { ...state.medals };
+      let gems = state.econ.gems;
+      const effects = [];
+      for (const m of fresh) {
+        medals[m.id] = state.day;
+        gems += m.gems;
+        effects.push(fx.toast({ i18n: '{v0} · +{v1} 💎', vars: { v0: m.name, v1: m.gems }, tr: ['v0'] }, 'info'));
+      }
+      effects.push(fx.sound('medal'), fx.confetti({ count: 70 }), fx.save());
+      return {
+        state: { ...state, medals, econ: { ...state.econ, gems }, lastMedals: fresh.map(m => m.id) },
+        effects,
+      };
+    }
 
     case 'RECHECK_SNOOZE':
       return { state: { ...state, recheckSnoozedDay: state.day }, effects: [fx.save()] };
@@ -320,13 +361,23 @@ export function medalCounters(state) {
     cleanSessions: days.filter(d => d.answered > 0 && d.answered === d.correct).length,
     streakBest: state.streak.best || 0,
     weekBest: weekDone(state.days || {}, state.day),
-    trapsKnown: 0,
+    trapsKnown: countTraps(state),
     friends: (state.referral?.friends || []).length,
     returnedAfter: state.flags?.returnedAfter || 0,
   };
 }
 
 /* ── производные величины для экранов ──────────────────────────── */
+
+/* Ложные друзья лежат в первой корзине: их идентификаторы начинаются
+   с f, что и отличает их от обычных слов. */
+function countTraps(state) {
+  let n = 0;
+  for (const [id, rec] of Object.entries(state.srs.deck1 || {})) {
+    if (id.startsWith('f') && isKnown(rec)) n++;
+  }
+  return n;
+}
 
 function countKnownIn(state) {
   let n = 0;

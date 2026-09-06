@@ -191,7 +191,11 @@ for (const [route, marker] of [['words', 'Слова'], ['rules', 'Правил�
   await sleep(400);
   const txt = root.textContent;
   if (!txt.includes(marker)) fail(`экран ${route} не содержит «${marker}»`);
-  else step(`${route}: ок (${root.querySelectorAll('.card').length} карточек)`);
+  else {
+    const n = root.querySelectorAll('.list-row').length || root.querySelectorAll('.card').length;
+    step(`${route}: ок (${n} строк)`);
+    if (route === 'words' && n < 10) fail('список слов пуст');
+  }
 }
 
 /* ── сохранение ────────────────────────────────────────────── */

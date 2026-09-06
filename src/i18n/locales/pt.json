@@ -362,5 +362,21 @@
  "Это нельзя отменить": "Isso não tem volta",
  "Это твой собственный код.": "Esse código é o seu.",
  "Этот друг уже зачтён.": "Esse amigo já foi contado.",
- "Язык интерфейса 🌍": "Idioma do app 🌍"
+ "Язык интерфейса 🌍": "Idioma do app 🌍",
+ "Дом": "Início",
+ "Профиль": "Perfil",
+ "Доступна новая версия": "Tem versão nova",
+ "Пересчёт пропустим": "Vamos pular a recontagem",
+ "Показать ещё · осталось {v0}": "Ver mais · faltam {v0}",
+ "Прогресс записан более новой версией приложения. Пока только чтение.": "Seu progresso veio de uma versão mais nova. Por ora, só leitura.",
+ "Прогресс обновился в другой вкладке.": "O progresso mudou em outra aba.",
+ "Спасибо, отметил. Поправим.": "Anotado. A gente conserta.",
+ "Часть слов из первой проверки поменялась, сравнивать было бы нечестно.": "Algumas palavras da primeira contagem mudaram; comparar não seria justo.",
+ "{v0} · +{v1} 💎": "{v0} · +{v1} 💎",
+ "Медаль: {v0} · +{v1} 💎": "Medalha: {v0} · +{v1} 💎",
+ "Бонус за приглашение: +{v0} алмазов": "Bônus do convite: +{v0} gemas",
+ "Друг зачтён. +{v0} алмазов": "Amigo contado. +{v0} gemas",
+ "Заморозка получена. Ритм под защитой.": "Congelamento na mão. Seu ritmo está protegido.",
+ "Лучший ритм: {v0} дней. Он остаётся твоим.": "Melhor sequência: {v0} dias. Continua sendo sua.",
+ "Ритм на паузе. Он вернётся с первого же занятия.": "Seu ritmo está pausado. Volta na primeira rodada."
 }

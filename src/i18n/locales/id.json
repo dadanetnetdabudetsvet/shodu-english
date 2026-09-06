@@ -362,5 +362,21 @@
  "Это нельзя отменить": "Ini nggak bisa dibatalkan",
  "Это твой собственный код.": "Ini kode kamu sendiri.",
  "Этот друг уже зачтён.": "Teman ini sudah dihitung.",
- "Язык интерфейса 🌍": "Bahasa aplikasi 🌍"
+ "Язык интерфейса 🌍": "Bahasa aplikasi 🌍",
+ "Дом": "Beranda",
+ "Профиль": "Profil",
+ "Доступна новая версия": "Ada versi baru",
+ "Пересчёт пропустим": "Kita lewati hitung ulangnya",
+ "Показать ещё · осталось {v0}": "Tampilkan lagi · sisa {v0}",
+ "Прогресс записан более новой версией приложения. Пока только чтение.": "Progresmu disimpan versi yang lebih baru. Untuk sekarang baca saja.",
+ "Прогресс обновился в другой вкладке.": "Progres berubah di tab lain.",
+ "Спасибо, отметил. Поправим.": "Dicatat. Nanti kami benerin.",
+ "Часть слов из первой проверки поменялась, сравнивать было бы нечестно.": "Sebagian kata dari cek pertama berubah, membandingkan jadi nggak adil.",
+ "{v0} · +{v1} 💎": "{v0} · +{v1} 💎",
+ "Медаль: {v0} · +{v1} 💎": "Lencana: {v0} · +{v1} 💎",
+ "Бонус за приглашение: +{v0} алмазов": "Bonus undangan: +{v0} permata",
+ "Друг зачтён. +{v0} алмазов": "Teman terhitung. +{v0} permata",
+ "Заморозка получена. Ритм под защитой.": "Dapat pembekuan. Ritmemu aman.",
+ "Лучший ритм: {v0} дней. Он остаётся твоим.": "Rekor terbaik: {v0} hari. Tetap milikmu.",
+ "Ритм на паузе. Он вернётся с первого же занятия.": "Ritmemu lagi jeda. Sekali main langsung balik."
 }

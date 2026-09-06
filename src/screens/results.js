@@ -36,6 +36,8 @@ export function screen(store, content) {
       const knownBefore = previousKnown(s);
       const gained = Math.max(0, known - knownBefore);
 
+      const timers = new Set();
+      const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.add(id); return id; };
       const wrap = el('div', { class: 'screen screen--full results' });
       root.replaceChildren(wrap);
 
@@ -157,8 +159,8 @@ export function screen(store, content) {
       /* Последовательность, а не всё сразу: заголовок, число, плитки. */
       animate(headline, [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }],
         { duration: 320, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' });
-      setTimeout(() => tweenNumber(big, knownBefore, known, 780), 300);
-      setTimeout(() => {
+      later(() => tweenNumber(big, knownBefore, known, 780), 300);
+      later(() => {
         tweenNumber(xpEl, 0, today.xp, 700);
         tweenNumber(firstEl, 0, r.correctFirstTry || 0, 700);
         tweenNumber(minEl, 0, Math.max(1, Math.round(r.ms / 60000)), 600);
@@ -166,12 +168,12 @@ export function screen(store, content) {
 
       if (r.completed) {
         sound.sessionDone();
-        if (fresh.length) { setTimeout(() => { sound.medal(); confetti.burst({ count: 90 }); }, 1200); }
-        else if (r.mistakes === 0 && r.answered > 0) setTimeout(() => confetti.burst({ count: 70 }), 900);
+        if (fresh.length) { later(() => { sound.medal(); confetti.burst({ count: 90 }); }, 1200); }
+        else if (r.mistakes === 0 && r.answered > 0) later(() => confetti.burst({ count: 70 }), 900);
       }
 
       // Автоподстройка работает только там, где голоса не будет.
-      setTimeout(() => {
+      later(() => {
         const voted = (store.state.challenge.votes || []).some(v => v.day === store.state.day);
         if (!voted && r.mode !== 'stream') {
           store.dispatch({
@@ -181,7 +183,7 @@ export function screen(store, content) {
         }
       }, 4000);
 
-      return { destroy() {} };
+      return { destroy() { for (const id of timers) clearTimeout(id); } };
     },
   };
 }

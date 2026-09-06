@@ -35,7 +35,12 @@ export function refreshStreak(st, day) {
   // а не молча: молчаливая трата валюты запрещена правилом Р6.
   let covered = 0;
   while (covered < missed && s.freezes > 0) { s.freezes--; covered++; }
-  if (covered > 0) events.push({ type: 'freezeUsed', count: covered });
+  if (covered > 0) {
+    // Закрытые заморозкой дни считаются прожитыми, иначе следующий
+    // заход увидит тот же разрыв и спишет заморозку повторно.
+    s.lastDay += covered;
+    events.push({ type: 'freezeUsed', count: covered });
+  }
 
   const uncovered = missed - covered;
   if (uncovered <= 0) return { streak: s, events };

@@ -362,5 +362,21 @@
  "Это нельзя отменить": "There’s no undo",
  "Это твой собственный код.": "That’s your own code.",
  "Этот друг уже зачтён.": "This friend is already counted.",
- "Язык интерфейса 🌍": "Interface language 🌍"
+ "Язык интерфейса 🌍": "Interface language 🌍",
+ "Дом": "Home",
+ "Профиль": "Profile",
+ "Доступна новая версия": "New version ready",
+ "Пересчёт пропустим": "Skipping the remeasure",
+ "Показать ещё · осталось {v0}": "Show more · {v0} left",
+ "Прогресс записан более новой версией приложения. Пока только чтение.": "Your progress was saved by a newer version. Read-only for now.",
+ "Прогресс обновился в другой вкладке.": "Progress updated in another tab.",
+ "Спасибо, отметил. Поправим.": "Got it, noted. We’ll fix it.",
+ "Часть слов из первой проверки поменялась, сравнивать было бы нечестно.": "Some words from the first check changed, so comparing wouldn’t be fair.",
+ "{v0} · +{v1} 💎": "{v0} · +{v1} 💎",
+ "Медаль: {v0} · +{v1} 💎": "Badge: {v0} · +{v1} 💎",
+ "Бонус за приглашение: +{v0} алмазов": "Invite bonus: +{v0} gems",
+ "Друг зачтён. +{v0} алмазов": "Friend counted. +{v0} gems",
+ "Заморозка получена. Ритм под защитой.": "Freeze earned. Your rhythm is covered.",
+ "Лучший ритм: {v0} дней. Он остаётся твоим.": "Best run: {v0} days. It stays yours.",
+ "Ритм на паузе. Он вернётся с первого же занятия.": "Rhythm is paused. One session brings it back."
 }

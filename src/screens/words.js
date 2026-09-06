@@ -12,12 +12,14 @@ import { sound } from '../core/sound.js';
 import { enterCard, animate } from '../core/motion.js';
 import { t } from '../i18n/index.js';
 
+/* Подписи фильтров переводятся при отрисовке: на уровне модуля язык
+   ещё не загружен, и они бы навсегда остались русскими. */
 const FILTERS = [
-  { id: 'all', label: t('Все') },
-  { id: 'known', label: t('Знаю') },
-  { id: 'learning', label: t('Учу') },
-  { id: 'new', label: t('Новые') },
-  { id: 'traps', label: t('Ловушки') },
+  { id: 'all', label: 'Все' },
+  { id: 'known', label: 'Знаю' },
+  { id: 'learning', label: 'Учу' },
+  { id: 'new', label: 'Новые' },
+  { id: 'traps', label: 'Ловушки' },
 ];
 
 export function screen(store, content) {
@@ -26,13 +28,21 @@ export function screen(store, content) {
       let filter = 'all';
       let query = '';
 
-      const list = el('div', { class: 'stack', style: 'gap:6px' });
+      const list = el('div', { class: 'stack', style: 'gap:0' });
+      const PAGE = 60;
+      let shown = PAGE;
+      let searchTimer = null;
       const summary = el('div', { class: 't-sm' });
       const chips = el('div', { class: 'row', style: 'gap:6px;flex-wrap:wrap' });
       const search = el('input', {
         class: 'option', type: 'search', placeholder: t('Найти слово…'),
         style: 'width:100%;min-height:48px',
-        onInput: (e) => { query = e.target.value.trim().toLowerCase(); render(); },
+        onInput: (e) => {
+          // Отрисовка тысячи строк на каждую букву съедала ввод.
+          clearTimeout(searchTimer);
+          const v = e.target.value.trim().toLowerCase();
+          searchTimer = setTimeout(() => { query = v; shown = PAGE; render(); }, 160);
+        },
       });
 
       for (const f of FILTERS) {
@@ -40,7 +50,7 @@ export function screen(store, content) {
           class: 'btn', dataset: { f: f.id },
           style: 'min-height:36px;padding:0 var(--sp-3);font-size:var(--fs-sm)',
           onClick: () => { filter = f.id; sound.tap(); render(); },
-        }, f.label));
+        }, t(f.label)));
       }
 
       function all() { return content.all; }
@@ -58,6 +68,7 @@ export function screen(store, content) {
         if (filter === 'known') items = items.filter(w => isKnown(recOf(w)));
         else if (filter === 'learning') items = items.filter(w => isLearning(recOf(w)));
         else if (filter === 'new') items = items.filter(w => recOf(w).box === 0 && !w.falseFriend);
+        if (filter !== 'all' || query) shown = Math.max(shown, PAGE);
         else if (filter === 'traps') items = items.filter(w => w.falseFriend);
         if (query) items = items.filter(w =>
           w.en.toLowerCase().includes(query) || String(w.answer).toLowerCase().includes(query));
@@ -69,7 +80,14 @@ export function screen(store, content) {
         }
         summary.textContent = t('{v0} слов · {v1} знаю · {v2} учу', { v0: all().length, v1: known, v2: learning });
 
-        setChildren(list, ...items.map(row));
+        const page = items.slice(0, shown);
+        setChildren(list, ...page.map(row));
+        if (items.length > shown) {
+          list.append(el('button', {
+            class: 'btn', style: 'margin-top:var(--sp-3);width:100%',
+            onClick: () => { shown += PAGE * 2; render(); },
+          }, t('Показать ещё · осталось {v0}', { v0: items.length - shown })));
+        }
         if (!items.length) {
           list.append(el('div', { class: 'card card--flat t-sm center' },
             query ? t('Такого слова пока нет.') : t('Здесь появятся слова, которые ты встретишь.')));
@@ -149,8 +167,9 @@ export function screen(store, content) {
       render();
       enterCard(wrap);
 
-      const off = store.subscribe(s => s.srs, render);
-      return { destroy() { off(); } };
+      // Перерисовка только при смене статусов слов, а не на любой чих.
+      const off = store.subscribe(s => s.day, render);
+      return { destroy() { clearTimeout(searchTimer); off(); } };
     },
   };
 }

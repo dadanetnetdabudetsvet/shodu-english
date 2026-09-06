@@ -116,8 +116,10 @@ export function screen(store, content) {
 
       /* Слово дня: берём только из узнаваемых, иначе оно пугает. */
       const easy = content.deck1.filter(w => w.tier <= 2);
-      const wod = easy[(s.day * 7919) % easy.length];
-      const wordOfDay = el('button', {
+      // Без сети и без кэша колода приходит пустой: деление на ноль
+      // роняло стартовый экран целиком.
+      const wod = easy.length ? easy[(s.day * 7919) % easy.length] : null;
+      const wordOfDay = wod && el('button', {
         class: 'card row', style: 'gap:var(--sp-3);text-align:left;width:100%',
         onClick: () => { sound.tap(); if (speech.available) speech.say(wod.en); },
       },

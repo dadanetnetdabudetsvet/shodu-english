@@ -11,6 +11,7 @@
 export function createRouter({ root, routes, fallback = 'home', onChange }) {
   let current = null;
   let currentName = null;
+  let generation = 0;      // защита от гонки: побеждает последний переход
 
   function parse() {
     const raw = location.hash.replace(/^#\/?/, '');
@@ -19,6 +20,7 @@ export function createRouter({ root, routes, fallback = 'home', onChange }) {
   }
 
   async function render() {
+    const gen = ++generation;
     const { name, params } = parse();
     const factory = routes[name] || routes[fallback];
     if (!factory) return;
@@ -34,6 +36,9 @@ export function createRouter({ root, routes, fallback = 'home', onChange }) {
     root.replaceChildren();
 
     const screen = await factory();
+    // Пока грузился модуль, человек мог уйти дальше: тогда монтировать
+    // уже нечего, иначе на экране окажутся два экрана сразу.
+    if (gen !== generation) return;
     current = screen.mount(root, { params, go });
     currentName = name;
     if (onChange) onChange(name, params);

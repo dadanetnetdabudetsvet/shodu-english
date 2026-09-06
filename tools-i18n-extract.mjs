@@ -16,10 +16,14 @@ const keys = new Map();
 for (const f of walk('src')) {
   if (f.includes('i18n')) continue;
   const src = readFileSync(f, 'utf8');
-  for (const m of src.matchAll(/\bt\(\s*'((?:[^'\\]|\\.)*)'/g)) {
-    const key = m[1].replace(/\\'/g, "'");
-    if (!keys.has(key)) keys.set(key, []);
-    keys.get(key).push(f.replace('src/', ''));
+  // Ключи приходят двумя путями: прямым вызовом t() и описанием эффекта
+  // { i18n: '...' } из чистого редьюсера, который про язык не знает.
+  for (const re of [/\bt\(\s*'((?:[^'\\]|\\.)*)'/g, /\bi18n:\s*'((?:[^'\\]|\\.)*)'/g]) {
+    for (const m of src.matchAll(re)) {
+      const key = m[1].replace(/\\'/g, "'");
+      if (!keys.has(key)) keys.set(key, []);
+      keys.get(key).push(f.replace('src/', ''));
+    }
   }
 }
 
@@ -27,7 +31,8 @@ for (const f of walk('src')) {
 // должны попасть: это названия медалей, ступеней планки, ответы на голос
 const DOMAIN_STRINGS = [];
 for (const f of ['src/domain/medals.js', 'src/domain/challenge.js', 'src/domain/referral.js',
-                 'src/domain/scoring.js', 'src/screens/home.js', 'src/screens/session.js']) {
+                 'src/domain/scoring.js', 'src/screens/home.js', 'src/screens/session.js',
+                 'src/app.js', 'src/screens/words.js']) {
   const src = readFileSync(f, 'utf8').replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/.*$/gm, '$1 ');
   for (const m of src.matchAll(/'((?:[^'\\\n]|\\.)*)'/g)) {
     const v = m[1];
