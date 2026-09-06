@@ -1,0 +1,11 @@
+{
+  "name": "shodu-english",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "PWA для изучения английских слов: старт с русско-английских когнатов",
+  "scripts": {
+    "dev": "node serve.mjs 5173",
+    "start": "node serve.mjs 5173"
+  }
+}

@@ -1,0 +1,167 @@
+/* Базовые стили и раскладка приложения. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+  /* Автономный режим: контент не должен уезжать под часы и под индикатор. */
+  padding: var(--safe-t) 0 var(--safe-b);
+  min-height: 100dvh;
+}
+
+/* Ничего не выделяется случайным долгим тапом, кроме полей ввода. */
+body, button, .tile { -webkit-tap-highlight-color: transparent; user-select: none; }
+input, textarea { user-select: text; }
+
+h1, h2, h3, p { margin: 0; }
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+a { color: var(--accent); }
+
+:focus-visible {
+  outline: var(--ring-w) solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen {
+  flex: 1;
+  padding: var(--sp-4) var(--gutter) calc(var(--tabbar-h) + var(--sp-12));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.screen--full { padding-bottom: var(--sp-6); }
+
+.stack { display: flex; flex-direction: column; gap: var(--sp-3); }
+.row { display: flex; align-items: center; gap: var(--sp-3); }
+.row--between { justify-content: space-between; }
+.grow { flex: 1; }
+.center { text-align: center; }
+
+.t-h1 { font-size: var(--fs-xl); font-weight: var(--fw-bold); letter-spacing: var(--ls-tight); line-height: var(--lh-tight); }
+.t-h2 { font-size: var(--fs-lg); font-weight: var(--fw-bold); letter-spacing: var(--ls-snug); }
+.t-body { font-size: var(--fs-base); }
+.t-sm { font-size: var(--fs-sm); color: var(--text-2); }
+.t-micro { font-size: var(--fs-micro); color: var(--text-2); }
+.t-caption { font-size: var(--fs-caption); color: var(--text-3); }
+.t-num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+.t-en { font-size: var(--fs-word); font-weight: var(--fw-bold); letter-spacing: var(--ls-tight); overflow-wrap: anywhere; }
+.t-ipa { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--text-2); }
+.t-dim { color: var(--text-2); }
+
+.card {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+  padding: var(--sp-4);
+}
+.card--flat { box-shadow: none; border: 1px solid var(--border); }
+.card--hero {
+  background: var(--grad-hero);
+  color: #fff;
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-4);
+  padding: var(--sp-5);
+}
+
+/* Кнопка с тактильной гранью: продавливается на глубину грани. */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
+  min-height: var(--tap-min);
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-md);
+  font-weight: var(--fw-semi);
+  background: var(--surface-2);
+  color: var(--text);
+  box-shadow: 0 var(--btn-depth) 0 var(--btn-edge-neutral);
+  transition: transform var(--d-instant) var(--ease-snappy),
+              box-shadow var(--d-instant) var(--ease-snappy),
+              background var(--d-2) var(--ease-smooth);
+}
+.btn:active { transform: translateY(var(--btn-depth)); box-shadow: 0 0 0 var(--btn-edge-neutral); }
+.btn[disabled] { opacity: .45; pointer-events: none; }
+
+.btn--primary {
+  background: var(--accent); color: var(--on-accent);
+  box-shadow: 0 var(--btn-depth) 0 var(--btn-edge-accent), var(--sh-accent-glow);
+}
+.btn--primary:active { box-shadow: 0 0 0 var(--btn-edge-accent); }
+
+.btn--cta { min-height: var(--tap-cta); width: 100%; font-size: var(--fs-md); border-radius: var(--r-lg); }
+
+.btn--ghost { background: transparent; box-shadow: none; color: var(--text-2); }
+.btn--ghost:active { transform: none; background: var(--surface-2); }
+
+.btn--onhero {
+  background: #fff; color: #2A1B5E;
+  box-shadow: 0 var(--btn-depth) 0 rgba(0,0,0,.22);
+}
+
+/* Нижняя навигация: плавающая капсула. */
+.tabbar {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--safe-b) + 12px);
+  width: min(536px, calc(100vw - 24px));
+  height: var(--tabbar-h);
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  background: var(--surface); border-radius: var(--r-full);
+  box-shadow: var(--sh-tabbar);
+  z-index: 50;
+}
+.tabbar__item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; font-size: var(--fs-caption); color: var(--text-3); font-weight: var(--fw-medium);
+}
+.tabbar__item[aria-current="page"] { color: var(--accent); }
+.tabbar__icon { font-size: 20px; line-height: 1; }
+.tabbar[hidden] { display: none; }
+
+/* Строка ресурсов. */
+.res { display: flex; align-items: center; gap: var(--sp-4); min-height: 44px; }
+.res__item { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.res__val { font-size: var(--fs-md); font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; }
+.res__cap { font-size: 11px; color: var(--text-3); }
+
+/* Кольцо ритма недели: главная метрика экрана. */
+.rhythm { display: flex; gap: 6px; align-items: center; }
+.rhythm__dot {
+  width: 10px; height: 10px; border-radius: var(--r-full);
+  background: var(--surface-3);
+}
+.rhythm__dot--done { background: var(--accent); }
+.rhythm__dot--today { box-shadow: 0 0 0 3px var(--accent-soft); background: var(--accent-2); }
+
+/* Полоса прогресса. */
+.bar { height: 14px; border-radius: var(--r-full); background: var(--surface-3); overflow: hidden; }
+.bar__fill {
+  height: 100%; border-radius: var(--r-full); background: var(--grad-accent);
+  transform-origin: left center; transform: scaleX(0);
+}
+.bar--thin { height: 8px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+@media (prefers-contrast: more) {
+  .card { border: 1px solid var(--border-strong); }
+  .btn { outline: 1px solid var(--border-strong); }
+}

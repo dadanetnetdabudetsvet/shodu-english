@@ -1,0 +1,2341 @@
+{
+ "version": 1,
+ "deck": "core",
+ "words": [
+  {
+   "id": "c001",
+   "en": "is",
+   "ru": "есть / является (он, она, оно)",
+   "ipa": "/ɪz/",
+   "tr": "из",
+   "group": "be",
+   "order": 1,
+   "pos": "verb",
+   "ex_en": "The doctor is here.",
+   "ex_ru": "Доктор здесь.",
+   "hint": "В русском мы это слово опускаем — «доктор здесь». В английском без is предложения просто нет.",
+   "builds_with": [
+    "w100",
+    "w017",
+    "w047"
+   ]
+  },
+  {
+   "id": "c002",
+   "en": "am",
+   "ru": "есть (только с I)",
+   "ipa": "/æm/",
+   "tr": "эм",
+   "group": "be",
+   "order": 2,
+   "pos": "verb",
+   "ex_en": "I am in the office.",
+   "ex_ru": "Я в офисе.",
+   "hint": "С «я» английский требует особую форму: только I am, никогда I is.",
+   "builds_with": [
+    "w047",
+    "w071",
+    "w104"
+   ]
+  },
+  {
+   "id": "c003",
+   "en": "are",
+   "ru": "есть (ты, вы, мы, они)",
+   "ipa": "/ɑː/",
+   "tr": "ар",
+   "group": "be",
+   "order": 3,
+   "pos": "verb",
+   "ex_en": "We are in a cafe.",
+   "ex_ru": "Мы в кафе.",
+   "hint": "Одна форма на всех, кроме «я», «он», «она», «оно»: you are, we are, they are.",
+   "builds_with": [
+    "w006",
+    "w031",
+    "w040"
+   ]
+  },
+  {
+   "id": "c004",
+   "en": "was",
+   "ru": "был / была / было",
+   "ipa": "/wɒz/",
+   "tr": "уоз",
+   "group": "be",
+   "order": 4,
+   "pos": "verb",
+   "ex_en": "The concert was good.",
+   "ex_ru": "Концерт был хороший.",
+   "hint": "Прошедшее от is: было — was. Меняется само слово, а не окончание.",
+   "builds_with": [
+    "w141",
+    "w086",
+    "w056"
+   ]
+  },
+  {
+   "id": "c005",
+   "en": "were",
+   "ru": "были",
+   "ipa": "/wɜː/",
+   "tr": "уёр",
+   "group": "be",
+   "order": 5,
+   "pos": "verb",
+   "ex_en": "We were in the park.",
+   "ex_ru": "Мы были в парке.",
+   "hint": "То же прошедшее, но для you, we, they: we were.",
+   "builds_with": [
+    "w031",
+    "w045",
+    "w152"
+   ]
+  },
+  {
+   "id": "c006",
+   "en": "be",
+   "ru": "быть (словарная форма)",
+   "ipa": "/biː/",
+   "tr": "би",
+   "group": "be",
+   "order": 6,
+   "pos": "verb",
+   "ex_en": "I want to be a pilot.",
+   "ex_ru": "Я хочу быть пилотом.",
+   "hint": "Это «сам» глагол: после want, can, will ставится именно be, а не is.",
+   "builds_with": [
+    "w023",
+    "w052",
+    "w142"
+   ]
+  },
+  {
+   "id": "c007",
+   "en": "isn't",
+   "ru": "не является / не есть",
+   "ipa": "/ˈɪz.ənt/",
+   "tr": "и́знт",
+   "group": "be",
+   "order": 7,
+   "pos": "verb",
+   "ex_en": "The bar isn't open.",
+   "ex_ru": "Бар не открыт.",
+   "hint": "Отрицание строится приклеиванием not к is: is + not = isn't.",
+   "builds_with": [
+    "w032",
+    "w013",
+    "w042"
+   ]
+  },
+  {
+   "id": "c008",
+   "en": "aren't",
+   "ru": "не являются / не есть",
+   "ipa": "/ɑːnt/",
+   "tr": "арнт",
+   "group": "be",
+   "order": 8,
+   "pos": "verb",
+   "ex_en": "We aren't in the hotel.",
+   "ex_ru": "Мы не в отеле.",
+   "hint": "То же самое для are: are + not = aren't.",
+   "builds_with": [
+    "w152",
+    "w160",
+    "w006"
+   ]
+  },
+  {
+   "id": "c009",
+   "en": "there",
+   "ru": "там; вот (в обороте there is)",
+   "ipa": "/ðeə/",
+   "tr": "зэа",
+   "group": "glue",
+   "order": 9,
+   "pos": "adverb",
+   "ex_en": "There is a problem.",
+   "ex_ru": "Есть проблема.",
+   "hint": "В обороте there is англичане говорят «там есть» вместо русского «имеется». Слово there тут не про место.",
+   "builds_with": [
+    "w188",
+    "w182",
+    "w011"
+   ]
+  },
+  {
+   "id": "c010",
+   "en": "i",
+   "ru": "я",
+   "ipa": "/aɪ/",
+   "tr": "ай",
+   "group": "pronoun",
+   "order": 1,
+   "pos": "pronoun",
+   "ex_en": "I am a doctor.",
+   "ex_ru": "Я доктор.",
+   "hint": "Английское «я» всегда пишется с большой буквы — I, в любом месте предложения.",
+   "builds_with": [
+    "w100",
+    "w059",
+    "w063"
+   ]
+  },
+  {
+   "id": "c011",
+   "en": "you",
+   "ru": "ты / вы",
+   "ipa": "/juː/",
+   "tr": "ю",
+   "group": "pronoun",
+   "order": 2,
+   "pos": "pronoun",
+   "ex_en": "You are a good manager.",
+   "ex_ru": "Ты хороший менеджер.",
+   "hint": "Одно слово и на «ты», и на «вы» — выбирать вежливую форму не нужно.",
+   "builds_with": [
+    "w059",
+    "w052",
+    "w156"
+   ]
+  },
+  {
+   "id": "c012",
+   "en": "he",
+   "ru": "он",
+   "ipa": "/hiː/",
+   "tr": "хи",
+   "group": "pronoun",
+   "order": 3,
+   "pos": "pronoun",
+   "ex_en": "He is an engineer.",
+   "ex_ru": "Он инженер.",
+   "hint": "Только о человеке мужского пола; стол и такси по-английски не «он».",
+   "builds_with": [
+    "w063",
+    "w023",
+    "w142"
+   ]
+  },
+  {
+   "id": "c013",
+   "en": "she",
+   "ru": "она",
+   "ipa": "/ʃiː/",
+   "tr": "ши",
+   "group": "pronoun",
+   "order": 4,
+   "pos": "pronoun",
+   "ex_en": "She is a model.",
+   "ex_ru": "Она модель.",
+   "hint": "Только о женщине; всё неживое — это it.",
+   "builds_with": [
+    "w126",
+    "w095",
+    "w061"
+   ]
+  },
+  {
+   "id": "c014",
+   "en": "it",
+   "ru": "оно / это (о предмете)",
+   "ipa": "/ɪt/",
+   "tr": "ит",
+   "group": "pronoun",
+   "order": 5,
+   "pos": "pronoun",
+   "ex_en": "It is a virus.",
+   "ex_ru": "Это вирус.",
+   "hint": "Всё неживое — предмет, погода, ситуация — по-английски it, даже если по-русски «он» или «она».",
+   "builds_with": [
+    "w107",
+    "w120",
+    "w187"
+   ]
+  },
+  {
+   "id": "c015",
+   "en": "we",
+   "ru": "мы",
+   "ipa": "/wiː/",
+   "tr": "уи",
+   "group": "pronoun",
+   "order": 6,
+   "pos": "pronoun",
+   "ex_en": "We have a plan.",
+   "ex_ru": "У нас есть план.",
+   "hint": "Прямое соответствие русскому «мы».",
+   "builds_with": [
+    "w050",
+    "w054",
+    "w187"
+   ]
+  },
+  {
+   "id": "c016",
+   "en": "they",
+   "ru": "они",
+   "ipa": "/ðeɪ/",
+   "tr": "дэй",
+   "group": "pronoun",
+   "order": 7,
+   "pos": "pronoun",
+   "ex_en": "They are in the office.",
+   "ex_ru": "Они в офисе.",
+   "hint": "«Они» и о людях, и о вещах: они все they.",
+   "builds_with": [
+    "w047",
+    "w015",
+    "w041"
+   ]
+  },
+  {
+   "id": "c017",
+   "en": "my",
+   "ru": "мой / моя / моё",
+   "ipa": "/maɪ/",
+   "tr": "май",
+   "group": "pronoun",
+   "order": 8,
+   "pos": "pronoun",
+   "ex_en": "My computer is old.",
+   "ex_ru": "Мой компьютер старый.",
+   "hint": "Одна форма на все роды и числа: my computer, my idea, my jeans.",
+   "builds_with": [
+    "w064",
+    "w048",
+    "w043"
+   ]
+  },
+  {
+   "id": "c018",
+   "en": "your",
+   "ru": "твой / ваш",
+   "ipa": "/jɔː/",
+   "tr": "йор",
+   "group": "pronoun",
+   "order": 9,
+   "pos": "pronoun",
+   "ex_en": "What is your address?",
+   "ex_ru": "Какой у тебя адрес?",
+   "hint": "Как и you — одно слово и на «твой», и на «ваш».",
+   "builds_with": [
+    "w036",
+    "w163",
+    "w050"
+   ]
+  },
+  {
+   "id": "c019",
+   "en": "his",
+   "ru": "его",
+   "ipa": "/hɪz/",
+   "tr": "хиз",
+   "group": "pronoun",
+   "order": 10,
+   "pos": "pronoun",
+   "ex_en": "I like his style.",
+   "ex_ru": "Мне нравится его стиль.",
+   "hint": "Принадлежность мужчине: his style — его стиль.",
+   "builds_with": [
+    "w119",
+    "w127",
+    "w064"
+   ]
+  },
+  {
+   "id": "c020",
+   "en": "her",
+   "ru": "её / ей",
+   "ipa": "/hɜː/",
+   "tr": "хёр",
+   "group": "pronoun",
+   "order": 11,
+   "pos": "pronoun",
+   "ex_en": "Her blouse is new.",
+   "ex_ru": "Её блузка новая.",
+   "hint": "Одно слово и «её», и «ей»: her blouse — её блузка, give her — дай ей.",
+   "builds_with": [
+    "w122",
+    "w130",
+    "w125"
+   ]
+  },
+  {
+   "id": "c021",
+   "en": "our",
+   "ru": "наш / наша",
+   "ipa": "/aʊə/",
+   "tr": "а́уэ",
+   "group": "pronoun",
+   "order": 12,
+   "pos": "pronoun",
+   "ex_en": "Our hotel is near.",
+   "ex_ru": "Наш отель рядом.",
+   "hint": "Ставится перед предметом, как и русское «наш».",
+   "builds_with": [
+    "w152",
+    "w047",
+    "w043"
+   ]
+  },
+  {
+   "id": "c022",
+   "en": "their",
+   "ru": "их",
+   "ipa": "/ðeə/",
+   "tr": "дэа",
+   "group": "pronoun",
+   "order": 13,
+   "pos": "pronoun",
+   "ex_en": "Their apartment is big.",
+   "ex_ru": "Их квартира большая.",
+   "hint": "Только «их чей-то предмет»; «их» как «кого» — это them.",
+   "builds_with": [
+    "w038",
+    "w033",
+    "w015"
+   ]
+  },
+  {
+   "id": "c023",
+   "en": "this",
+   "ru": "этот / эта / это (рядом)",
+   "ipa": "/ðɪs/",
+   "tr": "дис",
+   "group": "pronoun",
+   "order": 14,
+   "pos": "pronoun",
+   "ex_en": "This coffee is hot.",
+   "ex_ru": "Этот кофе горячий.",
+   "hint": "То, что близко: this — «вот этот».",
+   "builds_with": [
+    "w003",
+    "w015",
+    "w054"
+   ]
+  },
+  {
+   "id": "c024",
+   "en": "that",
+   "ru": "тот / та / то (дальше)",
+   "ipa": "/ðæt/",
+   "tr": "дэт",
+   "group": "pronoun",
+   "order": 15,
+   "pos": "pronoun",
+   "ex_en": "That hotel is expensive.",
+   "ex_ru": "Тот отель дорогой.",
+   "hint": "То, что подальше или уже упомянуто: that — «вон тот».",
+   "builds_with": [
+    "w152",
+    "w017",
+    "w015"
+   ]
+  },
+  {
+   "id": "c025",
+   "en": "these",
+   "ru": "эти",
+   "ipa": "/ðiːz/",
+   "tr": "диз",
+   "group": "pronoun",
+   "order": 16,
+   "pos": "pronoun",
+   "ex_en": "These jeans are new.",
+   "ex_ru": "Эти джинсы новые.",
+   "hint": "Множественное число от this: один — this, много — these.",
+   "builds_with": [
+    "w117",
+    "w118",
+    "w129"
+   ]
+  },
+  {
+   "id": "c026",
+   "en": "me",
+   "ru": "мне / меня",
+   "ipa": "/miː/",
+   "tr": "ми",
+   "group": "pronoun",
+   "order": 17,
+   "pos": "pronoun",
+   "ex_en": "Give me the menu.",
+   "ex_ru": "Дай мне меню.",
+   "hint": "Когда «я» перестаёт быть тем, кто действует, оно превращается в me.",
+   "builds_with": [
+    "w011",
+    "w168",
+    "w067"
+   ]
+  },
+  {
+   "id": "c027",
+   "en": "him",
+   "ru": "ему / его",
+   "ipa": "/hɪm/",
+   "tr": "хим",
+   "group": "pronoun",
+   "order": 18,
+   "pos": "pronoun",
+   "ex_en": "Give him the file.",
+   "ex_ru": "Дай ему файл.",
+   "hint": "То же превращение для he: he — он, him — ему, его.",
+   "builds_with": [
+    "w067",
+    "w060",
+    "w168"
+   ]
+  },
+  {
+   "id": "c028",
+   "en": "us",
+   "ru": "нам / нас",
+   "ipa": "/ʌs/",
+   "tr": "ас",
+   "group": "pronoun",
+   "order": 19,
+   "pos": "pronoun",
+   "ex_en": "The taxi is for us.",
+   "ex_ru": "Такси для нас.",
+   "hint": "Форма we после глагола или предлога: for us — для нас.",
+   "builds_with": [
+    "w017",
+    "w011",
+    "w168"
+   ]
+  },
+  {
+   "id": "c029",
+   "en": "them",
+   "ru": "им / их",
+   "ipa": "/ðem/",
+   "tr": "дэм",
+   "group": "pronoun",
+   "order": 20,
+   "pos": "pronoun",
+   "ex_en": "I know them.",
+   "ex_ru": "Я их знаю.",
+   "hint": "Форма they после глагола: know them — знать их.",
+   "builds_with": [
+    "w055",
+    "w162",
+    "w030"
+   ]
+  },
+  {
+   "id": "c030",
+   "en": "have",
+   "ru": "иметь; у меня есть",
+   "ipa": "/hæv/",
+   "tr": "хэв",
+   "group": "verb",
+   "order": 1,
+   "pos": "verb",
+   "ex_en": "I have a plan.",
+   "ex_ru": "У меня есть план.",
+   "hint": "Русское «у меня есть» англичане говорят как «я имею»: I have.",
+   "builds_with": [
+    "w050",
+    "w187",
+    "w182"
+   ]
+  },
+  {
+   "id": "c031",
+   "en": "has",
+   "ru": "имеет (он, она, оно)",
+   "ipa": "/hæz/",
+   "tr": "хэз",
+   "group": "verb",
+   "order": 2,
+   "pos": "verb",
+   "ex_en": "He has a motorcycle.",
+   "ex_ru": "У него есть мотоцикл.",
+   "hint": "С he, she, it глагол have превращается в has — это самое частое исключение в английском.",
+   "builds_with": [
+    "w025",
+    "w119",
+    "w050"
+   ]
+  },
+  {
+   "id": "c032",
+   "en": "can",
+   "ru": "могу / умею",
+   "ipa": "/kæn/",
+   "tr": "кэн",
+   "group": "verb",
+   "order": 3,
+   "pos": "verb",
+   "ex_en": "I can play tennis.",
+   "ex_ru": "Я умею играть в теннис.",
+   "hint": "После can глагол идёт «голым», без to: I can play.",
+   "builds_with": [
+    "w084",
+    "w085",
+    "w146"
+   ]
+  },
+  {
+   "id": "c033",
+   "en": "can't",
+   "ru": "не могу",
+   "ipa": "/kɑːnt/",
+   "tr": "кант",
+   "group": "verb",
+   "order": 4,
+   "pos": "verb",
+   "ex_en": "I can't open the file.",
+   "ex_ru": "Я не могу открыть файл.",
+   "hint": "Отрицание к can: can + not сливаются в can't.",
+   "builds_with": [
+    "w067",
+    "w060",
+    "w168"
+   ]
+  },
+  {
+   "id": "c034",
+   "en": "will",
+   "ru": "буду / будет (будущее)",
+   "ipa": "/wɪl/",
+   "tr": "уил",
+   "group": "verb",
+   "order": 5,
+   "pos": "verb",
+   "ex_en": "I will be in the office.",
+   "ex_ru": "Я буду в офисе.",
+   "hint": "Будущее время — это просто will перед глаголом; сам глагол не меняется.",
+   "builds_with": [
+    "w047",
+    "w152",
+    "w006"
+   ]
+  },
+  {
+   "id": "c035",
+   "en": "do",
+   "ru": "делать; служебное слово вопроса",
+   "ipa": "/duː/",
+   "tr": "ду",
+   "group": "verb",
+   "order": 6,
+   "pos": "verb",
+   "ex_en": "What do you want?",
+   "ex_ru": "Что ты хочешь?",
+   "hint": "Кроме значения «делать», это слово-помощник: без него не построить вопрос — What do you want?",
+   "builds_with": [
+    "w011",
+    "w054",
+    "w180"
+   ]
+  },
+  {
+   "id": "c036",
+   "en": "don't",
+   "ru": "не (с I, you, we, they)",
+   "ipa": "/dəʊnt/",
+   "tr": "до́унт",
+   "group": "verb",
+   "order": 7,
+   "pos": "verb",
+   "ex_en": "I don't like coffee.",
+   "ex_ru": "Я не люблю кофе.",
+   "hint": "Чтобы сказать «не» с обычным глаголом, нужен помощник: I don't like — «я не люблю».",
+   "builds_with": [
+    "w003",
+    "w002",
+    "w102"
+   ]
+  },
+  {
+   "id": "c037",
+   "en": "doesn't",
+   "ru": "не (с he, she, it)",
+   "ipa": "/ˈdʌz.ənt/",
+   "tr": "да́знт",
+   "group": "verb",
+   "order": 8,
+   "pos": "verb",
+   "ex_en": "He doesn't like tennis.",
+   "ex_ru": "Он не любит теннис.",
+   "hint": "Тот же помощник для он/она/оно: he doesn't like, и сам глагол остаётся без окончания.",
+   "builds_with": [
+    "w084",
+    "w090",
+    "w132"
+   ]
+  },
+  {
+   "id": "c038",
+   "en": "want",
+   "ru": "хотеть",
+   "ipa": "/wɒnt/",
+   "tr": "уонт",
+   "group": "verb",
+   "order": 9,
+   "pos": "verb",
+   "ex_en": "I want pizza.",
+   "ex_ru": "Я хочу пиццу.",
+   "hint": "Работает как русское «хочу»: I want pizza, I want to go.",
+   "builds_with": [
+    "w001",
+    "w105",
+    "w168"
+   ]
+  },
+  {
+   "id": "c039",
+   "en": "need",
+   "ru": "нуждаться; мне нужно",
+   "ipa": "/niːd/",
+   "tr": "нид",
+   "group": "verb",
+   "order": 10,
+   "pos": "verb",
+   "ex_en": "I need aspirin.",
+   "ex_ru": "Мне нужен аспирин.",
+   "hint": "Русское «мне нужно» переворачивается в «я нуждаюсь»: I need.",
+   "builds_with": [
+    "w113",
+    "w124",
+    "w153"
+   ]
+  },
+  {
+   "id": "c040",
+   "en": "like",
+   "ru": "нравиться, любить",
+   "ipa": "/laɪk/",
+   "tr": "лайк",
+   "group": "verb",
+   "order": 11,
+   "pos": "verb",
+   "ex_en": "I like sport.",
+   "ex_ru": "Я люблю спорт.",
+   "hint": "Русское «мне нравится» переворачивается: тот, кому нравится, идёт первым — I like.",
+   "builds_with": [
+    "w083",
+    "w136",
+    "w012"
+   ]
+  },
+  {
+   "id": "c041",
+   "en": "love",
+   "ru": "любить (сильно)",
+   "ipa": "/lʌv/",
+   "tr": "лав",
+   "group": "verb",
+   "order": 12,
+   "pos": "verb",
+   "ex_en": "I love chocolate.",
+   "ex_ru": "Я обожаю шоколад.",
+   "hint": "Сильнее, чем like; про людей и про вещи одинаково.",
+   "builds_with": [
+    "w012",
+    "w132",
+    "w164"
+   ]
+  },
+  {
+   "id": "c042",
+   "en": "go",
+   "ru": "идти, ехать",
+   "ipa": "/ɡəʊ/",
+   "tr": "гоу",
+   "group": "verb",
+   "order": 13,
+   "pos": "verb",
+   "ex_en": "We go to the cinema.",
+   "ex_ru": "Мы идём в кино.",
+   "hint": "Одно слово и «идти», и «ехать» — способ передвижения английский не различает.",
+   "builds_with": [
+    "w045",
+    "w031",
+    "w160"
+   ]
+  },
+  {
+   "id": "c043",
+   "en": "come",
+   "ru": "приходить, приезжать",
+   "ipa": "/kʌm/",
+   "tr": "кам",
+   "group": "verb",
+   "order": 14,
+   "pos": "verb",
+   "ex_en": "Come to the hotel.",
+   "ex_ru": "Приходи в отель.",
+   "hint": "Движение к говорящему: go — отсюда, come — сюда.",
+   "builds_with": [
+    "w152",
+    "w047",
+    "w006"
+   ]
+  },
+  {
+   "id": "c044",
+   "en": "know",
+   "ru": "знать",
+   "ipa": "/nəʊ/",
+   "tr": "ноу",
+   "group": "verb",
+   "order": 15,
+   "pos": "verb",
+   "ex_en": "I know this doctor.",
+   "ex_ru": "Я знаю этого доктора.",
+   "hint": "Буква k в начале не читается: просто «ноу».",
+   "builds_with": [
+    "w100",
+    "w036",
+    "w192"
+   ]
+  },
+  {
+   "id": "c045",
+   "en": "see",
+   "ru": "видеть",
+   "ipa": "/siː/",
+   "tr": "си",
+   "group": "verb",
+   "order": 16,
+   "pos": "verb",
+   "ex_en": "I see the airport.",
+   "ex_ru": "Я вижу аэропорт.",
+   "hint": "Видеть глазами; «смотреть специально» — это другой глагол.",
+   "builds_with": [
+    "w160",
+    "w022",
+    "w134"
+   ]
+  },
+  {
+   "id": "c046",
+   "en": "say",
+   "ru": "сказать, говорить",
+   "ipa": "/seɪ/",
+   "tr": "сэй",
+   "group": "verb",
+   "order": 17,
+   "pos": "verb",
+   "ex_en": "Say the address, please.",
+   "ex_ru": "Скажи адрес, пожалуйста.",
+   "hint": "Про сами слова: say the address — сказать адрес.",
+   "builds_with": [
+    "w036",
+    "w192",
+    "w069"
+   ]
+  },
+  {
+   "id": "c047",
+   "en": "work",
+   "ru": "работать",
+   "ipa": "/wɜːk/",
+   "tr": "уёрк",
+   "group": "verb",
+   "order": 18,
+   "pos": "verb",
+   "ex_en": "I work in a hotel.",
+   "ex_ru": "Я работаю в отеле.",
+   "hint": "И про людей, и про технику: the server works — сервер работает.",
+   "builds_with": [
+    "w152",
+    "w047",
+    "w101"
+   ]
+  },
+  {
+   "id": "c048",
+   "en": "live",
+   "ru": "жить",
+   "ipa": "/lɪv/",
+   "tr": "лив",
+   "group": "verb",
+   "order": 19,
+   "pos": "verb",
+   "ex_en": "I live in the center.",
+   "ex_ru": "Я живу в центре.",
+   "hint": "Где живёшь — всегда с предлогом in: live in the center.",
+   "builds_with": [
+    "w035",
+    "w038",
+    "w152"
+   ]
+  },
+  {
+   "id": "c049",
+   "en": "take",
+   "ru": "брать, принимать",
+   "ipa": "/teɪk/",
+   "tr": "тэйк",
+   "group": "verb",
+   "order": 20,
+   "pos": "verb",
+   "ex_en": "Take a vitamin.",
+   "ex_ru": "Прими витамин.",
+   "hint": "Широкое слово: взять вещь, принять лекарство, поехать на такси.",
+   "builds_with": [
+    "w112",
+    "w110",
+    "w017"
+   ]
+  },
+  {
+   "id": "c050",
+   "en": "give",
+   "ru": "давать",
+   "ipa": "/ɡɪv/",
+   "tr": "гив",
+   "group": "verb",
+   "order": 21,
+   "pos": "verb",
+   "ex_en": "Give me the menu.",
+   "ex_ru": "Дай мне меню.",
+   "hint": "Сначала кому, потом что: give me the menu.",
+   "builds_with": [
+    "w011",
+    "w067",
+    "w168"
+   ]
+  },
+  {
+   "id": "c051",
+   "en": "make",
+   "ru": "делать, создавать",
+   "ipa": "/meɪk/",
+   "tr": "мэйк",
+   "group": "verb",
+   "order": 22,
+   "pos": "verb",
+   "ex_en": "I make a plan.",
+   "ex_ru": "Я составляю план.",
+   "hint": "Делать в смысле «создавать результат»: make a plan, make coffee.",
+   "builds_with": [
+    "w050",
+    "w057",
+    "w062"
+   ]
+  },
+  {
+   "id": "c052",
+   "en": "get",
+   "ru": "получать, доставать",
+   "ipa": "/ɡet/",
+   "tr": "гет",
+   "group": "verb",
+   "order": 23,
+   "pos": "verb",
+   "ex_en": "I get a bonus.",
+   "ex_ru": "Я получаю бонус.",
+   "hint": "Самый универсальный глагол английского: получить, достать, добраться.",
+   "builds_with": [
+    "w167",
+    "w153",
+    "w180"
+   ]
+  },
+  {
+   "id": "c053",
+   "en": "eat",
+   "ru": "есть, кушать",
+   "ipa": "/iːt/",
+   "tr": "ит",
+   "group": "verb",
+   "order": 24,
+   "pos": "verb",
+   "ex_en": "We eat a salad.",
+   "ex_ru": "Мы едим салат.",
+   "hint": "Только про еду; «есть» в смысле «имеется» — это have или there is.",
+   "builds_with": [
+    "w008",
+    "w001",
+    "w007"
+   ]
+  },
+  {
+   "id": "c054",
+   "en": "drink",
+   "ru": "пить",
+   "ipa": "/drɪŋk/",
+   "tr": "дринк",
+   "group": "verb",
+   "order": 25,
+   "pos": "verb",
+   "ex_en": "I drink coffee.",
+   "ex_ru": "Я пью кофе.",
+   "hint": "И глагол «пить», и существительное «напиток».",
+   "builds_with": [
+    "w003",
+    "w016",
+    "w014"
+   ]
+  },
+  {
+   "id": "c055",
+   "en": "buy",
+   "ru": "покупать",
+   "ipa": "/baɪ/",
+   "tr": "бай",
+   "group": "verb",
+   "order": 26,
+   "pos": "verb",
+   "ex_en": "I buy cosmetics.",
+   "ex_ru": "Я покупаю косметику.",
+   "hint": "Читается «бай», хотя пишется через u.",
+   "builds_with": [
+    "w128",
+    "w159",
+    "w163"
+   ]
+  },
+  {
+   "id": "c056",
+   "en": "read",
+   "ru": "читать",
+   "ipa": "/riːd/",
+   "tr": "рид",
+   "group": "verb",
+   "order": 27,
+   "pos": "verb",
+   "ex_en": "I read the document.",
+   "ex_ru": "Я читаю документ.",
+   "hint": "Пишется одинаково в настоящем и прошедшем, но в прошедшем читается «рэд».",
+   "builds_with": [
+    "w060",
+    "w062",
+    "w151"
+   ]
+  },
+  {
+   "id": "c057",
+   "en": "write",
+   "ru": "писать",
+   "ipa": "/raɪt/",
+   "tr": "райт",
+   "group": "verb",
+   "order": 28,
+   "pos": "verb",
+   "ex_en": "I write code.",
+   "ex_ru": "Я пишу код.",
+   "hint": "Буква w в начале немая: просто «райт».",
+   "builds_with": [
+    "w069",
+    "w140",
+    "w075"
+   ]
+  },
+  {
+   "id": "c058",
+   "en": "play",
+   "ru": "играть",
+   "ipa": "/pleɪ/",
+   "tr": "плэй",
+   "group": "verb",
+   "order": 29,
+   "pos": "verb",
+   "ex_en": "We play football.",
+   "ex_ru": "Мы играем в футбол.",
+   "hint": "Про спорт и музыку одинаково: play football, play piano.",
+   "builds_with": [
+    "w090",
+    "w084",
+    "w146"
+   ]
+  },
+  {
+   "id": "c059",
+   "en": "help",
+   "ru": "помогать",
+   "ipa": "/help/",
+   "tr": "хелп",
+   "group": "verb",
+   "order": 30,
+   "pos": "verb",
+   "ex_en": "Help me, please.",
+   "ex_ru": "Помоги мне, пожалуйста.",
+   "hint": "После него сразу тот, кому помогают: help me, help the client.",
+   "builds_with": [
+    "w029",
+    "w059",
+    "w100"
+   ]
+  },
+  {
+   "id": "c060",
+   "en": "open",
+   "ru": "открывать; открытый",
+   "ipa": "/ˈəʊ.pən/",
+   "tr": "о́упэн",
+   "group": "verb",
+   "order": 31,
+   "pos": "verb",
+   "ex_en": "Open the file.",
+   "ex_ru": "Открой файл.",
+   "hint": "Одно слово и действие, и признак: open the file — открой, the bar is open — бар открыт.",
+   "builds_with": [
+    "w067",
+    "w032",
+    "w013"
+   ]
+  },
+  {
+   "id": "c061",
+   "en": "good",
+   "ru": "хороший, хорошо",
+   "ipa": "/ɡʊd/",
+   "tr": "гуд",
+   "group": "adj",
+   "order": 1,
+   "pos": "adj",
+   "ex_en": "This restaurant is good.",
+   "ex_ru": "Этот ресторан хороший.",
+   "hint": "Признак предмета; про действие говорят well.",
+   "builds_with": [
+    "w015",
+    "w187",
+    "w050"
+   ]
+  },
+  {
+   "id": "c062",
+   "en": "bad",
+   "ru": "плохой",
+   "ipa": "/bæd/",
+   "tr": "бэд",
+   "group": "adj",
+   "order": 2,
+   "pos": "adj",
+   "ex_en": "It is a bad idea.",
+   "ex_ru": "Это плохая идея.",
+   "hint": "Прямая противоположность good.",
+   "builds_with": [
+    "w187",
+    "w050",
+    "w195"
+   ]
+  },
+  {
+   "id": "c063",
+   "en": "big",
+   "ru": "большой",
+   "ipa": "/bɪɡ/",
+   "tr": "биг",
+   "group": "adj",
+   "order": 3,
+   "pos": "adj",
+   "ex_en": "The park is big.",
+   "ex_ru": "Парк большой.",
+   "hint": "Про размер чего угодно — от бургера до стадиона.",
+   "builds_with": [
+    "w031",
+    "w078",
+    "w106"
+   ]
+  },
+  {
+   "id": "c064",
+   "en": "small",
+   "ru": "маленький",
+   "ipa": "/smɔːl/",
+   "tr": "смол",
+   "group": "adj",
+   "order": 4,
+   "pos": "adj",
+   "ex_en": "My apartment is small.",
+   "ex_ru": "Моя квартира маленькая.",
+   "hint": "Противоположность big; форма не меняется по роду.",
+   "builds_with": [
+    "w038",
+    "w037",
+    "w005"
+   ]
+  },
+  {
+   "id": "c065",
+   "en": "new",
+   "ru": "новый",
+   "ipa": "/njuː/",
+   "tr": "нью",
+   "group": "adj",
+   "order": 5,
+   "pos": "adj",
+   "ex_en": "This project is new.",
+   "ex_ru": "Этот проект новый.",
+   "hint": "Прилагательное никогда не меняется: new project, new jeans.",
+   "builds_with": [
+    "w054",
+    "w064",
+    "w143"
+   ]
+  },
+  {
+   "id": "c066",
+   "en": "old",
+   "ru": "старый",
+   "ipa": "/əʊld/",
+   "tr": "оулд",
+   "group": "adj",
+   "order": 6,
+   "pos": "adj",
+   "ex_en": "My computer is old.",
+   "ex_ru": "Мой компьютер старый.",
+   "hint": "И «старый» о вещах, и «пожилой» о людях.",
+   "builds_with": [
+    "w064",
+    "w021",
+    "w152"
+   ]
+  },
+  {
+   "id": "c067",
+   "en": "here",
+   "ru": "здесь, сюда",
+   "ipa": "/hɪə/",
+   "tr": "хи́э",
+   "group": "adj",
+   "order": 7,
+   "pos": "adv",
+   "ex_en": "The doctor is here.",
+   "ex_ru": "Доктор здесь.",
+   "hint": "Наречие места; обычно стоит в конце: The taxi is here.",
+   "builds_with": [
+    "w100",
+    "w011",
+    "w030"
+   ]
+  },
+  {
+   "id": "c068",
+   "en": "now",
+   "ru": "сейчас",
+   "ipa": "/naʊ/",
+   "tr": "нау",
+   "group": "adj",
+   "order": 8,
+   "pos": "adv",
+   "ex_en": "I am busy now.",
+   "ex_ru": "Я сейчас занят.",
+   "hint": "Ставится в конце фразы, как русское «сейчас».",
+   "builds_with": [
+    "w048",
+    "w052",
+    "w055"
+   ]
+  },
+  {
+   "id": "c069",
+   "en": "very",
+   "ru": "очень",
+   "ipa": "/ˈver.i/",
+   "tr": "ве́ри",
+   "group": "adj",
+   "order": 9,
+   "pos": "adv",
+   "ex_en": "The hotel is very good.",
+   "ex_ru": "Отель очень хороший.",
+   "hint": "Ставится перед прилагательным, ровно как русское «очень».",
+   "builds_with": [
+    "w152",
+    "w003",
+    "w015"
+   ]
+  },
+  {
+   "id": "c070",
+   "en": "today",
+   "ru": "сегодня",
+   "ipa": "/təˈdeɪ/",
+   "tr": "тудэ́й",
+   "group": "adj",
+   "order": 10,
+   "pos": "adv",
+   "ex_en": "The match is today.",
+   "ex_ru": "Матч сегодня.",
+   "hint": "Место в предложении свободное, но чаще в конце.",
+   "builds_with": [
+    "w086",
+    "w056",
+    "w141"
+   ]
+  },
+  {
+   "id": "c071",
+   "en": "tomorrow",
+   "ru": "завтра",
+   "ipa": "/təˈmɒr.əʊ/",
+   "tr": "тумо́роу",
+   "group": "adj",
+   "order": 11,
+   "pos": "adv",
+   "ex_en": "The operation is tomorrow.",
+   "ex_ru": "Операция завтра.",
+   "hint": "С будущим часто идёт вместе с will.",
+   "builds_with": [
+    "w109",
+    "w056",
+    "w161"
+   ]
+  },
+  {
+   "id": "c072",
+   "en": "nice",
+   "ru": "приятный, милый",
+   "ipa": "/naɪs/",
+   "tr": "найс",
+   "group": "adj",
+   "order": 12,
+   "pos": "adj",
+   "ex_en": "This perfume is nice.",
+   "ex_ru": "Этот парфюм приятный.",
+   "hint": "Мягкая похвала: и о вещах, и о людях.",
+   "builds_with": [
+    "w125",
+    "w152",
+    "w061"
+   ]
+  },
+  {
+   "id": "c073",
+   "en": "hot",
+   "ru": "горячий, жаркий",
+   "ipa": "/hɒt/",
+   "tr": "хот",
+   "group": "adj",
+   "order": 13,
+   "pos": "adj",
+   "ex_en": "The soup is hot.",
+   "ex_ru": "Суп горячий.",
+   "hint": "И о еде, и о погоде — одно слово.",
+   "builds_with": [
+    "w002",
+    "w003",
+    "w157"
+   ]
+  },
+  {
+   "id": "c074",
+   "en": "cold",
+   "ru": "холодный",
+   "ipa": "/kəʊld/",
+   "tr": "коулд",
+   "group": "adj",
+   "order": 14,
+   "pos": "adj",
+   "ex_en": "My coffee is cold.",
+   "ex_ru": "Мой кофе холодный.",
+   "hint": "Противоположность hot; и о еде, и о погоде.",
+   "builds_with": [
+    "w003",
+    "w002",
+    "w158"
+   ]
+  },
+  {
+   "id": "c075",
+   "en": "warm",
+   "ru": "тёплый",
+   "ipa": "/wɔːm/",
+   "tr": "уорм",
+   "group": "adj",
+   "order": 15,
+   "pos": "adj",
+   "ex_en": "This sweater is warm.",
+   "ex_ru": "Этот свитер тёплый.",
+   "hint": "Между cold и hot; буква w читается как «у».",
+   "builds_with": [
+    "w121",
+    "w157",
+    "w158"
+   ]
+  },
+  {
+   "id": "c076",
+   "en": "fast",
+   "ru": "быстрый, быстро",
+   "ipa": "/fɑːst/",
+   "tr": "фаст",
+   "group": "adj",
+   "order": 16,
+   "pos": "adj",
+   "ex_en": "This site is fast.",
+   "ex_ru": "Этот сайт быстрый.",
+   "hint": "Одно слово и признак, и наречие: a fast taxi, go fast.",
+   "builds_with": [
+    "w066",
+    "w017",
+    "w020"
+   ]
+  },
+  {
+   "id": "c077",
+   "en": "slow",
+   "ru": "медленный",
+   "ipa": "/sləʊ/",
+   "tr": "слоу",
+   "group": "adj",
+   "order": 17,
+   "pos": "adj",
+   "ex_en": "The internet is slow.",
+   "ex_ru": "Интернет медленный.",
+   "hint": "Противоположность fast.",
+   "builds_with": [
+    "w072",
+    "w027",
+    "w068"
+   ]
+  },
+  {
+   "id": "c078",
+   "en": "cheap",
+   "ru": "дешёвый",
+   "ipa": "/tʃiːp/",
+   "tr": "чип",
+   "group": "adj",
+   "order": 18,
+   "pos": "adj",
+   "ex_en": "The hotel is cheap.",
+   "ex_ru": "Отель дешёвый.",
+   "hint": "Про цену вещи, а не про количество денег.",
+   "builds_with": [
+    "w152",
+    "w027",
+    "w017"
+   ]
+  },
+  {
+   "id": "c079",
+   "en": "expensive",
+   "ru": "дорогой",
+   "ipa": "/ɪkˈspen.sɪv/",
+   "tr": "икспэ́нсив",
+   "group": "adj",
+   "order": 19,
+   "pos": "adj",
+   "ex_en": "The taxi is expensive.",
+   "ex_ru": "Такси дорогое.",
+   "hint": "Только о цене; «дорогой» в смысле «любимый» — другое слово.",
+   "builds_with": [
+    "w017",
+    "w015",
+    "w125"
+   ]
+  },
+  {
+   "id": "c080",
+   "en": "free",
+   "ru": "бесплатный; свободный",
+   "ipa": "/friː/",
+   "tr": "фри",
+   "group": "adj",
+   "order": 20,
+   "pos": "adj",
+   "ex_en": "This program is free.",
+   "ex_ru": "Эта программа бесплатная.",
+   "hint": "Два значения сразу: бесплатно и свободно.",
+   "builds_with": [
+    "w073",
+    "w072",
+    "w011"
+   ]
+  },
+  {
+   "id": "c081",
+   "en": "busy",
+   "ru": "занятой, занят",
+   "ipa": "/ˈbɪz.i/",
+   "tr": "би́зи",
+   "group": "adj",
+   "order": 21,
+   "pos": "adj",
+   "ex_en": "The director is busy.",
+   "ex_ru": "Директор занят.",
+   "hint": "И о человеке, и о телефонной линии.",
+   "builds_with": [
+    "w052",
+    "w029",
+    "w059"
+   ]
+  },
+  {
+   "id": "c082",
+   "en": "happy",
+   "ru": "счастливый, довольный",
+   "ipa": "/ˈhæp.i/",
+   "tr": "хэ́пи",
+   "group": "adj",
+   "order": 22,
+   "pos": "adj",
+   "ex_en": "The client is happy.",
+   "ex_ru": "Клиент доволен.",
+   "hint": "Шире русского «счастливый» — часто просто «доволен».",
+   "builds_with": [
+    "w055",
+    "w162",
+    "w048"
+   ]
+  },
+  {
+   "id": "c083",
+   "en": "long",
+   "ru": "длинный, долгий",
+   "ipa": "/lɒŋ/",
+   "tr": "лонг",
+   "group": "adj",
+   "order": 23,
+   "pos": "adj",
+   "ex_en": "The film is long.",
+   "ex_ru": "Фильм длинный.",
+   "hint": "И о длине, и о времени.",
+   "builds_with": [
+    "w134",
+    "w155",
+    "w109"
+   ]
+  },
+  {
+   "id": "c084",
+   "en": "short",
+   "ru": "короткий",
+   "ipa": "/ʃɔːt/",
+   "tr": "шорт",
+   "group": "adj",
+   "order": 24,
+   "pos": "adj",
+   "ex_en": "My presentation is short.",
+   "ex_ru": "Моя презентация короткая.",
+   "hint": "И о длине, и о времени, и о росте.",
+   "builds_with": [
+    "w057",
+    "w155",
+    "w140"
+   ]
+  },
+  {
+   "id": "c085",
+   "en": "difficult",
+   "ru": "трудный, сложный",
+   "ipa": "/ˈdɪf.ɪ.kəlt/",
+   "tr": "ди́фикэлт",
+   "group": "adj",
+   "order": 25,
+   "pos": "adj",
+   "ex_en": "This text is difficult.",
+   "ex_ru": "Этот текст сложный.",
+   "hint": "Нейтральное книжное слово, подходит везде.",
+   "builds_with": [
+    "w140",
+    "w188",
+    "w054"
+   ]
+  },
+  {
+   "id": "c086",
+   "en": "easy",
+   "ru": "лёгкий, простой",
+   "ipa": "/ˈiː.zi/",
+   "tr": "и́зи",
+   "group": "adj",
+   "order": 26,
+   "pos": "adj",
+   "ex_en": "The code is easy.",
+   "ex_ru": "Код простой.",
+   "hint": "О задаче, а не о весе: лёгкий по весу — light.",
+   "builds_with": [
+    "w069",
+    "w073",
+    "w188"
+   ]
+  },
+  {
+   "id": "c087",
+   "en": "ready",
+   "ru": "готовый",
+   "ipa": "/ˈred.i/",
+   "tr": "рэ́ди",
+   "group": "adj",
+   "order": 27,
+   "pos": "adj",
+   "ex_en": "Dessert is ready.",
+   "ex_ru": "Десерт готов.",
+   "hint": "Всегда с формой be: I am ready — я готов.",
+   "builds_with": [
+    "w010",
+    "w062",
+    "w057"
+   ]
+  },
+  {
+   "id": "c088",
+   "en": "near",
+   "ru": "близко, рядом",
+   "ipa": "/nɪə/",
+   "tr": "ни́э",
+   "group": "adj",
+   "order": 28,
+   "pos": "adj",
+   "ex_en": "The clinic is near.",
+   "ex_ru": "Клиника рядом.",
+   "hint": "Может стоять и один, и перед местом: near the park.",
+   "builds_with": [
+    "w101",
+    "w020",
+    "w013"
+   ]
+  },
+  {
+   "id": "c089",
+   "en": "far",
+   "ru": "далеко",
+   "ipa": "/fɑː/",
+   "tr": "фар",
+   "group": "adj",
+   "order": 29,
+   "pos": "adj",
+   "ex_en": "The center is far.",
+   "ex_ru": "Центр далеко.",
+   "hint": "Противоположность near.",
+   "builds_with": [
+    "w035",
+    "w160",
+    "w044"
+   ]
+  },
+  {
+   "id": "c090",
+   "en": "late",
+   "ru": "поздний; опаздывает",
+   "ipa": "/leɪt/",
+   "tr": "лэйт",
+   "group": "adj",
+   "order": 30,
+   "pos": "adj",
+   "ex_en": "The bus is late.",
+   "ex_ru": "Автобус опаздывает.",
+   "hint": "«Опаздывать» по-английски — это признак, а не действие: he is late.",
+   "builds_with": [
+    "w027",
+    "w160",
+    "w022"
+   ]
+  },
+  {
+   "id": "c091",
+   "en": "the",
+   "ru": "определённый артикль; в русском его нет",
+   "ipa": "/ðə/",
+   "tr": "дэ",
+   "group": "glue",
+   "order": 1,
+   "pos": "article",
+   "ex_en": "The taxi is here.",
+   "ex_ru": "Такси здесь.",
+   "hint": "Значит «тот самый, о котором знаем». Русский обходится без него — просто привыкайте ставить.",
+   "builds_with": [
+    "w017",
+    "w100",
+    "w011"
+   ]
+  },
+  {
+   "id": "c092",
+   "en": "a",
+   "ru": "неопределённый артикль: «какой-то один»",
+   "ipa": "/ə/",
+   "tr": "э",
+   "group": "glue",
+   "order": 2,
+   "pos": "article",
+   "ex_en": "I want a burger.",
+   "ex_ru": "Я хочу бургер.",
+   "hint": "Ставится перед предметом, который называем впервые. Аналога в русском нет, но без него фраза звучит неправильно.",
+   "builds_with": [
+    "w005",
+    "w017",
+    "w050"
+   ]
+  },
+  {
+   "id": "c093",
+   "en": "an",
+   "ru": "тот же артикль a перед гласным звуком",
+   "ipa": "/ən/",
+   "tr": "эн",
+   "group": "glue",
+   "order": 3,
+   "pos": "article",
+   "ex_en": "He is an engineer.",
+   "ex_ru": "Он инженер.",
+   "hint": "Просто чтобы было удобнее произносить: a doctor, но an engineer.",
+   "builds_with": [
+    "w063",
+    "w143",
+    "w108"
+   ]
+  },
+  {
+   "id": "c094",
+   "en": "in",
+   "ru": "в (внутри)",
+   "ipa": "/ɪn/",
+   "tr": "ин",
+   "group": "glue",
+   "order": 4,
+   "pos": "prep",
+   "ex_en": "I am in the office.",
+   "ex_ru": "Я в офисе.",
+   "hint": "Внутри пространства: in the office, in the park.",
+   "builds_with": [
+    "w047",
+    "w006",
+    "w031"
+   ]
+  },
+  {
+   "id": "c095",
+   "en": "on",
+   "ru": "на (на поверхности)",
+   "ipa": "/ɒn/",
+   "tr": "он",
+   "group": "glue",
+   "order": 5,
+   "pos": "prep",
+   "ex_en": "The photo is on the site.",
+   "ex_ru": "Фото на сайте.",
+   "hint": "На поверхности или в сети: on the table, on the site.",
+   "builds_with": [
+    "w139",
+    "w066",
+    "w022"
+   ]
+  },
+  {
+   "id": "c096",
+   "en": "at",
+   "ru": "в, у (в точке; о времени)",
+   "ipa": "/æt/",
+   "tr": "эт",
+   "group": "glue",
+   "order": 6,
+   "pos": "prep",
+   "ex_en": "She is at the university.",
+   "ex_ru": "Она в университете.",
+   "hint": "Точка на карте или во времени: at the university, at ten.",
+   "builds_with": [
+    "w039",
+    "w160",
+    "w089"
+   ]
+  },
+  {
+   "id": "c097",
+   "en": "to",
+   "ru": "к, в (направление); частица перед глаголом",
+   "ipa": "/tuː/",
+   "tr": "ту",
+   "group": "glue",
+   "order": 7,
+   "pos": "prep",
+   "ex_en": "We go to the cinema.",
+   "ex_ru": "Мы идём в кино.",
+   "hint": "Стрелка направления. Она же появляется перед глаголом: want to go.",
+   "builds_with": [
+    "w045",
+    "w031",
+    "w160"
+   ]
+  },
+  {
+   "id": "c098",
+   "en": "of",
+   "ru": "предлог принадлежности («чего?»)",
+   "ipa": "/ɒv/",
+   "tr": "ов",
+   "group": "glue",
+   "order": 8,
+   "pos": "prep",
+   "ex_en": "The start of the match.",
+   "ex_ru": "Начало матча.",
+   "hint": "Заменяет русское окончание родительного падежа: начало матча — the start of the match.",
+   "builds_with": [
+    "w089",
+    "w086",
+    "w094"
+   ]
+  },
+  {
+   "id": "c099",
+   "en": "for",
+   "ru": "для, за",
+   "ipa": "/fɔː/",
+   "tr": "фор",
+   "group": "glue",
+   "order": 10,
+   "pos": "prep",
+   "ex_en": "The taxi is for us.",
+   "ex_ru": "Такси для нас.",
+   "hint": "Кому предназначено: for us, for the client.",
+   "builds_with": [
+    "w017",
+    "w011",
+    "w168"
+   ]
+  },
+  {
+   "id": "c100",
+   "en": "with",
+   "ru": "с (кем, чем)",
+   "ipa": "/wɪð/",
+   "tr": "уиз",
+   "group": "glue",
+   "order": 11,
+   "pos": "prep",
+   "ex_en": "I am with the director.",
+   "ex_ru": "Я с директором.",
+   "hint": "Совместность: with the director. Не путать с «с» в смысле «из» — это from.",
+   "builds_with": [
+    "w052",
+    "w059",
+    "w055"
+   ]
+  },
+  {
+   "id": "c101",
+   "en": "from",
+   "ru": "из, от",
+   "ipa": "/frɒm/",
+   "tr": "фром",
+   "group": "glue",
+   "order": 12,
+   "pos": "prep",
+   "ex_en": "The email is from my boss.",
+   "ex_ru": "Письмо от моего босса.",
+   "hint": "Откуда пришло: from my boss, from the airport.",
+   "builds_with": [
+    "w075",
+    "w048",
+    "w052"
+   ]
+  },
+  {
+   "id": "c102",
+   "en": "and",
+   "ru": "и",
+   "ipa": "/ænd/",
+   "tr": "энд",
+   "group": "glue",
+   "order": 13,
+   "pos": "conj",
+   "ex_en": "Coffee and dessert, please.",
+   "ex_ru": "Кофе и десерт, пожалуйста.",
+   "hint": "Полное соответствие русскому «и».",
+   "builds_with": [
+    "w003",
+    "w010",
+    "w001"
+   ]
+  },
+  {
+   "id": "c103",
+   "en": "but",
+   "ru": "но",
+   "ipa": "/bʌt/",
+   "tr": "бат",
+   "group": "glue",
+   "order": 14,
+   "pos": "conj",
+   "ex_en": "The hotel is old but good.",
+   "ex_ru": "Отель старый, но хороший.",
+   "hint": "Полное соответствие русскому «но».",
+   "builds_with": [
+    "w152",
+    "w015",
+    "w027"
+   ]
+  },
+  {
+   "id": "c104",
+   "en": "or",
+   "ru": "или",
+   "ipa": "/ɔː/",
+   "tr": "ор",
+   "group": "glue",
+   "order": 15,
+   "pos": "conj",
+   "ex_en": "Pizza or salad?",
+   "ex_ru": "Пицца или салат?",
+   "hint": "Полное соответствие русскому «или».",
+   "builds_with": [
+    "w001",
+    "w008",
+    "w003"
+   ]
+  },
+  {
+   "id": "c105",
+   "en": "not",
+   "ru": "не",
+   "ipa": "/nɒt/",
+   "tr": "нот",
+   "group": "glue",
+   "order": 16,
+   "pos": "particle",
+   "ex_en": "It is not a problem.",
+   "ex_ru": "Это не проблема.",
+   "hint": "Всегда стоит после is, are, can, will — не перед смысловым глаголом.",
+   "builds_with": [
+    "w188",
+    "w183",
+    "w192"
+   ]
+  },
+  {
+   "id": "c106",
+   "en": "no",
+   "ru": "нет; никакой",
+   "ipa": "/nəʊ/",
+   "tr": "ноу",
+   "group": "glue",
+   "order": 17,
+   "pos": "particle",
+   "ex_en": "No alcohol, please.",
+   "ex_ru": "Без алкоголя, пожалуйста.",
+   "hint": "Отказ или полное отсутствие: no alcohol — никакого алкоголя.",
+   "builds_with": [
+    "w014",
+    "w102",
+    "w183"
+   ]
+  },
+  {
+   "id": "c107",
+   "en": "yes",
+   "ru": "да",
+   "ipa": "/jes/",
+   "tr": "ес",
+   "group": "glue",
+   "order": 18,
+   "pos": "particle",
+   "ex_en": "Yes, I am a tourist.",
+   "ex_ru": "Да, я турист.",
+   "hint": "Прямое соответствие русскому «да».",
+   "builds_with": [
+    "w162",
+    "w100",
+    "w052"
+   ]
+  },
+  {
+   "id": "c108",
+   "en": "what",
+   "ru": "что, какой",
+   "ipa": "/wɒt/",
+   "tr": "уот",
+   "group": "glue",
+   "order": 19,
+   "pos": "question",
+   "ex_en": "What is your address?",
+   "ex_ru": "Какой у тебя адрес?",
+   "hint": "Вопросительное слово всегда стоит первым в предложении.",
+   "builds_with": [
+    "w036",
+    "w050",
+    "w188"
+   ]
+  },
+  {
+   "id": "c109",
+   "en": "where",
+   "ru": "где, куда",
+   "ipa": "/weə/",
+   "tr": "уэа",
+   "group": "glue",
+   "order": 20,
+   "pos": "question",
+   "ex_en": "Where is the taxi?",
+   "ex_ru": "Где такси?",
+   "hint": "Одно слово и «где», и «куда» — направление уточняется глаголом.",
+   "builds_with": [
+    "w017",
+    "w160",
+    "w034"
+   ]
+  },
+  {
+   "id": "c110",
+   "en": "when",
+   "ru": "когда",
+   "ipa": "/wen/",
+   "tr": "уэн",
+   "group": "glue",
+   "order": 21,
+   "pos": "question",
+   "ex_en": "When is the concert?",
+   "ex_ru": "Когда концерт?",
+   "hint": "Спрашивает о времени; порядок слов — when + is + предмет.",
+   "builds_with": [
+    "w141",
+    "w086",
+    "w056"
+   ]
+  },
+  {
+   "id": "c111",
+   "en": "who",
+   "ru": "кто",
+   "ipa": "/huː/",
+   "tr": "ху",
+   "group": "glue",
+   "order": 22,
+   "pos": "question",
+   "ex_en": "Who is your doctor?",
+   "ex_ru": "Кто твой доктор?",
+   "hint": "Только о людях; о вещах спрашивают what.",
+   "builds_with": [
+    "w100",
+    "w059",
+    "w156"
+   ]
+  },
+  {
+   "id": "c112",
+   "en": "why",
+   "ru": "почему",
+   "ipa": "/waɪ/",
+   "tr": "уай",
+   "group": "glue",
+   "order": 23,
+   "pos": "question",
+   "ex_en": "Why is the bus late?",
+   "ex_ru": "Почему автобус опаздывает?",
+   "hint": "Ответ на него обычно начинается с because.",
+   "builds_with": [
+    "w027",
+    "w068",
+    "w188"
+   ]
+  },
+  {
+   "id": "c113",
+   "en": "how",
+   "ru": "как",
+   "ipa": "/haʊ/",
+   "tr": "хау",
+   "group": "glue",
+   "order": 24,
+   "pos": "question",
+   "ex_en": "How is your project?",
+   "ex_ru": "Как твой проект?",
+   "hint": "Спрашивает о способе или состоянии; с much и many спрашивает «сколько».",
+   "builds_with": [
+    "w054",
+    "w049",
+    "w104"
+   ]
+  },
+  {
+   "id": "c114",
+   "en": "much",
+   "ru": "много (о несчётном); в вопросе «сколько»",
+   "ipa": "/mʌtʃ/",
+   "tr": "мач",
+   "group": "glue",
+   "order": 25,
+   "pos": "det",
+   "ex_en": "How much is the taxi?",
+   "ex_ru": "Сколько стоит такси?",
+   "hint": "How much — главный вопрос в магазине: «сколько стоит».",
+   "builds_with": [
+    "w017",
+    "w011",
+    "w168"
+   ]
+  },
+  {
+   "id": "c115",
+   "en": "some",
+   "ru": "немного, несколько",
+   "ipa": "/sʌm/",
+   "tr": "сам",
+   "group": "glue",
+   "order": 26,
+   "pos": "det",
+   "ex_en": "I want some coffee.",
+   "ex_ru": "Я хочу немного кофе.",
+   "hint": "Ставится там, где по-русски мы просто ничего не говорим: I want some coffee.",
+   "builds_with": [
+    "w003",
+    "w002",
+    "w008"
+   ]
+  },
+  {
+   "id": "c116",
+   "en": "all",
+   "ru": "весь, всё",
+   "ipa": "/ɔːl/",
+   "tr": "ол",
+   "group": "glue",
+   "order": 27,
+   "pos": "det",
+   "ex_en": "That is all.",
+   "ex_ru": "Это всё.",
+   "hint": "Полный охват: all the coffee — весь кофе.",
+   "builds_with": [
+    "w011",
+    "w168",
+    "w060"
+   ]
+  },
+  {
+   "id": "c117",
+   "en": "because",
+   "ru": "потому что",
+   "ipa": "/bɪˈkɒz/",
+   "tr": "бико́з",
+   "group": "glue",
+   "order": 28,
+   "pos": "conj",
+   "ex_en": "I am happy because it is free.",
+   "ex_ru": "Я рад, потому что это бесплатно.",
+   "hint": "Соединяет две части фразы, как русское «потому что».",
+   "builds_with": [
+    "w073",
+    "w180",
+    "w167"
+   ]
+  },
+  {
+   "id": "c118",
+   "en": "please",
+   "ru": "пожалуйста",
+   "ipa": "/pliːz/",
+   "tr": "плиз",
+   "group": "glue",
+   "order": 29,
+   "pos": "particle",
+   "ex_en": "One burger, please.",
+   "ex_ru": "Один бургер, пожалуйста.",
+   "hint": "Без него просьба звучит как приказ, поэтому ставят почти всегда.",
+   "builds_with": [
+    "w005",
+    "w017",
+    "w011"
+   ]
+  },
+  {
+   "id": "c119",
+   "en": "one",
+   "ru": "один",
+   "ipa": "/wʌn/",
+   "tr": "уан",
+   "group": "glue",
+   "order": 30,
+   "pos": "num",
+   "ex_en": "One passenger is here.",
+   "ex_ru": "Один пассажир здесь.",
+   "hint": "Пишется one, читается «уан».",
+   "builds_with": [
+    "w030",
+    "w005",
+    "w190"
+   ]
+  },
+  {
+   "id": "c120",
+   "en": "two",
+   "ru": "два",
+   "ipa": "/tuː/",
+   "tr": "ту",
+   "group": "glue",
+   "order": 31,
+   "pos": "num",
+   "ex_en": "Terminal two is open.",
+   "ex_ru": "Терминал два открыт.",
+   "hint": "Буква w немая: просто «ту».",
+   "builds_with": [
+    "w026",
+    "w022",
+    "w190"
+   ]
+  }
+ ],
+ "patterns": [
+  {
+   "id": "p01",
+   "schema": "The {noun} is {adj}.",
+   "ru_schema": "{Существительное} {прилагательное}.",
+   "example_en": "The taxi is fast.",
+   "example_ru": "Такси быстрое.",
+   "uses": [
+    "c091",
+    "c001",
+    "c076"
+   ],
+   "note": "Русский обходится без «is», английский — нет: «такси быстрое» → the taxi IS fast.",
+   "difficulty": 1
+  },
+  {
+   "id": "p02",
+   "schema": "I don't {verb} {noun}.",
+   "ru_schema": "Я не {глагол} {существительное}.",
+   "example_en": "I don't like coffee.",
+   "example_ru": "Я не люблю кофе.",
+   "uses": [
+    "c010",
+    "c036",
+    "c040"
+   ],
+   "note": "Одного «не» мало: перед глаголом нужен помощник don't, а сам глагол остаётся без изменений.",
+   "difficulty": 2
+  },
+  {
+   "id": "p03",
+   "schema": "Where is the {noun}?",
+   "ru_schema": "Где {существительное}?",
+   "example_en": "Where is the hotel?",
+   "example_ru": "Где отель?",
+   "uses": [
+    "c109",
+    "c001",
+    "c091"
+   ],
+   "note": "В вопросе is прыгает вперёд, к вопросительному слову: where IS the hotel.",
+   "difficulty": 1
+  },
+  {
+   "id": "p04",
+   "schema": "I have a {noun}.",
+   "ru_schema": "У меня есть {существительное}.",
+   "example_en": "I have a plan.",
+   "example_ru": "У меня есть план.",
+   "uses": [
+    "c010",
+    "c030",
+    "c092"
+   ],
+   "note": "Русское «у меня есть» переворачивается в «я имею»: I have a plan.",
+   "difficulty": 1
+  },
+  {
+   "id": "p05",
+   "schema": "I want a {noun}.",
+   "ru_schema": "Я хочу {существительное}.",
+   "example_en": "I want a massage.",
+   "example_ru": "Я хочу массаж.",
+   "uses": [
+    "c010",
+    "c038",
+    "c092"
+   ],
+   "note": "Артикль a обязателен: I want massage звучит для англичанина оборванно.",
+   "difficulty": 1
+  },
+  {
+   "id": "p06",
+   "schema": "I want to {verb}.",
+   "ru_schema": "Я хочу {глагол}.",
+   "example_en": "I want to eat.",
+   "example_ru": "Я хочу есть.",
+   "uses": [
+    "c010",
+    "c038",
+    "c097",
+    "c053"
+   ],
+   "note": "Между двумя глаголами вставляется to — русскому здесь ничего не соответствует.",
+   "difficulty": 2
+  },
+  {
+   "id": "p07",
+   "schema": "I am in the {noun}.",
+   "ru_schema": "Я в {существительное}.",
+   "example_en": "I am in the office.",
+   "example_ru": "Я в офисе.",
+   "uses": [
+    "c010",
+    "c002",
+    "c094",
+    "c091"
+   ],
+   "note": "Внутри чего-то — in, на поверхности — on, в точке или о времени — at.",
+   "difficulty": 1
+  },
+  {
+   "id": "p08",
+   "schema": "I want some {noun}. / How much is the {noun}?",
+   "ru_schema": "Я хочу немного {существительное}. / Сколько стоит {существительное}?",
+   "example_en": "I want some soup.",
+   "example_ru": "Я хочу немного супа.",
+   "uses": [
+    "c115",
+    "c114",
+    "c113",
+    "c038"
+   ],
+   "note": "Количество показывают словами some, much, one, two — падежных окончаний в английском нет.",
+   "difficulty": 2
+  },
+  {
+   "id": "p09",
+   "schema": "It is a {adj} {noun}.",
+   "ru_schema": "Это {прилагательное} {существительное}.",
+   "example_en": "It is a good brand.",
+   "example_ru": "Это хороший бренд.",
+   "uses": [
+    "c014",
+    "c001",
+    "c092",
+    "c061"
+   ],
+   "note": "Прилагательное всегда перед существительным и никогда не меняет форму: a good brand, a good idea.",
+   "difficulty": 1
+  },
+  {
+   "id": "p10",
+   "schema": "My {noun} is {adj}.",
+   "ru_schema": "Мой {существительное} {прилагательное}.",
+   "example_en": "My computer is old.",
+   "example_ru": "Мой компьютер старый.",
+   "uses": [
+    "c017",
+    "c001",
+    "c066"
+   ],
+   "note": "my, your, his, her, our, their не меняются по роду и числу — одна форма на всё.",
+   "difficulty": 1
+  },
+  {
+   "id": "p11",
+   "schema": "These {noun}s are {adj}.",
+   "ru_schema": "Эти {существительные} {прилагательные}.",
+   "example_en": "These jeans are new.",
+   "example_ru": "Эти джинсы новые.",
+   "uses": [
+    "c025",
+    "c003",
+    "c065"
+   ],
+   "note": "Во множественном числе меняется существительное (+s) и is становится are, а прилагательное остаётся прежним.",
+   "difficulty": 2
+  },
+  {
+   "id": "p12",
+   "schema": "I will {verb} a {noun}.",
+   "ru_schema": "Я {глагол в будущем} {существительное}.",
+   "example_en": "I will buy a souvenir.",
+   "example_ru": "Я куплю сувенир.",
+   "uses": [
+    "c010",
+    "c034",
+    "c055",
+    "c092"
+   ],
+   "note": "Будущее — это одно слово will перед глаголом; сам глагол не меняется вообще.",
+   "difficulty": 2
+  }
+ ]
+}

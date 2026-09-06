@@ -1,0 +1,179 @@
+/* Дизайн-токены. Источник: линза 5 (UX).
+   Светлая тема — в :root. Тёмная объявлена дважды:
+   для системной настройки и для явного выбора пользователя. */
+
+:root {
+  color-scheme: light dark;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display",
+    "Segoe UI", system-ui, ui-sans-serif, Inter, Roboto, "Noto Sans", Arial,
+    "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  --fs-caption:.75rem; --fs-micro:.8125rem; --fs-sm:.875rem; --fs-base:1rem; --fs-md:1.125rem;
+  --fs-lg:1.3125rem; --fs-xl:1.625rem; --fs-2xl:2rem; --fs-3xl:2.5rem; --fs-4xl:3.25rem;
+  --fs-word:clamp(2rem,9vw,3rem);
+  --lh-tight:1.15; --lh-snug:1.3; --lh-base:1.5; --ls-tight:-.02em; --ls-snug:-.01em;
+  --fw-regular:400; --fw-medium:500; --fw-semi:600; --fw-bold:700; --fw-black:800;
+
+  --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem; --sp-5:1.25rem; --sp-6:1.5rem;
+  --sp-8:2rem; --sp-10:2.5rem; --sp-12:3rem; --sp-16:4rem; --sp-20:5rem;
+  --gutter:var(--sp-4);
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+  --tabbar-h:64px;
+
+  --r-xs:6px; --r-sm:10px; --r-md:14px; --r-lg:20px; --r-xl:28px; --r-2xl:36px; --r-full:999px;
+
+  --d-instant:90ms; --d-1:120ms; --d-2:180ms; --d-3:240ms; --d-4:320ms;
+  --d-5:480ms; --d-6:700ms; --d-7:1200ms;
+  --ease-smooth:cubic-bezier(.40,0,.20,1);
+  --ease-snappy:cubic-bezier(.20,0,0,1);
+  --ease-spring-out:cubic-bezier(.34,1.56,.64,1);
+  --ease-bounce:cubic-bezier(.68,-.55,.27,1.55);
+  --ease-out-quint:cubic-bezier(.22,1,.36,1);
+  --ease-in-back:cubic-bezier(.36,0,.66,-.56);
+  --ease-linear:linear;
+
+  /* Светлая тема */
+  --bg:#F6F6FB; --bg-elevated:#FFF; --surface:#FFF; --surface-2:#F0F0F8; --surface-3:#E4E4F0; --surface-sunken:#EDEDF5;
+  --overlay:rgba(16,16,34,.44); --border:#E2E2EE; --border-strong:#CFCFE0;
+  --text:#131327; --text-2:#55556E; --text-3:#8B8BA3; --text-inverse:#FFF;
+  --accent:#6E56F8; --accent-hover:#5F45F0; --accent-press:#5138DB; --accent-soft:#EEEBFE; --accent-border:#D6CEFD; --on-accent:#FFF;
+  --accent-2:#FF7A45; --accent-2-soft:#FFEDE4; --on-accent-2:#FFF;
+  --success:#17A45C; --success-hover:#128B4D; --success-soft:#E4F7EE; --success-border:#A9E6C6; --on-success:#FFF;
+  --error:#E5385F; --error-hover:#CC2B50; --error-soft:#FDE9EE; --error-border:#F7BCCA; --on-error:#FFF;
+  --warning:#E08600; --warning-soft:#FFF3DE; --warning-border:#F7D9A0; --on-warning:#FFF;
+  --info:#0E8FD1; --info-soft:#E1F3FC;
+  --gold:#E8A317; --gold-2:#C77B0C; --gold-soft:#FFF4DC; --on-gold:#3A2600;
+  --gem:#12B5CB; --gem-soft:#DFF6F9; --heart:#F0426B; --heart-empty:#DCDCE8;
+  --grad-accent:linear-gradient(135deg,#7C63FF,#6E56F8 45%,#5A3FE8);
+  --grad-fire:linear-gradient(135deg,#FFB03A,#FF7A45 55%,#F0426B);
+  --grad-success:linear-gradient(135deg,#2FCB7B,#17A45C);
+  --grad-gold:linear-gradient(140deg,#FFDE8A,#F5B72C 40%,#D68A0B);
+  --grad-gem:linear-gradient(135deg,#6FE7F5,#12B5CB 60%,#0A7F92);
+  --grad-hero:linear-gradient(160deg,#7C63FF,#6E56F8 40%,#8F4FE8);
+  --grad-sheen:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.55) 50%,transparent 80%);
+  --grad-skeleton:linear-gradient(90deg,var(--surface-2),var(--surface-3) 50%,var(--surface-2));
+  --sh-1:0 1px 2px rgba(26,20,61,.06),0 1px 1px rgba(26,20,61,.04);
+  --sh-2:0 2px 6px rgba(26,20,61,.07),0 1px 2px rgba(26,20,61,.05);
+  --sh-3:0 6px 16px rgba(26,20,61,.09),0 2px 5px rgba(26,20,61,.05);
+  --sh-4:0 14px 34px rgba(26,20,61,.13),0 4px 10px rgba(26,20,61,.06);
+  --sh-5:0 26px 60px rgba(26,20,61,.18),0 8px 20px rgba(26,20,61,.08);
+  --sh-tabbar:0 -2px 24px rgba(26,20,61,.10),0 8px 28px rgba(26,20,61,.12);
+  --sh-accent-glow:0 8px 26px rgba(110,86,248,.36);
+  --sh-gold-glow:0 0 0 6px rgba(232,163,23,.14),0 10px 30px rgba(232,163,23,.42);
+  --sh-focus:0 0 0 3px var(--bg),0 0 0 6px var(--accent);
+  --sh-inset:inset 0 1px 2px rgba(26,20,61,.08);
+  --btn-depth:4px; --btn-edge-accent:#4E33D6; --btn-edge-success:#0E7C44; --btn-edge-neutral:#C9C9DC;
+
+  /* Цвета ОТВЕТА. Заведены отдельно от --error намеренно.
+     Правило 3 раздела 3.2 запрещает красный для неверного ответа,
+     но разработчик тянется к токену по имени, поэтому запрет должен
+     жить в дизайн-системе, а не в тексте спека. --error остаётся
+     только для настоящих аварий: сбой записи, потеря данных. */
+  --answer-wrong:#E08600; --answer-wrong-soft:#FFF3DE;
+  --answer-wrong-border:#F7D9A0; --on-answer-wrong:#FFF;
+  --answer-right:#17A45C; --answer-right-soft:#E4F7EE;
+  --answer-right-border:#A9E6C6; --on-answer-right:#FFF;
+
+  --tap-min:48px; --tap-cta:60px; --ring-w:3px; --blur-glass:18px;
+  --glass-bg:rgba(255,255,255,.72); --glass-border:rgba(255,255,255,.65);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  color-scheme: dark;
+  --bg:#0C0C13; --bg-elevated:#15151F; --surface:#16161F; --surface-2:#1E1E2B; --surface-3:#292937; --surface-sunken:#101019;
+  --overlay:rgba(4,4,10,.66); --border:#2A2A3A; --border-strong:#3C3C50;
+  --text:#F2F2F7; --text-2:#A3A3BC; --text-3:#71718C; --text-inverse:#0C0C13;
+  --accent:#8B77FF; --accent-hover:#9C8AFF; --accent-press:#7862F5; --accent-soft:#211C3D; --accent-border:#3B3172; --on-accent:#100A26;
+  --accent-2:#FF8F62; --accent-2-soft:#3A2117; --on-accent-2:#2A0F04;
+  --success:#3ED88A; --success-hover:#55E39B; --success-soft:#102E20; --success-border:#1E5C3C; --on-success:#04220F;
+  --error:#FF6B8B; --error-hover:#FF849E; --error-soft:#331420; --error-border:#63263A; --on-error:#2E0410;
+  --warning:#FFBC4D; --warning-soft:#33260C; --warning-border:#5E4715; --on-warning:#2A1B00;
+  --info:#4EC1F5; --info-soft:#0C2B3B;
+  --gold:#FFC94D; --gold-2:#E0972A; --gold-soft:#332714; --on-gold:#2A1B00;
+  --gem:#3DE0F2; --gem-soft:#0D2E35; --heart:#FF5C81; --heart-empty:#33333F;
+  --grad-accent:linear-gradient(135deg,#9A88FF,#7C63FF 45%,#6242E8);
+  --grad-fire:linear-gradient(135deg,#FFC24F,#FF8F62 55%,#FF5C81);
+  --grad-success:linear-gradient(135deg,#56E89C,#23B872);
+  --grad-gold:linear-gradient(140deg,#FFE9A8,#FFC94D 40%,#D9971F);
+  --grad-gem:linear-gradient(135deg,#93F3FF,#3DE0F2 60%,#0E9CB2);
+  --grad-hero:linear-gradient(160deg,#6A4FE0,#52379E 45%,#2A1E52);
+  --grad-sheen:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.20) 50%,transparent 80%);
+  --sh-1:0 1px 2px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.045);
+  --sh-2:0 3px 8px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.05);
+  --sh-3:0 8px 20px rgba(0,0,0,.60),inset 0 1px 0 rgba(255,255,255,.055);
+  --sh-4:0 18px 44px rgba(0,0,0,.66),inset 0 1px 0 rgba(255,255,255,.06);
+  --sh-5:0 32px 76px rgba(0,0,0,.74),inset 0 1px 0 rgba(255,255,255,.07);
+  --sh-tabbar:0 -2px 28px rgba(0,0,0,.62),0 10px 34px rgba(0,0,0,.55);
+  --sh-accent-glow:0 8px 30px rgba(139,119,255,.46);
+  --sh-gold-glow:0 0 0 6px rgba(255,201,77,.18),0 10px 34px rgba(255,201,77,.46);
+  --btn-edge-accent:#4A34B8; --btn-edge-success:#178A55; --btn-edge-neutral:#33333F;
+  --answer-wrong:#FFBC4D; --answer-wrong-soft:#33260C;
+  --answer-wrong-border:#5E4715; --on-answer-wrong:#2A1B00;
+  --answer-right:#3ED88A; --answer-right-soft:#102E20;
+  --answer-right-border:#1E5C3C; --on-answer-right:#04220F;
+  --glass-bg:rgba(22,22,31,.72); --glass-border:rgba(255,255,255,.10);
+  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:#0C0C13; --bg-elevated:#15151F; --surface:#16161F; --surface-2:#1E1E2B; --surface-3:#292937; --surface-sunken:#101019;
+  --overlay:rgba(4,4,10,.66); --border:#2A2A3A; --border-strong:#3C3C50;
+  --text:#F2F2F7; --text-2:#A3A3BC; --text-3:#71718C; --text-inverse:#0C0C13;
+  --accent:#8B77FF; --accent-hover:#9C8AFF; --accent-press:#7862F5; --accent-soft:#211C3D; --accent-border:#3B3172; --on-accent:#100A26;
+  --accent-2:#FF8F62; --accent-2-soft:#3A2117; --on-accent-2:#2A0F04;
+  --success:#3ED88A; --success-hover:#55E39B; --success-soft:#102E20; --success-border:#1E5C3C; --on-success:#04220F;
+  --error:#FF6B8B; --error-hover:#FF849E; --error-soft:#331420; --error-border:#63263A; --on-error:#2E0410;
+  --warning:#FFBC4D; --warning-soft:#33260C; --warning-border:#5E4715; --on-warning:#2A1B00;
+  --info:#4EC1F5; --info-soft:#0C2B3B;
+  --gold:#FFC94D; --gold-2:#E0972A; --gold-soft:#332714; --on-gold:#2A1B00;
+  --gem:#3DE0F2; --gem-soft:#0D2E35; --heart:#FF5C81; --heart-empty:#33333F;
+  --grad-accent:linear-gradient(135deg,#9A88FF,#7C63FF 45%,#6242E8);
+  --grad-fire:linear-gradient(135deg,#FFC24F,#FF8F62 55%,#FF5C81);
+  --grad-success:linear-gradient(135deg,#56E89C,#23B872);
+  --grad-gold:linear-gradient(140deg,#FFE9A8,#FFC94D 40%,#D9971F);
+  --grad-gem:linear-gradient(135deg,#93F3FF,#3DE0F2 60%,#0E9CB2);
+  --grad-hero:linear-gradient(160deg,#6A4FE0,#52379E 45%,#2A1E52);
+  --grad-sheen:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.20) 50%,transparent 80%);
+  --sh-1:0 1px 2px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.045);
+  --sh-2:0 3px 8px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.05);
+  --sh-3:0 8px 20px rgba(0,0,0,.60),inset 0 1px 0 rgba(255,255,255,.055);
+  --sh-4:0 18px 44px rgba(0,0,0,.66),inset 0 1px 0 rgba(255,255,255,.06);
+  --sh-5:0 32px 76px rgba(0,0,0,.74),inset 0 1px 0 rgba(255,255,255,.07);
+  --sh-tabbar:0 -2px 28px rgba(0,0,0,.62),0 10px 34px rgba(0,0,0,.55);
+  --sh-accent-glow:0 8px 30px rgba(139,119,255,.46);
+  --sh-gold-glow:0 0 0 6px rgba(255,201,77,.18),0 10px 34px rgba(255,201,77,.46);
+  --btn-edge-accent:#4A34B8; --btn-edge-success:#178A55; --btn-edge-neutral:#33333F;
+  --answer-wrong:#FFBC4D; --answer-wrong-soft:#33260C;
+  --answer-wrong-border:#5E4715; --on-answer-wrong:#2A1B00;
+  --answer-right:#3ED88A; --answer-right-soft:#102E20;
+  --answer-right-border:#1E5C3C; --on-answer-right:#04220F;
+  --glass-bg:rgba(22,22,31,.72); --glass-border:rgba(255,255,255,.10);
+}
+
+[data-theme="light"] { color-scheme: light; }
+
+/* Уровни анимации: спокойный режим и системное предпочтение */
+[data-motion="calm"] {
+  --d-3:144ms; --d-4:192ms; --d-5:288ms; --d-6:420ms; --d-7:720ms;
+  --ease-spring-out:var(--ease-smooth); --ease-bounce:var(--ease-smooth);
+}
+[data-motion="off"], html[data-motion="off"] * {
+  --d-1:1ms; --d-2:1ms; --d-3:1ms; --d-4:1ms; --d-5:1ms; --d-6:1ms; --d-7:1ms;
+  --ease-spring-out:linear; --ease-bounce:linear;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) {
+    --d-1:1ms; --d-2:1ms; --d-3:1ms; --d-4:1ms; --d-5:1ms; --d-6:1ms; --d-7:1ms;
+    --ease-spring-out:linear; --ease-bounce:linear;
+  }
+}
+
+/* Пользовательский размер шрифта поверх системного */
+[data-fontscale="s"]  { font-size: 93.75%; }
+[data-fontscale="m"]  { font-size: 100%; }
+[data-fontscale="l"]  { font-size: 112.5%; }
+[data-fontscale="xl"] { font-size: 125%; }
