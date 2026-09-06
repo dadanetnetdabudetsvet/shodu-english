@@ -366,5 +366,52 @@ await sleep(400);
 if (!root.textContent.includes('Зови своих')) fail('в профиле нет блока друзей');
 else step('блок друзей в профиле отрисован');
 
+/* ── регрессии на блокирующие дефекты ──────────────────────── */
+console.log('\nРЕГРЕССИИ');
+{
+  const { dayNumber } = await imp('src/core/day.js');
+  const { refreshStreak, completeDay, regenLives, MAX_LIVES } = await imp('src/domain/streak.js');
+
+  // Стрик не должен обнуляться после одного пропущенного дня.
+  const st = { current: 12, best: 12, lastDay: 100, freezes: 0, pausedDays: 0 };
+  const after = refreshStreak(st, 102).streak;
+  if (after.current !== 12) fail(`стрик после одного пропуска стал ${after.current}, ожидалось 12`);
+  else step('стрик переживает пропущенный день');
+
+  // Списанная заморозка двигает точку отсчёта, иначе спишется повторно.
+  const withFreeze = refreshStreak({ current: 5, best: 5, lastDay: 100, freezes: 1, pausedDays: 0 }, 102).streak;
+  const again = refreshStreak(withFreeze, 102).streak;
+  if (again.freezes !== withFreeze.freezes) fail('заморозка списалась дважды за один разрыв');
+  else step('заморозка списывается один раз');
+
+  // Жизни восстанавливаются по времени.
+  const lives = regenLives({ count: 0, lostAt: Date.now() - 5 * 3600000 }, Date.now(), false);
+  if (lives.count < 1) fail('жизни не восстановились через пять часов');
+  else step(`жизни восстанавливаются: ${lives.count} из ${MAX_LIVES}`);
+
+  // Дневная цель считает разные слова, а не ответы.
+  const before = { ...(store.state.days[store.state.day] || {}) };
+  for (let k = 0; k < 12; k++) {
+    store.dispatch({
+      type: 'ANSWER_GRADED', wordId: 'w001', deck: 'cognates', correct: true, typoOnly: false,
+      elapsedMs: 900, mode: 'build', exerciseType: 'choice4', usedHint: false,
+      isCognate: true, comboAfter: 0, attempt: 1, listens: 1,
+    });
+  }
+  const d = store.state.days[store.state.day];
+  const grew = d.touched - (before.touched || 0);
+  if (grew > 1) fail(`двенадцать ответов на одно слово дали +${grew} к цели дня`);
+  else step('цель дня считает разные слова, а не ответы');
+
+  // Тройное завершение не должно множить начисления.
+  const gemsBefore = store.state.econ.gems;
+  const xpBefore = store.state.econ.xpTotal;
+  for (let k = 0; k < 3; k++) {
+    store.dispatch({ type: 'SESSION_FINISHED', mode: 'build', completed: true, ms: 60000,
+                     mistakes: 0, newWords: 0, isReview: false });
+  }
+  step(`тройной SESSION_FINISHED: очки +${store.state.econ.xpTotal - xpBefore}, алмазы +${store.state.econ.gems - gemsBefore}`);
+}
+
 console.log('\n' + (errors.length ? `ОШИБОК: ${errors.length}\n` + errors.slice(0, 12).join('\n') : 'ОШИБОК НЕТ'));
 process.exit(errors.length ? 1 : 0);
