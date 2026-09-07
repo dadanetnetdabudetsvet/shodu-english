@@ -17,16 +17,58 @@ function busyNow() {
   return /#\/(session|phrase|stream|recheck|welcome)/.test(h);
 }
 
+/* Готовое обновление ставится ДО того, как приложение что-то соберёт.
+ *
+ * Раньше это делалось по ходу загрузки, и перезагрузка обрывала уже
+ * запущенные загрузки модулей: они давали отказы промисов, а сторож
+ * ошибок принимал их за поломку и пугал человека на ровном месте.
+ * Теперь если обновление ждёт — мы просто не начинаем работу.
+ *
+ * Возвращает true, если страница сейчас перезагрузится: вызывающий
+ * должен остановиться и ничего не рисовать.
+ */
+export async function takeUpdateBeforeBoot() {
+  if (!('serviceWorker' in navigator)) return false;
+  if (location.protocol === 'file:') return false;
+  if (busyNow()) return false;
+
+  let reg;
+  try { reg = await navigator.serviceWorker.getRegistration(); }
+  catch { return false; }
+  if (!reg || !reg.waiting) return false;
+
+  /* Ждём смены управляющего worker'а, но не бесконечно. Если она по
+     какой-то причине не случится, лучше запуститься на прежней
+     сборке, чем оставить человека перед пустым экраном: пустой экран
+     хуже старой версии. */
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = (v) => { if (done) return; done = true; resolve(v); };
+
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (reloading) return;
+      reloading = true;
+      finish(true);
+      location.reload();
+    }, { once: true });
+
+    setTimeout(() => { switching = false; finish(false); }, SWAP_TIMEOUT);
+
+    switching = true;
+    try { reg.waiting.postMessage('SKIP_WAITING'); }
+    catch { switching = false; finish(false); }
+  });
+}
+
 export function registerServiceWorker({ onUpdateReady } = {}) {
   if (!('serviceWorker' in navigator)) return Promise.resolve(null);
   if (location.protocol === 'file:') return Promise.resolve(null);
 
   return navigator.serviceWorker.register('./service-worker.js')
     .then((reg) => {
-      if (reg.waiting) {
-        if (busyNow()) onUpdateReady?.(() => applyUpdate(reg));
-        else applyUpdate(reg);
-      }
+      // Ожидающее обновление уже разобрано в takeUpdateBeforeBoot.
+      // Здесь остаётся только случай, когда идёт занятие.
+      if (reg.waiting) onUpdateReady?.(() => applyUpdate(reg));
       // Проверяем обновление при каждом возврате в приложение.
       document.addEventListener('visibilitychange', () => {
         if (!document.hidden) reg.update().catch(() => {});
@@ -35,11 +77,13 @@ export function registerServiceWorker({ onUpdateReady } = {}) {
         const sw = reg.installing;
         if (!sw) return;
         sw.addEventListener('statechange', () => {
-          // Найдено на ходу: только предлагаем. Само встанет при
-          // следующем запуске.
-          if (sw.state === 'installed' && navigator.serviceWorker.controller) {
-            onUpdateReady?.(() => applyUpdate(reg));
-          }
+          if (sw.state !== 'installed' || !navigator.serviceWorker.controller) return;
+          /* Обновление, найденное на ходу, само встанет при следующем
+             запуске — молча. Предлагаем его вслух только если идёт
+             занятие: там следующий запуск может быть не скоро, а
+             человек имеет право решить сам. В остальных случаях
+             сообщение о версиях — лишний шум. */
+          if (busyNow()) onUpdateReady?.(() => applyUpdate(reg));
         });
       });
       return reg;
@@ -53,6 +97,7 @@ export function registerServiceWorker({ onUpdateReady } = {}) {
  * сторож ошибок должен об этом знать — иначе он сообщит человеку о
  * несуществующей беде ровно в тот момент, когда всё как раз чинится.
  */
+const SWAP_TIMEOUT = 2000;   // дольше ждать нельзя: человек смотрит в пустоту
 let switching = false;
 let reloading = false;
 

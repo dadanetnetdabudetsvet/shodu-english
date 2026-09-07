@@ -7,7 +7,7 @@ import { speech } from './core/speech.js';
 import { haptics } from './core/haptics.js';
 import { setMotionLevel } from './core/motion.js';
 import { confetti } from './core/confetti.js';
-import { registerServiceWorker, hardReload, isReloading } from './core/sw-update.js';
+import { registerServiceWorker, hardReload, isReloading, takeUpdateBeforeBoot } from './core/sw-update.js';
 import { loadContent } from './data/content.js';
 import { readRefFromUrl } from './domain/referral.js';
 import { watchPrompt } from './core/install.js';
@@ -21,6 +21,10 @@ const root = document.getElementById('root');
 const tabbar = document.getElementById('tabbar');
 
 async function boot() {
+  /* Если обновление уже готово — ставим его прежде всего и уходим:
+     страница сейчас перезагрузится, и собирать нечего. */
+  if (await takeUpdateBeforeBoot()) return;
+
   const state = storage.load();
 
   // Язык: сохранённый выбор человека, иначе язык браузера.
@@ -119,20 +123,30 @@ async function boot() {
 /* Сторож молчащих поломок.
  *
  * Молчащая поломка — худшее, что может случиться: человек нажимает, и
- * ничего не происходит, а винит он себя. Поэтому настоящая поломка
- * должна выходить на экран с выходом из неё.
+ * ничего не происходит, а винит он себя. Настоящая поломка обязана
+ * выйти на экран вместе с выходом из неё.
  *
- * Но первая же версия этого сторожа отправляла сообщение на любой
- * отказ промиса — и первым делом сообщила о поломке там, где её не
- * было: приложение само ставило обновление, перезагружалось, и
- * оборванные на полпути загрузки модулей сторож принял за беду.
+ * Но сообщать о чужом шуме нельзя тем более. Первая версия сторожа
+ * реагировала на любой отказ промиса и первым делом сообщила о беде
+ * там, где её не было. Поэтому правило теперь узкое и проверяемое:
+ * говорим только тогда, когда упал НАШ собственный код. Отказ из
+ * чужого места, обрыв загрузки при уходе со страницы, шум браузера —
+ * всё это записывается, но человека не трогает.
  *
- * Отсюда три условия молчания. Ни одно из них не прячет настоящую
- * поломку: тот отчёт был про экран, который не отвечает на нажатия,
- * а такой случай проходит все три и доходит до человека.
+ * Тот отчёт, ради которого сторож заводился, — нажатие, от которого
+ * ничего не происходит, — это исключение из нашего обработчика, и оно
+ * проходит фильтр целиком.
  */
-const BOOTED_AT = Date.now();
 const QUIET_MS = 2500;
+const BOOTED_AT = Date.now();
+const K_LAST_ERROR = 'shodu:lastError';
+
+/** Падение пришло из нашего кода, а не из чужого места? */
+function isOurs(reason, filename) {
+  const from = String(filename || (reason && reason.stack) || '');
+  if (!from) return false;
+  return from.includes('/src/') || from.includes('/service-worker.js');
+}
 
 /* Обрыв загрузки при уходе со страницы. Браузеры называют это
    по-разному, поэтому список, а не одно имя. */
@@ -143,24 +157,48 @@ function isLoadAbort(reason) {
   return /Importing a module script failed|Load failed|error loading dynamically imported module|NetworkError|cancell?ed|aborted/i.test(text);
 }
 
+/* Причина записывается всегда, даже когда мы молчим: без этого
+   разбираться в отчёте «выскочило сообщение» нечем. Видно её в
+   настройках, в разделе «Дополнительно». */
+function remember(kind, reason, filename) {
+  try {
+    localStorage.setItem(K_LAST_ERROR, JSON.stringify({
+      at: new Date().toISOString(),
+      kind,
+      text: String((reason && (reason.stack || reason.message)) || reason || '').slice(0, 700),
+      where: String(filename || '').slice(0, 200),
+      shown: false,
+    }));
+  } catch { /* некуда записать — не страшно */ }
+}
+
 let breakageShown = false;
 function watchForBreakage() {
-  const show = (reason) => {
+  const handle = (kind, reason, filename) => {
+    remember(kind, reason, filename);
     if (breakageShown) return;
     if (isReloading()) return;                       // мы сами перезагружаемся
     if (isLoadAbort(reason)) return;                 // страница уходит, это не беда
     if (Date.now() - BOOTED_AT < QUIET_MS) return;   // шум запуска
+    if (!isOurs(reason, filename)) return;           // упало не у нас
     breakageShown = true;
     try { storage.flush(); } catch { /* сохранить не вышло — не страшно */ }
+    try {
+      const rec = JSON.parse(localStorage.getItem(K_LAST_ERROR) || '{}');
+      rec.shown = true;
+      localStorage.setItem(K_LAST_ERROR, JSON.stringify(rec));
+    } catch { /* не записалось — не страшно */ }
     toast('Что-то не отозвалось. Прогресс на месте.', {
       action: { label: t('Перезапустить'), fn: () => hardReload() },
       sticky: true,
     });
   };
+
   window.addEventListener('error', (e) => {
-    if (e && (e.error || e.message)) show(e.error || e.message);
+    if (!e || !(e.error || e.message)) return;
+    handle('error', e.error || e.message, e.filename);
   });
-  window.addEventListener('unhandledrejection', (e) => show(e && e.reason));
+  window.addEventListener('unhandledrejection', (e) => handle('rejection', e && e.reason, ''));
   window.addEventListener('pagehide', () => { breakageShown = true; }, { once: true });
 }
 

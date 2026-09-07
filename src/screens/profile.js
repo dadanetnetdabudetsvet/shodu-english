@@ -760,7 +760,36 @@ export function screen(store, content) {
         }, t('Дополнительно ▾'));
 
         const { known, learning } = countKnown(s);
-        inner.append(
+
+        /* Что случилось в прошлый раз. Строка техническая, поэтому
+           лежит в самом дальнем углу и появляется, только если что-то
+           действительно было: иначе это шум на пустом месте. */
+        let lastErr = null;
+        try { lastErr = JSON.parse(localStorage.getItem('shodu:lastError') || 'null'); }
+        catch { lastErr = null; }
+
+        // append() печатает null словом «null»: пустые места убираем.
+        inner.append(...[
+          lastErr && lastErr.text ? el('div', { class: 'stack', style: 'gap:6px' },
+            el('div', { class: 't-caption' }, t('ЧТО СЛУЧИЛОСЬ В ПРОШЛЫЙ РАЗ')),
+            el('div', {
+              class: 't-caption',
+              style: 'font-family:var(--font-mono);white-space:pre-wrap;word-break:break-word;'
+                   + 'max-height:120px;overflow:auto;background:var(--surface-2);'
+                   + 'padding:var(--sp-2);border-radius:var(--r-sm)',
+            }, [lastErr.at, lastErr.kind, lastErr.where].filter(Boolean).join(' · ') + '\n' + lastErr.text),
+            el('button', {
+              class: 'btn', style: 'align-self:flex-start;font-size:var(--fs-sm)',
+              onClick: async () => {
+                sound.tap();
+                const text = [lastErr.at, lastErr.kind, lastErr.where].filter(Boolean).join(' · ')
+                  + '\n' + lastErr.text;
+                try { await navigator.clipboard.writeText(text); toast(t('Скопировано 📋'), { kind: 'info' }); }
+                catch { toast(text.slice(0, 160), { kind: 'info', ms: 12000 }); }
+              },
+            }, t('Копировать 📋')),
+            el('div', { class: 'topbar__sep', style: 'height:1px;width:100%;margin:var(--sp-3) 0' })) : null,
+
           /* Выход из застрявшей сборки. Стоит выше опасной кнопки и
              ничего не удаляет: сносится только кэш, слова остаются. */
           el('div', { class: 't-caption' },
@@ -769,6 +798,7 @@ export function screen(store, content) {
             class: 'btn', style: 'align-self:flex-start',
             onClick: () => { sound.tap(); hardReload(); },
           }, t('Перезапустить начисто 🔄')),
+
 
           el('div', { class: 'topbar__sep', style: 'height:1px;width:100%;margin:var(--sp-3) 0' }),
 
@@ -782,7 +812,7 @@ export function screen(store, content) {
             class: 'btn', style: 'background:none;box-shadow:none;border:1px solid var(--border-strong);align-self:flex-start',
             onClick: openWipeSheet,
           }, t('Начать заново')),
-        );
+        ].filter(Boolean));
         return el('div', { style: 'margin-top:var(--sp-4)' }, head, inner);
       }
 

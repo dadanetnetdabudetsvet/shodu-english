@@ -281,6 +281,8 @@ const NOISE = [
   ['отмена', Object.assign(new Error('cancelled'), { name: 'AbortError' })],
   ['сеть', new TypeError('Load failed')],
 ];
+NOISE.push(['падение не у нас', Object.assign(new TypeError('x is not a function'),
+  { stack: 'TypeError\n    at http://cdn.example/thirdparty.js:1:1' })]);
 for (const [label, reason] of NOISE) {
   clearToasts();
   window.dispatchEvent(Object.assign(new window.Event('unhandledrejection'), { reason }));
@@ -290,9 +292,12 @@ for (const [label, reason] of NOISE) {
   if (t) problems.push('сторож сработал на шуме: ' + label);
 }
 
+/* Настоящая поломка: исключение из НАШЕГО кода. Стек подделываем
+   вручную — в проверке он указывал бы на саму проверку. */
 clearToasts();
-window.dispatchEvent(Object.assign(new window.Event('unhandledrejection'),
-  { reason: new TypeError('u.render is not a function') }));
+const ourError = new TypeError('u.render is not a function');
+ourError.stack = 'TypeError: u.render is not a function\n    at mount (http://x/src/screens/home.js:42:9)';
+window.dispatchEvent(Object.assign(new window.Event('unhandledrejection'), { reason: ourError }));
 await sleep(150);
 const realToast = toastText();
 console.log((realToast ? '  ок    ' : '  ПЛОХО ') + 'говорит на настоящей поломке'
