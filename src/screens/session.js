@@ -105,13 +105,59 @@ export function screen(store, content) {
       const modeTag = el('div', { class: 't-caption', style: 'text-align:center' },
         t(MODE_TITLES[mode] || 'Занятие'));
 
+      const gear = el('button', {
+        class: 'session__gear', 'aria-label': t('Сложность'),
+        onClick: openDifficulty,
+      }, '🎚');
+
       const top = el('div', { class: 'session__top' },
         el('button', { class: 'session__close', 'aria-label': t('Выйти'), onClick: confirmExit }, '✕'),
         el('div', { class: 'bar bar--thin grow', role: 'progressbar',
                     'aria-label': t('Слово 1 из {v0}', { v0: queue.total }) }, bar),
         counter,
         mode === 'build' ? sparks : null,
+        gear,
       );
+
+      /* Сложность меняется прямо во время занятия: раньше за этим надо
+         было уходить в профиль, то есть бросать занятие. Изменение
+         вступает в силу со следующего задания. */
+      function openDifficulty() {
+        sound.swipe();
+        const cur = store.state.challenge.index;
+        const val = el('div', { class: 't-h2 t-num center' }, String(cur));
+        const name = el('div', { class: 't-caption center' }, t(tierOf(cur).name));
+        const input = el('input', {
+          type: 'range', min: '0', max: '30', value: String(cur),
+          style: 'width:100%', 'aria-label': t('Ручка сложности'),
+          onInput: (e) => {
+            val.textContent = e.target.value;
+            name.textContent = t(tierOf(Number(e.target.value)).name);
+          },
+        });
+        const sheet = el('div', {
+          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
+          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:95;max-width:536px;margin:0 auto',
+        },
+          el('div', { style: 'font-weight:600' }, t('Сложность 🎚')),
+          val, name, input,
+          el('div', { class: 't-caption center' }, t('Подействует со следующего задания.')),
+          el('button', {
+            class: 'btn btn--primary btn--cta',
+            onClick: () => {
+              store.dispatch({ type: 'CHALLENGE_SET', index: Number(input.value) });
+              sound.select();
+              close();
+            },
+          }, t('Готово ✓')),
+          el('button', { class: 'btn btn--ghost', onClick: close }, t('Отмена')),
+        );
+        const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:94', onClick: close });
+        document.body.append(back, sheet);
+        const onKey = (e) => { if (e.key === 'Escape') close(); };
+        document.addEventListener('keydown', onKey);
+        function close() { sheet.remove(); back.remove(); document.removeEventListener('keydown', onKey); }
+      }
 
       const wrap = el('div', { class: 'session' }, top, modeTag, combo, stage, feedback);
       root.replaceChildren(wrap);   // пересборка на месте не должна копить экраны
@@ -213,7 +259,15 @@ export function screen(store, content) {
           onClick: () => onAnswer(null, { gaveUp: true }),
         }, t('не помню 🤷'));
 
-        setChildren(stage, card, controls, skip);
+        /* Звук бывает нельзя включить: в транспорте, рядом со спящим,
+           на работе. Аудиозадание должно пропускаться без потерь, а не
+           заставлять выбирать наугад. */
+        const noAudio = type === 'audioChoice' ? el('button', {
+          class: 'qskip', style: 'margin-top:-6px',
+          onClick: () => onAnswer(null, { gaveUp: true, silent: true }),
+        }, t('не могу слушать 🔇')) : null;
+
+        setChildren(stage, card, controls, skip, noAudio);
         enterCard(card);
         if (controls.children.length) enterOptions(controls.children);
 
@@ -249,8 +303,16 @@ export function screen(store, content) {
             elapsedMs: elapsed, mode, exerciseType: type,
             usedHint: !!opts.gaveUp, isCognate: w.tier <= 2,
             comboAfter: stats.combo, attempt: item.phase === 'retry' ? 2 : 1, listens: 1,
+            // «Не могу слушать» — это обстоятельства, а не незнание:
+            // слово возвращается в очередь, но коробка не падает.
+            softMiss: !!opts.silent,
           });
           renderSparks();
+          if (opts.silent) {
+            // Молча дальше: без разбора, потому что разбор здесь звуковой.
+            setTimeout(() => { queue.advance(); next(); }, 220);
+            return;
+          }
           showFeedback(w, right, typo, opts.gaveUp, chosen, controls, type);
         }
       }

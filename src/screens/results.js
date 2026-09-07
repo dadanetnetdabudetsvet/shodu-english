@@ -103,9 +103,21 @@ export function screen(store, content) {
           onClick: () => {
             sound.tap();
             store.dispatch({ type: 'CHALLENGE_VOTE', vote: kind });
-            setChildren(voteBox, el('div', { class: 't-sm center' }, t(VOTE_REPLY[kind])));
             const idx = store.state.challenge.index;
-            voteReply.textContent = t('сложность {v0} · {v1}', { v0: idx, v1: t(tierOf(idx).name) });
+            /* Ответ на голос раньше был серой строкой, которую никто не
+               замечал: человек нажимал и думал, что ничего не произошло. */
+            const card = el('div', { class: 'card card--flat stack center', style: 'gap:4px' },
+              el('div', { style: 'font-size:22px' }, kind === 'easy' ? '📈' : kind === 'hard' ? '🌤' : '👌'),
+              el('div', { style: 'font-weight:600' }, t(VOTE_REPLY[kind])),
+              el('div', { class: 't-caption' },
+                t('сложность {v0} · {v1}', { v0: idx, v1: t(tierOf(idx).name) })));
+            setChildren(voteBox, card);
+            animate(card, [
+              { opacity: 0, transform: 'scale(.94)' },
+              { opacity: 1, transform: 'scale(1.02)', offset: .6 },
+              { opacity: 1, transform: 'scale(1)' },
+            ], { duration: 380, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+            voteReply.textContent = '';
           },
         }, label);
       }

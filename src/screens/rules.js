@@ -16,9 +16,13 @@ export function screen(store, content) {
 
       function render() {
         const done = Object.keys(store.state.rulesRead || {}).length;
-        setChildren(list, 
-          el('div', { class: 'card card--flat t-sm' },
-            t('{v0} из {v1} разобрано. Первые — там, где английский устроен ровно как русский.', { v0: done, v1: content.rules.length })),
+        setChildren(list,
+          el('div', { class: 'card card--flat stack', style: 'gap:4px' },
+            el('div', { style: 'font-weight:600' }, t('Здесь почти нечего запоминать')),
+            el('div', { class: 't-sm' },
+              t('Первые правила — это места, где английский устроен ровно как русский. Ты уже так говоришь, просто другими словами.')),
+            el('div', { class: 't-caption' },
+              t('{v0} из {v1} разобрано', { v0: done, v1: content.rules.length }))),
           ...content.rules.map(rule),
         );
       }
@@ -35,7 +39,8 @@ export function screen(store, content) {
           }, isRead ? '✓' : String(r.difficulty)),
           el('div', { class: 'stack grow', style: 'gap:1px' },
             el('div', { style: 'font-weight:600' }, r.title),
-            el('div', { class: 't-sm' }, r.idea)),
+            el('div', { class: 't-sm' }, r.idea),
+            r.why_easy ? el('div', { class: 't-caption' }, r.why_easy) : null),
         );
       }
 
@@ -50,7 +55,13 @@ export function screen(store, content) {
         },
           el('h2', { class: 't-h2' }, r.title),
           el('p', { class: 't-body', style: 'margin-top:var(--sp-2)' }, r.idea),
-          el('div', { class: 'card card--flat', style: 'margin-top:var(--sp-3)' },
+          r.why_easy ? el('div', {
+            class: 'card card--flat',
+            style: 'margin-top:var(--sp-3);background:var(--accent-soft)',
+          },
+            el('div', { class: 't-caption' }, t('ЧТО ЗДЕСЬ ЛЁГКОГО')),
+            el('div', { class: 't-sm' }, r.why_easy)) : null,
+          el('div', { class: 'card card--flat', style: 'margin-top:var(--sp-2)' },
             el('div', { class: 't-caption' }, t('КАК В РУССКОМ')),
             el('div', { class: 't-sm' }, r.ru_parallel)),
           el('div', { class: 'card card--flat', style: 'margin-top:var(--sp-2)' },

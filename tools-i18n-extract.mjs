@@ -32,7 +32,8 @@ for (const f of walk('src')) {
 const DOMAIN_STRINGS = [];
 for (const f of ['src/domain/medals.js', 'src/domain/challenge.js', 'src/domain/referral.js',
                  'src/domain/scoring.js', 'src/screens/home.js', 'src/screens/session.js',
-                 'src/app.js', 'src/screens/words.js']) {
+                 'src/app.js', 'src/screens/words.js',
+                 'src/domain/quests.js', 'src/domain/shop.js']) {
   const src = readFileSync(f, 'utf8').replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/.*$/gm, '$1 ');
   for (const m of src.matchAll(/'((?:[^'\\\n]|\\.)*)'/g)) {
     const v = m[1];

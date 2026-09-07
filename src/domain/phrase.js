@@ -37,11 +37,11 @@ export function tokenize(sentence) {
  * @param {object} opts { distractors, rnd }
  */
 export function buildPhraseTask(target, pool, opts = {}) {
-  const { distractors = 2, rnd = Math.random } = opts;
+  const { distractors = 2, rnd = Math.random, minWords = 3, maxWords = 8 } = opts;
   if (!target.ex_en || !target.ex_ru) return null;
 
   const answer = tokenize(target.ex_en);
-  if (answer.length < 3 || answer.length > 8) return null;
+  if (answer.length < minWords || answer.length > maxWords) return null;
 
   const used = new Set(answer.map(t => t.text.toLowerCase()));
   const extras = [];
@@ -83,6 +83,24 @@ export function checkPlacement(placed, answer) {
 /* Очки: медленный режим платит меньше в минуту, иначе он превратится
    в способ фармить. */
 export const PHRASE_XP = { clean: 8, oneFix: 6, hinted: 5, typedTile: 2, flawless: 10 };
+
+/**
+ * Настройки режима по сложности. Раньше «Фраза» не зависела от неё
+ * вовсе: на нулевой и на тридцатой сложности задание было одинаковым.
+ *
+ * Главная ручка — подсказка длины. Пунктирные гнёзда показывают, из
+ * скольких слов состоит ответ, и это самая сильная опора в режиме.
+ * На высокой сложности она исчезает.
+ */
+export function phraseOptions(index) {
+  return {
+    distractors: index >= 22 ? 3 : index >= 15 ? 2 : 1,
+    minWords: index >= 21 ? 4 : 3,
+    maxWords: index >= 21 ? 8 : index >= 14 ? 6 : 5,
+    showSlots: index < 26,
+    typedShare: index >= 15 ? 1 : 0,     // сколько плиток набирается руками
+  };
+}
 
 export function phraseXp({ attempt, hinted, typed }) {
   if (hinted) return PHRASE_XP.hinted;

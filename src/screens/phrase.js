@@ -7,7 +7,7 @@
 
 import { el, en, setChildren } from '../ui/dom.js';
 import { t } from '../i18n/index.js';
-import { buildPhraseTask, checkPlacement, phraseXp } from '../domain/phrase.js';
+import { buildPhraseTask, checkPlacement, phraseXp, phraseOptions } from '../domain/phrase.js';
 import { newRecord } from '../domain/srs.js';
 import { selectByChallenge, allowedSources } from '../domain/challenge.js';
 import { poolForChallenge } from '../data/content.js';
@@ -41,9 +41,10 @@ export function screen(store, content) {
       const banded = selectByChallenge(pool, s0.challenge.index);
       const chosen = (banded.length >= PHRASES_PER_SESSION ? banded : pool)
         .slice(0, PHRASES_PER_SESSION * 2);
+      const opts = phraseOptions(s0.challenge.index);
       const tasks = [];
       for (const p of chosen) {
-        const task = buildPhraseTask(p.word, content.all, { distractors: s0.challenge.index >= 15 ? 2 : 1 });
+        const task = buildPhraseTask(p.word, content.all, opts);
         if (task) tasks.push({ task, word: p.word });
         if (tasks.length >= PHRASES_PER_SESSION) break;
       }
@@ -85,7 +86,10 @@ export function screen(store, content) {
                   class: 'tile-word', dataset: { slot: String(idx) },
                   onClick: () => { returnTile(idx); },
                 }, en(tile.text))
-              : el('span', { class: 'tile-slot' })));
+              // На высокой сложности пунктир исчезает: подсказка длины
+              // ответа — самая сильная опора режима, и снимать её
+              // осмысленнее, чем добавлять дистракторы.
+              : el('span', { class: opts.showSlots ? 'tile-slot' : 'tile-slot tile-slot--blind' })));
           check.disabled = placed.some(x => !x);
           check.textContent = check.disabled ? t('поставь все слова') : t('Проверить ✓');
         }

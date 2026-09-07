@@ -103,11 +103,17 @@ for (let i = 0; i < 12; i++) {
 }
 step('после десяти ответов: ' + (root.querySelector('h1')?.textContent || root.textContent.slice(0, 40)));
 
+// Цель дня, выбранная в онбординге, должна доехать до настроек.
 let next = btn('дальше') || btn('Дальше');
 if (next) { click(next); await sleep(200); }
+const goalBtn = [...root.querySelectorAll('.option')].find(b => b.textContent.includes('5 '));
+if (goalBtn) { click(goalBtn); await sleep(120); step('выбрана цель 5 слов'); }
 const done = btn('поехали') || btn('Готово');
 if (!done) fail('нет кнопки завершения онбординга');
 else { click(done); await sleep(400); }
+if (goalBtn && store.state.settings.dailyGoalWords !== 5)
+  fail(`цель дня не сохранилась: в настройках ${store.state.settings.dailyGoalWords}, выбрано 5`);
+else if (goalBtn) step('цель дня сохранена: ' + store.state.settings.dailyGoalWords);
 
 step('онбординг завершён, флаг: ' + store.state.flags.onboarded);
 step('очков после аванса: ' + store.state.econ.xpTotal);
@@ -186,7 +192,7 @@ else fail('нет голосования по планке на итогах');
 
 /* ── остальные экраны ──────────────────────────────────────── */
 console.log('\nОСТАЛЬНЫЕ ЭКРАНЫ');
-for (const [route, marker] of [['words', 'Слова'], ['rules', 'Правила'], ['profile', 'Уровень']]) {
+for (const [route, marker] of [['quests', 'Сегодня'], ['words', 'Слова'], ['rules', 'Правила'], ['profile', 'Уровень']]) {
   window.location.hash = '#/' + route;
   await sleep(400);
   const txt = root.textContent;
@@ -367,6 +373,47 @@ if (!root.textContent.includes('Зови своих')) fail('в профиле �
 else step('блок друзей в профиле отрисован');
 
 /* ── регрессии на блокирующие дефекты ──────────────────────── */
+/* ── челленджи и лавка ─────────────────────────────────────── */
+console.log('\nЧЕЛЛЕНДЖИ И ЛАВКА');
+{
+  window.location.hash = '#/quests';
+  await sleep(500);
+  const txt = root.textContent;
+  if (!txt.includes('Сегодня')) fail('страница челленджей не отрисовалась');
+  else {
+    const quests = root.querySelectorAll('.card .bar--thin').length;
+    const acts = root.querySelectorAll('.list-row').length;
+    step(`челленджей на сегодня: ${quests}, активностей в списке: ${acts}`);
+    if (quests !== 3) fail(`челленджей ${quests}, ожидалось 3`);
+    if (acts !== 20) fail(`активностей ${acts}, ожидалось 20`);
+  }
+
+  const shopTab = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Лавка'));
+  if (!shopTab) fail('нет вкладки лавки');
+  else {
+    click(shopTab); await sleep(400);
+    const tiles = root.querySelectorAll('.tile').length;
+    step('предметов в лавке: ' + tiles);
+    if (tiles < 30) fail('лавка почти пуста: ' + tiles);
+
+    // Покупка без алмазов должна честно отказать, а не списать в минус.
+    store.state.econ.gems = 10;
+    const gemsBefore = store.state.econ.gems;
+    store.dispatch({ type: 'SHOP_BUY', id: 'b11' });
+    if (store.state.econ.gems !== gemsBefore) fail('покупка прошла без достаточных алмазов');
+    else step('покупка без алмазов отклонена, баланс цел');
+
+    // С алмазами покупка проходит и предмет становится своим.
+    store.state.econ.gems = 5000;
+    store.dispatch({ type: 'SHOP_BUY', id: 'b09' });
+    if (!(store.state.owned || []).includes('b09')) fail('предмет не куплен при достатке алмазов');
+    else step('предмет куплен: осталось ' + store.state.econ.gems + ' алмазов');
+    store.dispatch({ type: 'SHOP_BUY', id: 'b09' });
+    if ((store.state.owned || []).filter(x => x === 'b09').length > 1) fail('предмет куплен дважды');
+    else step('повторная покупка не проходит');
+  }
+}
+
 console.log('\nРЕГРЕССИИ');
 {
   const { dayNumber } = await imp('src/core/day.js');

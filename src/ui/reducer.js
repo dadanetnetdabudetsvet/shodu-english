@@ -10,6 +10,8 @@ import { refreshStreak, completeDay, costsLife, loseLife, regenLives,
 import { applyVote, autoAdjust, setManual, clampIndex } from '../domain/challenge.js';
 import { makeSelfCode, verifyProof, rewardFor, NEWCOMER_GEMS } from '../domain/referral.js';
 import { evaluateMedals } from '../domain/medals.js';
+import { questsForDay, questDone } from '../domain/quests.js';
+import { itemById, isOwned, FREEZE } from '../domain/shop.js';
 import { weekDone } from '../domain/streak.js';
 import { fx } from './store.js';
 import { t } from '../i18n/index.js';
@@ -114,6 +116,7 @@ export function rootReducer(state, action) {
       touchedIds.add(wordId);
       d.touchedIds = [...touchedIds];
       d.touched = touchedIds.size;
+      d.bestCombo = Math.max(d.bestCombo || 0, comboAfter || 0);
       if (correct || typoOnly) d.correct++;
       if (attempt <= 1 && (correct || typoOnly)) d.firstTry++;
       d.xp += xp;
@@ -131,6 +134,8 @@ export function rootReducer(state, action) {
       const days = { ...state.days };
       const d = { ...(days[day] || emptyDay()) };
       d.sessions++;
+      d.modes = { ...(d.modes || {}), [mode]: ((d.modes || {})[mode] || 0) + 1 };
+      if (completed && mistakes === 0) d.cleanSessions = (d.cleanSessions || 0) + 1;
       // Отметка режима: связка дня чередует их по давности.
       const lastModes = { ...(state.lastModes || {}), [mode]: day };
       d.ms += ms;
@@ -329,10 +334,83 @@ export function rootReducer(state, action) {
         effects: [fx.save()],
       };
 
-    case 'RULE_READ':
+    case 'RULE_READ': {
+      if (state.rulesRead[action.id]) return { state, effects: [] };
+      const days = { ...state.days };
+      const d = { ...(days[state.day] || emptyDay()) };
+      d.rulesRead = (d.rulesRead || 0) + 1;
+      days[state.day] = d;
       return {
-        state: { ...state, rulesRead: { ...state.rulesRead, [action.id]: state.day } },
+        state: { ...state, days, rulesRead: { ...state.rulesRead, [action.id]: state.day } },
         effects: [fx.save()],
+      };
+    }
+
+    /* Награда за челлендж выдаётся один раз за день и только когда
+       условие уже выполнено по фактическим данным. */
+    case 'QUEST_CLAIM': {
+      const day = state.day;
+      const d = state.days[day];
+      const quests = questsForDay(day, state.settings.dailyGoalWords || 10);
+      const claimed = { ...(state.questsClaimed || {}) };
+      const key = String(day);
+      const already = new Set(claimed[key] || []);
+      const fresh = quests.filter(q => !already.has(q.id) && questDone(q, d));
+      if (!fresh.length) return { state, effects: [] };
+
+      let gems = state.econ.gems;
+      const effects = [];
+      for (const q of fresh) {
+        already.add(q.id);
+        gems += q.gems;
+        effects.push(fx.toast({ i18n: '{v0} · +{v1} 💎', vars: { v0: q.title, v1: q.gems }, tr: ['v0'] }, 'info'));
+      }
+      claimed[key] = [...already];
+      effects.push(fx.sound('quest'), fx.confetti({ count: 50 }), fx.save());
+      return { state: { ...state, econ: { ...state.econ, gems }, questsClaimed: claimed }, effects };
+    }
+
+    case 'SHOP_BUY': {
+      const item = action.id === FREEZE.id ? FREEZE : itemById(action.id);
+      if (!item) return { state, effects: [] };
+      const owned = state.owned || [];
+      if (item.id !== FREEZE.id && isOwned(owned, item)) return { state, effects: [] };
+      if (state.econ.gems < item.price) {
+        return { state, effects: [fx.toast({ i18n: 'Не хватает алмазов. Ещё {v0}.', vars: { v0: item.price - state.econ.gems } }, 'warn')] };
+      }
+      if (item.id === FREEZE.id) {
+        if (state.streak.freezes >= FREEZE.max) {
+          return { state, effects: [fx.toast({ i18n: 'Заморозок и так достаточно.' }, 'info')] };
+        }
+        return {
+          state: {
+            ...state,
+            econ: { ...state.econ, gems: state.econ.gems - item.price },
+            streak: { ...state.streak, freezes: state.streak.freezes + 1 },
+          },
+          effects: [fx.sound('purchase'), fx.toast({ i18n: 'Заморозка куплена.' }, 'info'), fx.save()],
+        };
+      }
+      return {
+        state: {
+          ...state,
+          econ: { ...state.econ, gems: state.econ.gems - item.price },
+          owned: [...owned, item.id],
+        },
+        effects: [fx.sound('purchase'), fx.confetti({ count: 40 }), fx.save()],
+      };
+    }
+
+    case 'AVATAR_SET':
+      return {
+        state: { ...state, profile: { ...state.profile, avatar: { ...(state.profile.avatar || {}), ...action.patch } } },
+        effects: [fx.sound('select'), fx.save()],
+      };
+
+    case 'ACCENT_SET':
+      return {
+        state: { ...state, settings: { ...state.settings, accent: action.id } },
+        effects: [{ type: 'settings' }, fx.save()],
       };
 
     default:
@@ -341,7 +419,11 @@ export function rootReducer(state, action) {
 }
 
 function emptyDay() {
-  return { ms: 0, xp: 0, words: 0, touched: 0, sessions: 0, correct: 0, answered: 0, firstTry: 0, goalPaid: false };
+  return {
+    ms: 0, xp: 0, words: 0, touched: 0, sessions: 0, correct: 0, answered: 0,
+    firstTry: 0, goalPaid: false,
+    cleanSessions: 0, bestCombo: 0, rulesRead: 0, modes: {},
+  };
 }
 
 /** Счётчики для медалей. Считаются из состояния, ничего не выдумывают. */

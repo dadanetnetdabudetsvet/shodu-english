@@ -9,7 +9,7 @@
  * по нажатию человека пришлёт сообщение.
  */
 
-const VERSION = 'v323eff7c35';
+const VERSION = 'v3c73e5ae39';
 const CACHE = `shodu-${VERSION}`;
 
 const SHELL = [
@@ -29,8 +29,10 @@ const SHELL = [
   './src/domain/challenge.js',
   './src/domain/medals.js',
   './src/domain/phrase.js',
+  './src/domain/quests.js',
   './src/domain/referral.js',
   './src/domain/scoring.js',
+  './src/domain/shop.js',
   './src/domain/srs.js',
   './src/domain/streak.js',
   './src/domain/stream.js',
@@ -58,6 +60,7 @@ const SHELL = [
   './src/screens/home.js',
   './src/screens/phrase.js',
   './src/screens/profile.js',
+  './src/screens/quests.js',
   './src/screens/recheck.js',
   './src/screens/results.js',
   './src/screens/rules.js',
@@ -65,6 +68,7 @@ const SHELL = [
   './src/screens/stream.js',
   './src/screens/welcome.js',
   './src/screens/words.js',
+  './src/ui/anim.css',
   './src/ui/base.css',
   './src/ui/dom.js',
   './src/ui/reducer.js',

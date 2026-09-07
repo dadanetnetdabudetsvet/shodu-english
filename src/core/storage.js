@@ -38,7 +38,9 @@ export function emptyState() {
     v: CODE_VERSION,
     rev: 0,
     createdDay: today(),
-    profile: { name: '', avatar: 'b00.f00.h00.a00', level: 1, xp: 0 },
+    profile: { name: '', avatar: { base: 'b00', hat: 'h00', frame: 'f00' }, level: 1, xp: 0 },
+    owned: [],                  // купленные предметы лавки
+    questsClaimed: {},          // { [день]: [id челленджей] }
     settings: {
       theme: 'auto',            // auto | light | dark
       motion: 'full',           // full | calm | off
@@ -50,6 +52,7 @@ export function emptyState() {
       dailyGoalWords: 10,
       reminderTime: null,       // 'HH:MM' — только для файла календаря
       autoChallenge: true,
+      accent: 'a00',
     },
     econ: { gems: 0, xpTotal: 0 },
     streak: { current: 0, best: 0, lastDay: null, freezes: 0, pausedDays: 0 },

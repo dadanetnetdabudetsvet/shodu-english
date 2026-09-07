@@ -2,6 +2,10 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* Собственный display у элемента сильнее браузерного [hidden].
+   Из-за этого скрытая подсказка висела полосой внизу каждого экрана. */
+[hidden] { display: none !important; }
+
 html { -webkit-text-size-adjust: 100%; }
 
 body {
@@ -137,10 +141,22 @@ a { color: var(--accent); }
 }
 .tabbar__item {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 2px; font-size: var(--fs-caption); color: var(--text-3); font-weight: var(--fw-medium);
+  gap: 3px; padding: 6px 2px;
+  font-size: 11px; line-height: 1.1; letter-spacing: 0;
+  color: var(--text-3); font-weight: var(--fw-semi);
+  text-decoration: none; text-align: center;
+  border-radius: var(--r-full);
+  transition: color var(--d-2) var(--ease-smooth), background var(--d-2) var(--ease-smooth);
+  min-width: 0;
 }
+.tabbar__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
 .tabbar__item[aria-current="page"] { color: var(--accent); }
-.tabbar__icon { font-size: 20px; line-height: 1; }
+.tabbar__item[aria-current="page"] .tabbar__icon { transform: translateY(-1px) scale(1.08); }
+.tabbar__item:active { background: var(--surface-2); }
+.tabbar__icon {
+  font-size: 21px; line-height: 1;
+  transition: transform var(--d-3) var(--ease-spring-out);
+}
 .tabbar[hidden] { display: none; }
 
 /* Строка ресурсов. */
@@ -213,3 +229,67 @@ a { color: var(--accent); }
 }
 .list-row:active { background: var(--surface-2); }
 @media (min-resolution: 2dppx) { .list-row { border-bottom-width: .5px; } }
+
+/* Тумблер. Кнопка «Вкл / Выкл» читалась как действие, а не как состояние. */
+.switch {
+  width: 52px; height: 32px; flex: none;
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  position: relative;
+  transition: background var(--d-2) var(--ease-smooth);
+}
+.switch::after { content: ''; position: absolute; inset: -8px; }
+.switch__knob {
+  position: absolute; top: 3px; left: 3px;
+  width: 26px; height: 26px; border-radius: var(--r-full);
+  background: var(--surface);
+  box-shadow: var(--sh-2);
+  transition: transform var(--d-3) var(--ease-spring-out);
+}
+.switch--on { background: var(--accent); }
+.switch--on .switch__knob { transform: translateX(20px); }
+
+/* Аватар из частей: основа, головной убор и рамка. */
+.avatar {
+  width: 96px; height: 96px; border-radius: var(--r-full);
+  display: grid; place-items: center; position: relative;
+  background: var(--surface);
+  box-shadow: var(--sh-3);
+  isolation: isolate;
+}
+.avatar::before {
+  content: ''; position: absolute; inset: -4px; border-radius: inherit;
+  background: var(--avatar-frame, transparent);
+  z-index: -1;
+}
+.avatar__base { font-size: 48px; line-height: 1; }
+.avatar__hat {
+  position: absolute; top: 2px; left: 50%;
+  transform: translateX(-50%) rotate(-8deg);
+  font-size: 30px; line-height: 1;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.25));
+}
+
+/* Компактная шапка главного экрана. Фиксированная высота и жёсткие
+   колонки: свободная строка разъезжалась, как только числа росли. */
+.topbar {
+  display: flex; align-items: center; gap: var(--sp-2);
+  min-height: 52px; padding: var(--sp-2) var(--sp-3);
+  background: var(--surface); border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  overflow: hidden;
+}
+.topbar__cell {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  min-width: 0; flex: 1 1 0;
+}
+.topbar__cell:first-child { flex: 1.6 1 0; }
+.topbar__sep { width: 1px; align-self: stretch; background: var(--border); flex: none; }
+.topbar__val {
+  font-size: var(--fs-sm); font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.topbar__cap {
+  font-size: 10px; color: var(--text-3); line-height: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+}

@@ -42,20 +42,35 @@ export function screen(store, content) {
       const daysLived = s.day - (s.createdDay ?? s.day) + 1;
       const chain = dayChain(s);
       const doneToday = today.sessions;
+      const lvl = levelInfo(s);
 
-      /* Ритм недели простой строкой, без карточки. В первую неделю
-         показываем только прожитые дни: шесть серых точек в первый день
-         читаются как неделя провала до её начала. */
+      /* Компактная шапка: ритм недели, стрик, алмазы и уровень в одной
+         строке фиксированной высоты. Раньше это была свободная строка,
+         которая разъезжалась, как только числа становились длиннее. */
       const dots = rhythm.slice(Math.max(0, 7 - Math.max(daysLived, 1)));
-      const rhythmRow = el('div', { class: 'row row--between', style: 'min-height:32px' },
-        el('div', { class: 'rhythm', role: 'img',
-          'aria-label': t('Ритм недели: {v0} из 7 дней', { v0: doneThisWeek }) },
-          dots.map(d => el('span', {
-            class: 'rhythm__dot' + (d.done ? ' rhythm__dot--done' : '') + (d.isToday ? ' rhythm__dot--today' : ''),
-          }))),
-        s.streak.current > 0
-          ? el('div', { class: 't-caption' }, t('🔥 {v0} подряд', { v0: s.streak.current }))
-          : el('div', { class: 't-caption' }, t('ритм недели')),
+      const head = el('div', { class: 'topbar' },
+        el('div', { class: 'topbar__cell' },
+          el('div', { class: 'rhythm', role: 'img',
+            'aria-label': t('Ритм недели: {v0} из 7 дней', { v0: doneThisWeek }) },
+            dots.map(d => el('span', {
+              class: 'rhythm__dot' + (d.done ? ' rhythm__dot--done' : '') + (d.isToday ? ' rhythm__dot--today' : ''),
+            }))),
+          el('div', { class: 'topbar__cap' },
+            doneThisWeek >= WEEK_TARGET ? t('ритм набран') : t('{v0} из {v1}', { v0: doneThisWeek, v1: WEEK_TARGET }))),
+
+        el('div', { class: 'topbar__sep' }),
+
+        el('div', { class: 'topbar__cell' },
+          el('div', { class: 'topbar__val' }, s.streak.current > 0 ? `🔥 ${s.streak.current}` : '🔥 —'),
+          el('div', { class: 'topbar__cap' }, t('подряд'))),
+
+        el('div', { class: 'topbar__cell' },
+          el('div', { class: 'topbar__val' }, `💎 ${s.econ.gems}`),
+          el('div', { class: 'topbar__cap' }, t('алмазы'))),
+
+        el('div', { class: 'topbar__cell' },
+          el('div', { class: 'topbar__val' }, `${lvl.level}`),
+          el('div', { class: 'topbar__cap' }, t('уровень'))),
       );
 
       /* Улика идёт первой: это главное, что продукт доказывает. */
@@ -109,7 +124,7 @@ export function screen(store, content) {
       const pickLink = el('button', {
         class: 'btn btn--ghost', style: 'align-self:flex-start;font-size:var(--fs-sm)',
         onClick: openPicker,
-      }, t('собрать своё →'));
+      }, t('🎛 собрать своё →'));
 
       const softNote = isSoftMode(s.lives) && el('div', { class: 'card card--flat t-sm' },
         t('Мягкий режим: задания попроще. Жизни вернутся сами.'));
@@ -165,7 +180,7 @@ export function screen(store, content) {
       );
 
       const wrap = el('div', { class: 'screen' },
-        rhythmRow, proof, goalRow, hero, pickLink,
+        head, proof, goalRow, hero, pickLink,
         recheckCard, installCard, softNote, wordOfDay);
       root.replaceChildren(wrap);
 

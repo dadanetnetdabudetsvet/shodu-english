@@ -7,6 +7,7 @@
 
 import { el, setChildren } from '../ui/dom.js';
 import { LANGUAGES, currentLanguage, setLanguage } from '../i18n/index.js';
+import { AVATAR_BASES, AVATAR_HATS, AVATAR_FRAMES } from '../domain/shop.js';
 import { countKnown, levelInfo } from '../ui/reducer.js';
 import { MEDALS, evaluateMedals, nextMedal, visibleMedals } from '../domain/medals.js';
 import { gradeForLevel } from '../domain/scoring.js';
@@ -51,22 +52,27 @@ export function screen(store, content) {
       /* ── шапка ─────────────────────────────────────────────── */
       function header(s, avatarIdx, lvl, grade) {
         const bar = el('div', { class: 'bar__fill', style: `transform:scaleX(${lvl.ratio})` });
+        const a = s.profile.avatar || {};
+        const base = AVATAR_BASES.find(x => x.id === (a.base || 'b00')) || AVATAR_BASES[0];
+        const hat = AVATAR_HATS.find(x => x.id === (a.hat || 'h00')) || AVATAR_HATS[0];
+        const frame = AVATAR_FRAMES.find(x => x.id === (a.frame || 'f00')) || AVATAR_FRAMES[0];
+
+        /* Аватар собирается из купленных частей. Раньше это был один
+           эмодзи, который перебирался по кругу и никуда не вёл. */
+        const face = el('button', {
+          class: 'avatar',
+          style: frame.css === 'none' ? '' : `--avatar-frame:${frame.css}`,
+          'aria-label': t('Сменить облик'),
+          onClick: () => { sound.tap(); ctx.go('quests/shop'); },
+        },
+          el('span', { class: 'avatar__base' }, base.emoji),
+          hat.emoji ? el('span', { class: 'avatar__hat' }, hat.emoji) : null,
+        );
+
         return el('div', { class: 'stack center', style: 'gap:var(--sp-2);align-items:center' },
-          el('button', {
-            style: `width:96px;height:96px;border-radius:var(--r-full);font-size:48px;
-                    display:grid;place-items:center;background:var(--surface);
-                    box-shadow:var(--sh-gold-glow)`,
-            'aria-label': t('Сменить аватар'),
-            onClick: () => {
-              sound.tap();
-              store.dispatch({ type: 'PROFILE_SET', patch: { avatarIdx: (avatarIdx + 1) % AVATARS.length } });
-              render();
-            },
-          }, AVATARS[avatarIdx]),
-          el('button', {
-            class: 't-h1', style: 'background:none',
-            onClick: () => editName(s),
-          }, s.profile.name || t('Дать себе имя ✏️')),
+          face,
+          el('button', { class: 't-h1', style: 'background:none', onClick: () => editName(s) },
+            s.profile.name || t('Дать себе имя ✏️')),
           el('div', { class: 't-sm' }, t('Уровень {v0} · {v1}', { v0: lvl.level, v1: t(grade.name) })),
           el('div', { class: 't-caption' }, t(grade.line)),
           el('div', { class: 'bar', style: 'width:100%;margin-top:var(--sp-2)' }, bar),
@@ -74,8 +80,6 @@ export function screen(store, content) {
         );
       }
 
-      /* Нативный prompt в приложении с домашнего экрана выглядит как
-         системная ошибка. Своя шторка. */
       function editName(s) {
         sound.tap();
         const input = el('input', {
@@ -141,7 +145,7 @@ export function screen(store, content) {
           bars.push({ day: d, min, isToday: i === 0 });
         }
         const top = Math.max(20, Math.ceil(max / 10) * 10);
-        const H = 120;
+        const H = 64;
 
         if (max === 0) {
           return el('div', { class: 'card center t-sm' },
@@ -149,19 +153,21 @@ export function screen(store, content) {
         }
 
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('viewBox', `0 0 ${N * 26} ${H + 22}`);
+        svg.setAttribute('viewBox', `0 0 ${N * 22} ${H + 16}`);
+        svg.setAttribute('height', String(H + 16));
+        svg.style.maxHeight = (H + 16) + 'px';
         svg.setAttribute('width', '100%');
         svg.setAttribute('role', 'img');
         svg.setAttribute('aria-label', t('Занятия по дням, максимум {v0} минут', { v0: top }));
 
         bars.forEach((b, i) => {
-          const x = i * 26 + 4;
+          const x = i * 22 + 3;
           // Пустой день рисуется пеньком, а не отсутствием столбца:
           // иначе провал читается как поломка графика.
           const h = b.min === 0 ? 3 : Math.max(4, (b.min / top) * H);
           const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
           rect.setAttribute('x', x); rect.setAttribute('y', H - h);
-          rect.setAttribute('width', 18); rect.setAttribute('height', h);
+          rect.setAttribute('width', 16); rect.setAttribute('height', h);
           rect.setAttribute('rx', 5);
           rect.setAttribute('fill', b.min === 0 ? 'var(--surface-3)'
             : b.isToday ? 'var(--accent)' : 'var(--accent)');
@@ -170,9 +176,9 @@ export function screen(store, content) {
 
           if (i % 2 === 0) {
             const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            t.setAttribute('x', x + 9); t.setAttribute('y', H + 16);
+            t.setAttribute('x', x + 8); t.setAttribute('y', H + 13);
             t.setAttribute('text-anchor', 'middle');
-            t.setAttribute('font-size', '9');
+            t.setAttribute('font-size', '8');
             t.setAttribute('fill', 'var(--text-3)');
             t.textContent = weekdayShort(weekdayIndex(b.day), currentLanguage());
             svg.append(t);
@@ -359,13 +365,14 @@ export function screen(store, content) {
       }
 
       function toggleRow(label, value, onSet) {
-        return el('div', { class: 'row row--between' },
-          el('div', { class: 't-sm' }, label),
-          el('button', {
-            class: 'btn' + (value ? ' btn--primary' : ''),
-            style: 'min-height:38px;padding:0 var(--sp-4)',
-            onClick: () => { sound.tap(); onSet(!value); render(); },
-          }, value ? t('Вкл') : t('Выкл')));
+        const knob = el('span', { class: 'switch__knob' });
+        const sw = el('button', {
+          class: 'switch' + (value ? ' switch--on' : ''),
+          role: 'switch', 'aria-checked': String(!!value), 'aria-label': label,
+          onClick: () => { sound.select(); onSet(!value); render(); },
+        }, knob);
+        return el('div', { class: 'row row--between', style: 'min-height:44px' },
+          el('div', { class: 't-sm' }, label), sw);
       }
 
       function goalRow(s) {
@@ -633,7 +640,11 @@ export function screen(store, content) {
          перерисовывался на каждый диспатч, включая чужие. */
       const off = store.subscribe(
         st => ({ xp: st.econ.xpTotal, gems: st.econ.gems, medals: Object.keys(st.medals || {}).length,
-                 name: st.profile.name, avatar: st.profile.avatarIdx, ch: st.challenge.index }),
+                 name: st.profile.name, avatar: st.profile.avatarIdx, ch: st.challenge.index,
+                 goal: st.settings.dailyGoalWords, theme: st.settings.theme,
+                 sound: st.settings.sound, speech: st.settings.speech,
+                 auto: st.settings.autoChallenge, motion: st.settings.motion,
+                 font: st.settings.fontScale, lang: st.settings.lang }),
         render);
       return { destroy() { off(); } };
     },

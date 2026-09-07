@@ -1,0 +1,87 @@
+/* Базовый слой анимаций.
+ *
+ * Всё здесь построено только на transform и opacity: это единственные
+ * свойства, которые браузер умеет анимировать без перерасчёта вёрстки.
+ * Бюджет на среднем телефоне — около десяти миллисекунд на кадр.
+ *
+ * Каждая анимация гасится при уменьшенном движении, но обратная связь
+ * остаётся: пропадает перемещение, а не событие.
+ */
+
+/* Появление экрана. Без масштаба: масштабировать список из тысячи
+   строк дорого и выглядит дёшево. */
+.screen > * {
+  animation: rise var(--d-3) var(--ease-out-quint) both;
+}
+.screen > *:nth-child(1) { animation-delay: 0ms; }
+.screen > *:nth-child(2) { animation-delay: 30ms; }
+.screen > *:nth-child(3) { animation-delay: 60ms; }
+.screen > *:nth-child(4) { animation-delay: 90ms; }
+.screen > *:nth-child(5) { animation-delay: 110ms; }
+.screen > *:nth-child(n+6) { animation-delay: 130ms; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Строки списков появляются каскадом, но только первые двенадцать:
+   дальше человек всё равно не видит, а работа копится. */
+.list-row { animation: rise 220ms var(--ease-out-quint) both; }
+.list-row:nth-child(1)  { animation-delay: 20ms; }
+.list-row:nth-child(2)  { animation-delay: 40ms; }
+.list-row:nth-child(3)  { animation-delay: 60ms; }
+.list-row:nth-child(4)  { animation-delay: 80ms; }
+.list-row:nth-child(5)  { animation-delay: 100ms; }
+.list-row:nth-child(6)  { animation-delay: 120ms; }
+.list-row:nth-child(7)  { animation-delay: 140ms; }
+.list-row:nth-child(8)  { animation-delay: 160ms; }
+.list-row:nth-child(n+9) { animation-delay: 170ms; }
+
+/* Нажатие: сжатие вниз и мягкий возврат. */
+.tile, .option, .card {
+  transition: transform var(--d-instant) var(--ease-snappy);
+}
+.tile:active, .option:not([disabled]):active { transform: scale(.975); }
+
+/* Пульс главной кнопки: запускается только после долгого бездействия
+   и делает один цикл. Четыре секунды — это время чтения экрана. */
+@keyframes nudge {
+  0%, 100% { transform: none; }
+  50% { transform: scale(1.02); }
+}
+.btn--cta.is-idle { animation: nudge 1600ms var(--ease-smooth) 1; }
+
+/* Значение выросло: короткая вспышка вместо прыжка. */
+@keyframes bump {
+  0% { transform: none; }
+  40% { transform: scale(1.12); }
+  100% { transform: none; }
+}
+.is-bumped { animation: bump 300ms var(--ease-spring-out); }
+
+/* Появление шторки снизу. */
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+[role="dialog"] { animation: sheet-in var(--d-4) var(--ease-spring-out) both; }
+
+/* Затемнение под шторкой. */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* Уменьшенное движение: перемещение убирается, событие остаётся. */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) .screen > *,
+  :root:not([data-motion="full"]) .list-row,
+  :root:not([data-motion="full"]) [role="dialog"] {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+[data-motion="off"] .screen > *,
+[data-motion="off"] .list-row,
+[data-motion="off"] [role="dialog"] {
+  animation-duration: 1ms !important;
+  animation-delay: 0ms !important;
+}

@@ -50,6 +50,7 @@ async function boot() {
       phrase:  () => import('./screens/phrase.js').then(m => m.screen(store, content)),
       stream:  () => import('./screens/stream.js').then(m => m.screen(store, content)),
       recheck: () => import('./screens/recheck.js').then(m => m.screen(store, content)),
+      quests:  () => import('./screens/quests.js').then(m => m.screen(store, content)),
       results: () => import('./screens/results.js').then(m => m.screen(store, content)),
       words:   () => import('./screens/words.js').then(m => m.screen(store, content)),
       rules:   () => import('./screens/rules.js').then(m => m.screen(store, content)),
@@ -82,6 +83,11 @@ async function boot() {
   document.addEventListener('pointerdown', unlock, { once: true });
   document.addEventListener('keydown', unlock, { once: true });
 
+  /* Браузер усыпляет звук после бездействия, поэтому будим его на
+     каждом касании, а не только на первом. Это дешевле, чем ловить
+     жалобы «через полчаса звук пропал». */
+  document.addEventListener('pointerdown', () => sound.unlock(), { passive: true });
+
   registerServiceWorker({
     onUpdateReady: (apply) => {
       toast('Доступна новая версия', {
@@ -95,7 +101,7 @@ async function boot() {
 /* Подписи навигации живут в разметке, поэтому переводятся отдельно.
    Раньше они не попадали в каталог и на любом языке оставались русскими. */
 function localizeTabbar() {
-  const labels = { home: 'Дом', words: 'Слова', rules: 'Правила', profile: 'Профиль' };
+  const labels = { home: 'Дом', quests: 'Челлендж', words: 'Слова', rules: 'Правила', profile: 'Профиль' };
   for (const item of tabbar.querySelectorAll('[data-tab]')) {
     const node = item.querySelector('.tabbar__label');
     if (node) node.textContent = t(labels[item.dataset.tab] || '');
@@ -104,6 +110,22 @@ function localizeTabbar() {
 
 function applySettings(s) {
   const html = document.documentElement;
+  /* Купленный цвет применяется поверх токенов. Оттенки нажатия
+     выводятся из него же, чтобы кнопка не выглядела плоской. */
+  if (s.accent && s.accent !== 'a00') {
+    import('./domain/shop.js').then(({ ACCENTS }) => {
+      const found = ACCENTS.find(a => a.id === s.accent);
+      if (!found) return;
+      html.style.setProperty('--accent', found.color);
+      html.style.setProperty('--accent-hover', found.color);
+      html.style.setProperty('--btn-edge-accent', shade(found.color, -0.22));
+      html.style.setProperty('--sh-accent-glow', `0 8px 26px ${found.color}55`);
+    });
+  } else {
+    for (const v of ['--accent', '--accent-hover', '--btn-edge-accent', '--sh-accent-glow']) {
+      html.style.removeProperty(v);
+    }
+  }
   html.setAttribute('data-theme', s.theme === 'auto' ? '' : s.theme);
   if (s.theme === 'auto') html.removeAttribute('data-theme');
   html.setAttribute('data-fontscale', s.fontScale || 'm');
@@ -163,6 +185,16 @@ function wireStoragePersistence(store) {
 function wirePlatformWarnings() {
   // Синтезатор зависает после ухода вкладки в фон: отменяем принудительно.
   document.addEventListener('visibilitychange', () => { if (document.hidden) speech.cancel(); });
+}
+
+/** Затемнение цвета для нижней грани кнопки. */
+function shade(hex, amount) {
+  const n = parseInt(hex.slice(1), 16);
+  const clamp = (v) => Math.max(0, Math.min(255, Math.round(v)));
+  const r = clamp(((n >> 16) & 255) * (1 + amount));
+  const g = clamp(((n >> 8) & 255) * (1 + amount));
+  const b = clamp((n & 255) * (1 + amount));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
 }
 
 boot().catch((err) => {
