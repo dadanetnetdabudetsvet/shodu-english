@@ -240,3 +240,24 @@
 /* Тихая строка закрытия: появляется последней, после того как числа
    досчитались. Пауза перед ней — часть ритуала, а не пустое место. */
 .results__close { padding: var(--sp-4) 0 var(--sp-2); min-height: 20px; }
+
+/* Кнопка сложности напоминает о себе раз в сорок секунд одним циклом.
+   Постоянная анимация в поле зрения утомляет и читается как тревога,
+   поэтому здесь редкий короткий кивок, а не пульс. */
+@keyframes gear-nudge {
+  0%, 88%, 100% { transform: none; box-shadow: none; }
+  91% { transform: scale(1.06) rotate(-3deg); box-shadow: 0 0 0 6px var(--accent-soft); }
+  94% { transform: scale(1.02) rotate(2deg); }
+  97% { transform: scale(1.04); }
+}
+.session__gear { animation: gear-nudge 40s var(--ease-smooth) 12s infinite; }
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) .session__gear { animation: none; }
+}
+[data-motion="off"] .session__gear { animation: none; }
+
+/* Значок меняется вместе с уровнем: одна шкала на все значения
+   не читается, а разные значки видно боковым зрением. */
+.session__gear[data-tier="low"] .session__gear-icon::before { content: '🌱'; }
+.session__gear[data-tier="mid"] .session__gear-icon::before { content: '📶'; }
+.session__gear[data-tier="high"] .session__gear-icon::before { content: '🔥'; }

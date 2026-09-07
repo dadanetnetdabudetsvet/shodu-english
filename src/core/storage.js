@@ -53,12 +53,14 @@ export function emptyState() {
       reminderTime: null,       // 'HH:MM' — только для файла календаря
       autoChallenge: true,
       accent: 'a00',
+      wordSet: null,            // null = вся база
     },
     econ: { gems: 0, xpTotal: 0 },
     streak: { current: 0, best: 0, lastDay: null, freezes: 0, pausedDays: 0 },
     lives: { count: 2, max: 2, lostAt: null, shieldUntil: null },
     challenge: {
       index: 8, manual: false, manualUntil: null,
+      size: 18, sizeManual: false, sizeManualUntil: null,
       lastChangeDay: null, changedToday: 0, votes: [],
     },
     day: today(),

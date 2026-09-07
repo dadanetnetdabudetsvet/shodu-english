@@ -98,14 +98,24 @@ export function screen(store, content) {
                 el('div', { class: 't-caption t-num' }, `${Math.min(have, q.need)}/${q.need}`)),
               el('div', { class: 't-caption' }, t(q.hint)),
               el('div', { class: 'bar bar--thin' }, fill)),
-            el('div', { class: 't-sm t-num', style: 'flex:none' }, got ? '✓' : `+${q.gems} 💎`),
+            got
+              ? el('div', { class: 'done-mark done-mark--lg' }, '✓')
+              : el('div', { class: 't-sm t-num', style: 'flex:none' }, `+${q.gems} 💎`),
           );
         });
 
+        /* Раньше здесь было просто «Это твоё» — не читалось как кнопка
+           и не говорило, сколько именно забирают. */
+        const readyGems = quests
+          .filter(q => questDone(q, day) && !claimed.has(q.id))
+          .reduce((a, q) => a + q.gems, 0);
         const claimBtn = ready && el('button', {
-          class: 'btn btn--primary btn--cta',
+          class: 'hero__cta', style: 'margin-top:0',
           onClick: () => { store.dispatch({ type: 'QUEST_CLAIM' }); render(); },
-        }, t('Это твоё 💎'));
+        },
+          el('span', { class: 'hero__cta-icon' }, '🎁'),
+          el('span', { class: 'grow', style: 'text-align:left' }, t('Забрать награду')),
+          el('span', { class: 'hero__cta-note' }, `+${readyGems} 💎`));
 
         return el('div', { class: 'stack', style: 'gap:var(--sp-3)' },
           el('div', { class: 'row row--between' },
@@ -135,7 +145,7 @@ export function screen(store, content) {
                   el('span', { style: 'font-weight:600' }, t(a.title)),
                   el('span', { class: 't-caption' }, t(a.sub))),
                 done
-                  ? el('span', { class: 't-sm', style: 'color:var(--answer-right)' }, '✓')
+                  ? el('span', { class: 'done-mark' }, '✓')
                   : a.gems > 0
                     ? el('span', { class: 't-caption', style: 'white-space:nowrap' }, `+${a.gems} 💎`)
                     : el('span', { class: 't-caption' }, '›'),
@@ -189,12 +199,35 @@ export function screen(store, content) {
           }, `${FREEZE.price} 💎`),
         );
 
+        /* Откуда берутся алмазы. Раньше баланс висел без объяснения,
+           и было непонятно, что вообще надо делать, чтобы он рос. */
+        const cheapest = Math.min(...SECTIONS.flatMap(x => x.items).filter(i => i.price > 0).map(i => i.price));
+        const toCheapest = Math.max(0, cheapest - s.econ.gems);
+
         return el('div', { class: 'stack', style: 'gap:var(--sp-4)' },
-          el('div', { class: 'card row row--between' },
-            el('div', { class: 'stack', style: 'gap:2px' },
-              el('div', { style: 'font-weight:600' }, t('У тебя {v0} алмазов', { v0: s.econ.gems })),
-              el('div', { class: 't-caption' }, t('Слова здесь не продаются. Только облик и защита ритма.'))),
-            el('div', { style: 'font-size:26px' }, '💎')),
+          el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
+            el('div', { class: 'row row--between' },
+              el('div', { style: 'font-size:var(--fs-xl);font-weight:800' }, `💎 ${s.econ.gems}`),
+              toCheapest > 0
+                ? el('div', { class: 't-caption' }, t('до первой покупки {v0}', { v0: toCheapest }))
+                : el('div', { class: 't-caption', style: 'color:var(--answer-right)' }, t('хватает на покупку'))),
+            el('div', { class: 't-caption' }, t('ОТКУДА ОНИ БЕРУТСЯ')),
+            ...[
+              ['🏁', t('Дойти до меры дня'), '+20'],
+              ['🎯', t('Закрыть задание на «Сегодня»'), '+10…25'],
+              ['✅', t('Сделать что-то из списка занятий'), '+10…40'],
+              ['🔥', t('Держать ритм: 3, 7, 14 дней'), '+30…80'],
+              ['⭐', t('Взять новый уровень'), '+25'],
+              ['🎁', t('Позвать друга'), '+100'],
+            ].map(([icon, text, gain]) => el('div', { class: 'row', style: 'gap:var(--sp-2);align-items:center' },
+              el('span', { style: 'width:22px' }, icon),
+              el('span', { class: 't-sm grow' }, text),
+              el('span', { class: 't-caption', style: 'white-space:nowrap' }, gain + ' 💎'))),
+            el('button', {
+              class: 'btn', style: 'margin-top:var(--sp-2)',
+              onClick: () => { tab = 'today'; sound.select(); render(); },
+            }, t('Показать, что можно сделать сегодня →')),
+            el('div', { class: 't-caption' }, t('Слова здесь не продаются. Только облик и защита ритма.'))),
           freezeCard,
           ...sections,
         );

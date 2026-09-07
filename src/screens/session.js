@@ -17,7 +17,7 @@ import { el, en, setChildren } from '../ui/dom.js';
 import { buildSession, SessionQueue, newRecord, maintenance } from '../domain/srs.js';
 import { selectByChallenge, allowedExerciseTypes, allowedSources, tierOf } from '../domain/challenge.js';
 import { isSoftMode, MAX_LIVES } from '../domain/streak.js';
-import { poolForChallenge, pickDistractors, shuffle, isTypo } from '../data/content.js';
+import { poolForChallenge, applyWordSet, pickDistractors, shuffle, isTypo } from '../data/content.js';
 import { enterCard, enterOptions, popCorrect, shakeWrong, popCombo, fillBar, animate } from '../core/motion.js';
 import { sound } from '../core/sound.js';
 import { toast } from '../ui/toast.js';
@@ -50,7 +50,7 @@ export function screen(store, content) {
       /* Подбор слов: приоритет у алгоритма повторений, сложность управляет
          только свободными слотами. */
       const sources = allowedSources(s0.challenge.index);
-      const basePool = poolForChallenge(content, sources);
+      const basePool = applyWordSet(poolForChallenge(content, sources), content, s0.settings.wordSet);
       const withRecs = basePool.map(w => ({
         id: w.id, word: w,
         rec: (s0.srs[w.deck === 'core' ? 'deck2' : 'deck1'] || {})[w.id] || newRecord(),
@@ -62,7 +62,8 @@ export function screen(store, content) {
       let items = extraPractice
         ? maintenance(withRecs, target, s0.day)
         : buildSession(pool, {
-            day: s0.day, mode, size: mode === 'sprint' ? 30 : 18,
+            day: s0.day, mode,
+            size: mode === 'sprint' ? 30 : (s0.challenge.size || 18),
             newBudget: Math.max(0, (s0.settings.dailyGoalWords || 10) - (s0.days[s0.day]?.words || 0)),
             gapDays: s0.streak.lastDay == null ? 0 : s0.day - s0.streak.lastDay - 1,
           });
@@ -111,11 +112,13 @@ export function screen(store, content) {
       const modeTag = el('div', { class: 't-caption', style: 'text-align:center' },
         t(MODE_TITLES[mode] || 'Занятие'));
 
+      const gearTier = (n) => (n <= 9 ? 'low' : n <= 19 ? 'mid' : 'high');
       const gear = el('button', {
         class: 'session__gear', 'aria-label': t('Сложность'),
+        dataset: { tier: gearTier(store.state.challenge.index) },
         onClick: openDifficulty,
       },
-        el('span', { style: 'font-size:15px' }, '📶'),
+        el('span', { class: 'session__gear-icon', style: 'font-size:15px' }),
         el('span', { class: 'session__gear-val t-num' }, String(store.state.challenge.index)),
       );
 
@@ -160,6 +163,7 @@ export function screen(store, content) {
               close();
               const val = gear.querySelector('.session__gear-val');
               if (val) val.textContent = String(next);
+              gear.dataset.tier = gearTier(next);
               rebuildTail(next);
             },
           }, t('Готово ✓')),
@@ -464,7 +468,7 @@ export function screen(store, content) {
         }
         const st = store.state;
         const sources2 = allowedSources(index);
-        const pool2 = poolForChallenge(content, sources2).map(w => ({
+        const pool2 = applyWordSet(poolForChallenge(content, sources2), content, st.settings.wordSet).map(w => ({
           id: w.id, word: w,
           rec: (st.srs[w.deck === 'core' ? 'deck2' : 'deck1'] || {})[w.id] || newRecord(),
         }));

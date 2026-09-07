@@ -6,6 +6,8 @@ import { t } from '../i18n/index.js';
  * Так приложение переживает и починку данных, и откат.
  */
 
+import { wordsFor } from '../domain/wordsets.js';
+
 let cache = null;
 
 export async function loadContent() {
@@ -160,6 +162,19 @@ function guessSpellingTrap(x) {
 /* ── выборки ───────────────────────────────────────────────────── */
 
 /** Все слова, доступные при текущей планке. */
+/* Подборка сужает базу, но не трогает остальную логику: коробки,
+   сложность и режимы работают ровно так же. */
+export function applyWordSet(pool, content, set) {
+  if (!set || (!set.theme && !set.size)) return pool;
+  const allowed = wordsFor(content, set);
+  if (!allowed) return pool;
+  const ids = new Set(allowed.map(w => w.id));
+  const narrowed = pool.filter(w => ids.has(w.id));
+  // Если подборка вычистила почти всё, лучше вернуть полную базу, чем
+  // оставить человека без занятия.
+  return narrowed.length >= 8 ? narrowed : pool;
+}
+
 export function poolForChallenge(content, sources) {
   // Низкая сложность — только самые узнаваемые когнаты.
   let pool = content.deck1.filter(w => w.tier <= 2);

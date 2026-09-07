@@ -101,6 +101,35 @@ function pickBand(ranked, center, width) {
 
 export const VOTE_DELTA = { easy: +2, normal: 0, hard: -2 };
 
+/* Длина занятия. Отдельная ручка от сложности: одному тяжело от
+ * трудных слов, другому — от того, что занятие не кончается. Смешивать
+ * их значит чинить не то.
+ *
+ * Голос после занятия двигает обе, но длину мягче: заметить лишние два
+ * задания легче, чем более трудное слово, и резкий скачок читается как
+ * наказание за честный ответ.
+ */
+export const SIZE_MIN = 8;
+export const SIZE_MAX = 30;
+export const SIZE_DEFAULT = 18;
+export const SIZE_VOTE_DELTA = { easy: +2, normal: 0, hard: -3 };
+
+export function clampSize(v) {
+  return Math.max(SIZE_MIN, Math.min(SIZE_MAX, Math.round(v)));
+}
+
+export function sizeLabel(n) {
+  if (n <= 11) return 'короткое';
+  if (n <= 16) return 'спокойное';
+  if (n <= 22) return 'обычное';
+  return 'длинное';
+}
+
+/** Примерная длительность занятия: человеку нужно время, а не число. */
+export function sizeMinutes(n) {
+  return Math.max(1, Math.round(n * 0.16));
+}
+
 export const VOTE_REPLY = {
   easy: 'Поднимаю сложность. Следующее занятие будет поинтереснее.',
   normal: 'Оставляю как есть.',
@@ -116,8 +145,23 @@ export const VOTE_REPLY = {
 export function applyVote(ch, vote, day) {
   const delta = VOTE_DELTA[vote] ?? 0;
   const next = applyDelta(ch, delta, day);
+  // Длина занятия двигается тем же голосом, но мягче и только если
+  // человек не задал её вручную.
+  if (!ch.sizeManual) {
+    next.size = clampSize((ch.size ?? SIZE_DEFAULT) + (SIZE_VOTE_DELTA[vote] ?? 0));
+  }
   next.votes = [...(ch.votes || []), { day, vote }].slice(-20);
   return next;
+}
+
+/** Ручная установка длины. Автоматика после неё молчит трое суток. */
+export function setSize(ch, size, day) {
+  return {
+    ...ch,
+    size: clampSize(size),
+    sizeManual: true,
+    sizeManualUntil: day + MANUAL_HOLD_DAYS,
+  };
 }
 
 /**

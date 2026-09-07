@@ -7,7 +7,7 @@ import { answerXp, sessionBonusXp, SOFT_MODE_XP_FACTOR, GEMS, milestoneFor,
          levelForXp, levelProgress } from '../domain/scoring.js';
 import { refreshStreak, completeDay, costsLife, loseLife, regenLives,
          isSoftMode, grantEmergencyFreeze } from '../domain/streak.js';
-import { applyVote, autoAdjust, setManual, clampIndex } from '../domain/challenge.js';
+import { applyVote, autoAdjust, setManual, clampIndex, setSize } from '../domain/challenge.js';
 import { makeSelfCode, verifyProof, rewardFor, NEWCOMER_GEMS } from '../domain/referral.js';
 import { evaluateMedals } from '../domain/medals.js';
 import { questsForDay, questDone, ACTIVITIES, activityDone } from '../domain/quests.js';
@@ -321,6 +321,12 @@ export function rootReducer(state, action) {
         effects: [fx.save()],
       };
     }
+
+    case 'SESSION_SIZE_SET':
+      return {
+        state: { ...state, challenge: setSize(state.challenge, action.size, state.day) },
+        effects: [fx.save()],
+      };
 
     case 'CHALLENGE_SET':
       return {

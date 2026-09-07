@@ -10,7 +10,7 @@ import { t } from '../i18n/index.js';
 import { buildPhraseTask, checkPlacement, phraseXp, phraseOptions } from '../domain/phrase.js';
 import { newRecord } from '../domain/srs.js';
 import { selectByChallenge, allowedSources } from '../domain/challenge.js';
-import { poolForChallenge } from '../data/content.js';
+import { poolForChallenge, applyWordSet } from '../data/content.js';
 import { enterCard, animate, fillBar } from '../core/motion.js';
 import { sound } from '../core/sound.js';
 import { speech } from '../core/speech.js';
@@ -26,7 +26,7 @@ export function screen(store, content) {
       const stats = { answered: 0, correctFirstTry: 0, mistakes: 0, newWords: 0, times: [], maxCombo: 0 };
 
       const sources = allowedSources(s0.challenge.index);
-      const pool = poolForChallenge(content, sources)
+      const pool = applyWordSet(poolForChallenge(content, sources), content, s0.settings.wordSet)
         .map(w => ({
           id: w.id, word: w,
           rec: (s0.srs[w.deck === 'core' ? 'deck2' : 'deck1'] || {})[w.id] || newRecord(),

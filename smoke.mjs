@@ -122,7 +122,7 @@ step('очков после аванса: ' + store.state.econ.xpTotal);
 console.log('\nГЛАВНЫЙ ЭКРАН');
 window.location.hash = '#/home';
 await sleep(400);
-if (!root.querySelector('.card--hero')) fail('нет главной карточки');
+if (!root.querySelector('.hero')) fail('нет главной карточки');
 else step('главная отрисована: ' + root.querySelector('h1')?.textContent);
 
 /* ── тупик, который ловил новых пользователей ──────────────── */
@@ -198,7 +198,7 @@ for (const [route, marker] of [['quests', 'Сегодня'], ['words', 'англ
   const txt = root.textContent;
   if (!txt.includes(marker)) fail(`экран ${route} не содержит «${marker}»`);
   else {
-    const n = root.querySelectorAll('.list-row').length || root.querySelectorAll('.card').length;
+    const n = root.querySelectorAll('.list-row').length || root.querySelectorAll('.rule').length || root.querySelectorAll('.card').length;
     step(`${route}: ок (${n} строк)`);
     if (route === 'words' && n < 10) fail('список слов пуст');
   }
@@ -241,8 +241,8 @@ console.log('\nНОВЫЕ РЕЖИМЫ');
   window.location.hash = '#/stream';
   await sleep(500);
   const st = root.textContent;
-  if (st.includes('читается по словам, которые уже твои')) {
-    step('Поток: честный экран «нужно больше слов» с кнопкой выхода');
+  if (st.includes('работает по словам, которые уже твои')) {
+    step('Чтение: честный экран «нужно больше слов» с кнопкой выхода');
   } else if (root.querySelector('.stream-mode')) {
     const go = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Ровный темп'));
     if (go) {
@@ -251,10 +251,10 @@ console.log('\nНОВЫЕ РЕЖИМЫ');
       if (words) step('Поток: строка из ' + words + ' слов на табло');
       else if (st.includes('читается по знакомым')) step('Поток: честный экран «нужно больше слов»');
       else fail('Поток: строка не отрисовалась');
-    } else if (st.includes('читается по словам, которые уже твои')) {
+    } else if (st.includes('работает по словам, которые уже твои')) {
       step('Поток: честный экран «нужно больше слов»');
     } else fail('Поток: нет кнопки старта');
-  } else fail('Поток: экран не смонтирован');
+  } else fail('Чтение: экран не смонтирован — ' + st.slice(0, 90));
 }
 
 /* ── режимы на наполненном словаре ─────────────────────────── */
@@ -453,6 +453,38 @@ console.log('\nКЛЮЧИ СООТВЕТСТВИЙ');
     if (!unseen) fail('нет непоказанного слова для проверки ключа');
     else step('слово для проверки ключа: ' + unseen.en + ' → ' + unseen.answer);
   }
+}
+
+/* ── подборки слов ─────────────────────────────────────────── */
+console.log('\nПОДБОРКИ СЛОВ');
+{
+  const { THEMES, SIZES, wordsFor, setTitle } = await imp('src/domain/wordsets.js');
+  const { content } = window.__shodu;
+
+  for (const n of SIZES) {
+    const p = wordsFor(content, { size: n });
+    const real = p.filter(w => w.deck !== 'core').length;
+    if (real !== n) fail(`топ ${n}: получилось ${real} слов`);
+  }
+  step('размеры подборок точные: ' + SIZES.join(', '));
+
+  for (const th of Object.values(THEMES)) {
+    const p = wordsFor(content, { theme: th.id });
+    const real = p.filter(w => w.deck !== 'core').length;
+    const core = p.filter(w => w.deck === 'core').length;
+    if (real < 80) fail(`${th.title}: всего ${real} слов, мало`);
+    if (core === 0) fail(`${th.title}: нет служебных слов, фразы не собрать`);
+    step(`${th.title}: ${real} слов + ${core} служебных`);
+  }
+
+  // Подборка сужает пул, но не ломает занятие.
+  store.dispatch({ type: 'SETTINGS_SET', patch: { wordSet: { theme: 'it', size: 50 } } });
+  window.location.hash = '#/session/build';
+  await sleep(500);
+  if (!root.querySelector('.session') && !root.textContent.includes('работает по словам'))
+    fail('занятие не собралось при узкой подборке: ' + root.textContent.slice(0, 70));
+  else step('занятие собирается при подборке «для айти, 50 слов»');
+  store.dispatch({ type: 'SETTINGS_SET', patch: { wordSet: null } });
 }
 
 console.log('\nРЕГРЕССИИ');

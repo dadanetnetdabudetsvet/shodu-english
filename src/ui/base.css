@@ -339,3 +339,168 @@ a { color: var(--accent); }
   [role="dialog"] { max-height: 88svh; }
 }
 .list-row--done { opacity: .62; }
+/* Ячейки шапки — кнопки: нажатие должно быть заметно. */
+.topbar__cell { border-radius: var(--r-md); transition: background var(--d-1) var(--ease-snappy); }
+button.topbar__cell:active { background: var(--surface-2); }
+
+/* ── главный кадр ──────────────────────────────────────────────
+   Единственное цветное пятно на экране. Первым делом человек видит
+   то, что у него есть, а не то, чего не хватает. */
+.hero {
+  position: relative;
+  border-radius: var(--r-2xl);
+  padding: var(--sp-5) var(--sp-4) var(--sp-4);
+  background: var(--grad-hero);
+  color: #fff;
+  box-shadow: var(--sh-4);
+  overflow: hidden;
+  isolation: isolate;
+}
+/* Мягкое свечение из угла: даёт объём без единой картинки. */
+.hero__glow {
+  position: absolute; inset: -40% -20% auto auto;
+  width: 320px; height: 320px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.30), transparent 68%);
+  pointer-events: none; z-index: -1;
+}
+.hero__row { display: flex; align-items: center; gap: var(--sp-3); }
+.hero__left { flex: 1; min-width: 0; }
+.hero__hi { font-size: var(--fs-caption); opacity: .85; margin-bottom: 2px; }
+.hero__num {
+  font-size: clamp(2.75rem, 15vw, 4rem);
+  font-weight: var(--fw-black);
+  line-height: .95; letter-spacing: var(--ls-display, -.03em);
+}
+.hero__cap { font-size: var(--fs-md); font-weight: var(--fw-semi); margin-top: 2px; }
+.hero__sub { font-size: var(--fs-sm); opacity: .85; margin-top: 4px; }
+
+.hero__ring { position: relative; width: 84px; height: 84px; flex: none; }
+.hero__ring svg { width: 84px; height: 84px; display: block; }
+.hero__ring-mid {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.hero__ring-num { font-size: var(--fs-lg); font-weight: var(--fw-black); line-height: 1; }
+.hero__ring-cap { font-size: 10px; opacity: .85; }
+
+/* Кнопка внутри кадра: белая на цветном, с наградой справа. */
+.hero__cta {
+  display: flex; align-items: center; gap: var(--sp-3);
+  width: 100%; min-height: var(--tap-cta);
+  margin-top: var(--sp-4); padding: 0 var(--sp-4);
+  border-radius: var(--r-lg);
+  background: #fff; color: #2A1B5E;
+  font-size: var(--fs-md); font-weight: var(--fw-bold);
+  box-shadow: 0 4px 0 rgba(0,0,0,.20);
+  transition: transform var(--d-instant) var(--ease-snappy), box-shadow var(--d-instant) var(--ease-snappy);
+}
+.hero__cta:active { transform: translateY(4px); box-shadow: 0 0 0 rgba(0,0,0,.2); }
+.hero__cta-icon { font-size: 20px; }
+.hero__cta-note {
+  flex: none; font-size: var(--fs-sm); font-weight: var(--fw-bold);
+  padding: 4px 10px; border-radius: var(--r-full);
+  background: var(--accent-soft); color: var(--accent);
+}
+
+.hero__chips { display: flex; gap: 6px; margin-top: var(--sp-3); flex-wrap: wrap; }
+.chip {
+  font-size: var(--fs-caption); padding: 4px 10px;
+  border-radius: var(--r-full);
+  border: 1px solid rgba(255,255,255,.35);
+  color: rgba(255,255,255,.9);
+  white-space: nowrap;
+}
+.chip--done { background: rgba(62,216,138,.28); border-color: rgba(62,216,138,.55); font-weight: var(--fw-semi); }
+.chip--now { background: #fff; color: #2A1B5E; border-color: transparent; font-weight: var(--fw-semi); }
+
+/* ── карточка совпадения ───────────────────────────────────────
+   Раньше это была строка оглавления. Теперь видно само содержимое:
+   английская фраза, собранная из слов, которые человек узнаёт. */
+.rule {
+  display: block; width: 100%; text-align: left;
+  padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-2);
+  border-bottom: 1px solid var(--border);
+  background: none;
+  transition: background var(--d-1) var(--ease-snappy);
+}
+.rule:active { background: var(--surface-2); }
+.rule--read { opacity: .68; }
+
+.rule__top { display: flex; align-items: center; gap: var(--sp-2); }
+.rule__mark {
+  width: 28px; height: 28px; flex: none;
+  border-radius: var(--r-full);
+  display: grid; place-items: center;
+  font-size: 15px; font-weight: var(--fw-bold);
+  background: var(--surface-2); color: var(--text-2);
+}
+/* Чем полнее совпадение, тем теплее знак. Ниже тройки цвета нет вовсе:
+   отличие — это не ошибка и подсвечивать его нечем. */
+.rule__mark--s5 { background: var(--answer-right-soft); color: var(--answer-right); }
+.rule__mark--s4 { background: var(--accent-soft); color: var(--accent); }
+.rule__title { font-weight: var(--fw-semi); flex: 1; min-width: 0; }
+.rule__read { color: var(--answer-right); font-size: var(--fs-sm); }
+
+.rule__ex {
+  margin: var(--sp-2) 0 4px 36px;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent-border);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.rule__en { font-weight: var(--fw-semi); font-size: var(--fs-base); }
+.rule__ru { font-size: var(--fs-sm); color: var(--text-2); }
+.rule__same { margin-left: 36px; font-size: var(--fs-caption); color: var(--text-3); }
+
+/* Шаг инструкции: номер, текст и схема экрана. */
+.step { display: flex; gap: var(--sp-3); align-items: flex-start; }
+.step__num {
+  width: 26px; height: 26px; flex: none; margin-top: 2px;
+  border-radius: var(--r-full);
+  display: grid; place-items: center;
+  background: var(--accent); color: var(--on-accent);
+  font-size: var(--fs-sm); font-weight: var(--fw-bold);
+}
+.step__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-2); }
+.step__text { font-size: var(--fs-base); }
+.step__art {
+  width: 100%; max-width: 260px; height: auto;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+/* Строка после выполненной связки: куда идти дальше. */
+.hero__more {
+  display: block; width: 100%; text-align: left;
+  margin-top: var(--sp-3); padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  background: rgba(255,255,255,.16);
+  color: #fff; font-size: var(--fs-sm); font-weight: var(--fw-semi);
+}
+.hero__more:active { background: rgba(255,255,255,.26); }
+
+/* Отметка выполненного. Крупная и зелёная: сделанное должно быть видно
+   боковым зрением, иначе список читается как список долгов. */
+.done-mark {
+  width: 28px; height: 28px; flex: none;
+  border-radius: var(--r-full);
+  display: grid; place-items: center;
+  background: var(--answer-right-soft);
+  color: var(--answer-right);
+  font-size: 16px; font-weight: var(--fw-bold);
+  line-height: 1;
+}
+.done-mark--lg { width: 34px; height: 34px; font-size: 19px; }
+
+/* Карточка выбора: подборка базы, тема, вариант. */
+.setcard {
+  display: flex; align-items: center; gap: var(--sp-3);
+  width: 100%; min-height: 52px; padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color var(--d-1) var(--ease-snappy), background var(--d-1) var(--ease-snappy);
+}
+.setcard--on { border-color: var(--accent); background: var(--accent-soft); }
+.setcard:active { background: var(--surface-2); }

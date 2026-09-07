@@ -10,6 +10,7 @@ import { confetti } from './core/confetti.js';
 import { registerServiceWorker } from './core/sw-update.js';
 import { loadContent } from './data/content.js';
 import { readRefFromUrl } from './domain/referral.js';
+import { watchPrompt } from './core/install.js';
 import { detectLanguage, setLanguage, onLanguageChange, t } from './i18n/index.js';
 import { createStore } from './ui/store.js';
 import { createRouter } from './ui/router.js';
@@ -52,6 +53,7 @@ async function boot() {
       recheck: () => import('./screens/recheck.js').then(m => m.screen(store, content)),
       quests:  () => import('./screens/quests.js').then(m => m.screen(store, content)),
       today:   () => import('./screens/today.js').then(m => m.screen(store, content)),
+      install: () => import('./screens/install.js').then(m => m.screen(store, content)),
       results: () => import('./screens/results.js').then(m => m.screen(store, content)),
       words:   () => import('./screens/words.js').then(m => m.screen(store, content)),
       rules:   () => import('./screens/rules.js').then(m => m.screen(store, content)),
@@ -88,6 +90,10 @@ async function boot() {
      каждом касании, а не только на первом. Это дешевле, чем ловить
      жалобы «через полчаса звук пропал». */
   document.addEventListener('pointerdown', () => sound.unlock(), { passive: true });
+
+  // Предложение установки от браузера приходит один раз, поэтому его
+  // ловим сразу и придерживаем до нужного экрана.
+  watchPrompt();
 
   registerServiceWorker({
     onUpdateReady: (apply) => {

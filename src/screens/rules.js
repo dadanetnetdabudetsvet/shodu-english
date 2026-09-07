@@ -42,19 +42,21 @@ export function screen(store, content) {
 
       function rule(r) {
         const isRead = !!(store.state.rulesRead || {})[r.id];
+        /* Карточка показывает не оглавление, а само содержимое: человек
+           видит английскую фразу и сразу узнаёт в ней свои слова. Это и
+           есть доказательство, ради которого раздел существует. */
         return el('button', {
-          class: 'list-row',
+          class: 'rule' + (isRead ? ' rule--read' : ''),
           onClick: () => open(r),
         },
-          el('div', {
-            style: `width:36px;height:36px;flex:none;border-radius:var(--r-full);display:grid;place-items:center;
-                    background:${isRead ? 'var(--answer-right-soft)' : 'var(--surface-2)'};font-size:15px`,
-            title: sameLabel(r.sameness),
-          }, isRead ? '✓' : sameMark(r.sameness)),
-          el('div', { class: 'stack grow', style: 'gap:1px' },
-            el('div', { style: 'font-weight:600' }, r.title),
-            el('div', { class: 't-sm' }, r.idea),
-            el('div', { class: 't-caption' }, sameLabel(r.sameness))),
+          el('div', { class: 'rule__top' },
+            el('span', { class: `rule__mark rule__mark--s${r.sameness}` }, sameMark(r.sameness)),
+            el('span', { class: 'rule__title' }, r.title),
+            isRead ? el('span', { class: 'done-mark' }, '✓') : null),
+          el('div', { class: 'rule__ex' },
+            el('span', { lang: 'en', class: 'rule__en' }, r.en_example),
+            el('span', { class: 'rule__ru' }, r.ru_example)),
+          el('div', { class: 'rule__same' }, sameLabel(r.sameness)),
         );
       }
 

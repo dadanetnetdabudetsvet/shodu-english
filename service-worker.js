@@ -9,7 +9,7 @@
  * по нажатию человека пришлёт сообщение.
  */
 
-const VERSION = 'v5bd6268520';
+const VERSION = 'v22cc674582';
 const CACHE = `shodu-${VERSION}`;
 
 const SHELL = [
@@ -20,6 +20,7 @@ const SHELL = [
   './src/core/confetti.js',
   './src/core/day.js',
   './src/core/haptics.js',
+  './src/core/install.js',
   './src/core/mood.js',
   './src/core/motion.js',
   './src/core/sound.js',
@@ -39,6 +40,7 @@ const SHELL = [
   './src/domain/streak.js',
   './src/domain/stream.js',
   './src/domain/today.js',
+  './src/domain/wordsets.js',
   './src/i18n/catalog.json',
   './src/i18n/index.js',
   './src/i18n/locales/ar.json',
@@ -61,6 +63,7 @@ const SHELL = [
   './src/i18n/locales/vi.json',
   './src/i18n/locales/zh.json',
   './src/screens/home.js',
+  './src/screens/install.js',
   './src/screens/phrase.js',
   './src/screens/profile.js',
   './src/screens/quests.js',

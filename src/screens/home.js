@@ -13,8 +13,10 @@
 import { el, en, greeting, setChildren } from '../ui/dom.js';
 import { t } from '../i18n/index.js';
 import { weekRhythm, weekDone, WEEK_TARGET, isSoftMode } from '../domain/streak.js';
+import { weekdayShort, weekdayIndex, dayToDate } from '../core/day.js';
 import { countKnown, levelInfo } from '../ui/reducer.js';
 import { isKnown } from '../domain/srs.js';
+import { questsForDay } from '../domain/quests.js';
 import { enterCard, fillBar, animate, tweenNumber } from '../core/motion.js';
 import { sound } from '../core/sound.js';
 import { speech } from '../core/speech.js';
@@ -24,7 +26,7 @@ import { speech } from '../core/speech.js';
 const MODES = {
   build:  { icon: '📘', name: 'Занятие', sub: 'новые слова', route: 'session/build', slot: 'core' },
   sprint: { icon: '⚡', name: 'Блиц',    sub: 'на скорость', route: 'session/sprint', slot: 'in' },
-  stream: { icon: '👁', name: 'Поток',   sub: 'слова идут сами', route: 'stream',       slot: 'in' },
+  stream: { icon: '👁', name: 'Чтение',   sub: 'слова идут сами', route: 'stream',       slot: 'in' },
   ether:  { icon: '🎧', name: 'На слух', sub: 'звучание',    route: 'session/ether',  slot: 'out' },
   phrase: { icon: '🧱', name: 'Фраза',   sub: 'собери мысль', route: 'phrase',        slot: 'out' },
 };
@@ -53,8 +55,15 @@ export function screen(store, content) {
          говорили человеку, сколько он должен, и делали это первым, что
          он видит на экране. */
       const daysTogether = Object.values(s.days || {}).filter(d => d.sessions > 0 || d.present).length;
+      /* Шапка. Обе левые ячейки раньше были мёртвыми подписями: они
+         не открывались и не объясняли, что за ними стоит. Теперь это
+         кнопки, и по ним разворачивается история. */
       const head = el('div', { class: 'topbar' },
-        el('div', { class: 'topbar__cell', style: 'flex:2 1 0' },
+        el('button', {
+          class: 'topbar__cell', style: 'flex:2 1 0',
+          'aria-label': t('Показать неделю'),
+          onClick: () => { sound.swipe(); openHistory(); },
+        },
           el('div', { class: 'rhythm', role: 'img',
             'aria-label': t('Дней с английским на этой неделе: {v0}', { v0: doneThisWeek }) },
             dots.map(d => el('span', {
@@ -62,131 +71,133 @@ export function screen(store, content) {
                 + (d.done ? (d.light ? ' rhythm__dot--light' : ' rhythm__dot--done') : '')
                 + (d.isToday ? ' rhythm__dot--today' : ''),
             }))),
-          el('div', { class: 'topbar__cap' }, t('эта неделя'))),
+          el('div', { class: 'topbar__cap' }, t('неделя ›'))),
 
         el('div', { class: 'topbar__sep' }),
 
-        el('div', { class: 'topbar__cell' },
+        el('button', {
+          class: 'topbar__cell',
+          'aria-label': t('Показать историю'),
+          onClick: () => { sound.swipe(); openHistory(); },
+        },
           el('div', { class: 'topbar__val' }, String(daysTogether)),
-          el('div', { class: 'topbar__cap' }, t('дней вместе'))),
+          el('div', { class: 'topbar__cap' }, t('дней ›'))),
 
         el('button', {
           class: 'topbar__cell', 'aria-label': t('Лавка'),
           onClick: () => { sound.tap(); ctx.go('quests/shop'); },
         },
           el('div', { class: 'topbar__val' }, `💎 ${s.econ.gems}`),
-          el('div', { class: 'topbar__cap' }, t('в лавку'))),
+          el('div', { class: 'topbar__cap' }, t('лавка ›'))),
       );
 
-      /* Улика идёт первой: это главное, что продукт доказывает. */
+      /* Разворот истории: то, что стояло за цифрами шапки. */
+      function openHistory() {
+        const totalMs = Object.values(s.days).reduce((a, d) => a + (d.ms || 0), 0);
+        const first = Math.min(...Object.keys(s.days).map(Number).concat([s.day]));
+        const rows = weekRhythm(s.days, s.day).map(d => {
+          const rec = s.days[d.day] || {};
+          const mins = Math.round((rec.ms || 0) / 60000);
+          return el('div', { class: 'row row--between', style: 'padding:6px 0' },
+            el('div', { class: 't-sm' }, weekdayFull(d.day)),
+            el('div', { class: 't-caption' },
+              rec.sessions ? t('{v0} мин · {v1} слов', { v0: Math.max(1, mins), v1: rec.touched || 0 })
+                : rec.present ? t('заглядывал')
+                : t('—')));
+        });
+
+        const sheet = el('div', {
+          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
+          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:90;max-width:536px;margin:0 auto',
+        },
+          el('div', { style: 'font-weight:600' }, t('Твоя неделя')),
+          ...rows,
+          el('div', { class: 'row', style: 'gap:var(--sp-2);margin-top:var(--sp-3)' },
+            el('div', { class: 'tile grow' },
+              el('div', { class: 'tile__val' }, String(daysTogether)),
+              el('div', { class: 'tile__cap' }, t('дней вместе'))),
+            el('div', { class: 'tile grow' },
+              el('div', { class: 'tile__val' }, String(Math.round(totalMs / 60000))),
+              el('div', { class: 'tile__cap' }, t('минут всего'))),
+            el('div', { class: 'tile grow' },
+              el('div', { class: 'tile__val' }, String(s.streak.best || 0)),
+              el('div', { class: 'tile__cap' }, t('лучший ритм')))),
+          el('div', { class: 't-caption' },
+            t('Первый день был {v0} дней назад.', { v0: Math.max(0, s.day - first) })),
+          el('button', {
+            class: 'btn btn--primary btn--cta',
+            onClick: () => { close(); ctx.go('profile'); },
+          }, t('Вся история в профиле →')),
+          el('button', { class: 'btn btn--ghost', onClick: close }, t('Закрыть')),
+        );
+        const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:89', onClick: close });
+        document.body.append(back, sheet);
+        const onKey = (e) => { if (e.key === 'Escape') close(); };
+        document.addEventListener('keydown', onKey);
+        function close() { sheet.remove(); back.remove(); document.removeEventListener('keydown', onKey); }
+      }
+
+      /* Главный кадр экрана.
+       *
+       * Раньше человек первым делом видел серое число и полосу
+       * недобора, то есть сколько он не сделал. Теперь первым делом он
+       * видит то, что у него уже есть, и это единственное цветное пятно
+       * на экране.
+       */
       const recognised = known + learning;
-      const bigNumber = el('div', {
-        class: 't-num', style: 'font-size:var(--fs-4xl);font-weight:800;line-height:1',
-      }, '0');
-      const proof = el('div', { class: 'stack', style: 'gap:2px' },
-        el('div', { class: 't-caption' }, greeting(s.profile.name)),
-        bigNumber,
-        el('div', { class: 't-body' }, t('слов в твоём английском')),
-        known > 0
-          ? el('div', { class: 't-caption' }, t('{v0} из них ты достаёшь не думая', { v0: known }))
-          : recognised > 0
-            ? el('div', { class: 't-caption' }, t('Ты их не учил. Ты их узнал.'))
-            : null,
-      );
-
-      const barFill = el('div', { class: 'bar__fill' });
-      const goalRow = el('div', { class: 'stack', style: 'gap:6px' },
-        el('div', { class: 't-sm' }, todayWords(today) >= goal
-          ? t('День засчитан. Слов сегодня: {v0}', { v0: todayWords(today), v1: goal })
-          : t('сегодня твоих стало больше на {v0}', { v0: todayWords(today), v1: goal })),
-        el('div', { class: 'bar' }, barFill),
-      );
-
-      /* Связка дня: три шага, одна кнопка, текст которой меняется. */
       const step = Math.min(doneToday, 2);
       const current = chain[step];
-      const chips = el('div', { class: 'row', style: 'gap:6px' },
-        ...chain.map((m, i) => el('div', {
-          class: 't-caption',
-          style: `padding:4px 10px;border-radius:var(--r-full);
-                  background:${i < doneToday ? 'var(--accent-soft)' : 'transparent'};
-                  border:1px solid ${i === step ? 'var(--accent)' : 'var(--border)'};
-                  color:${i < doneToday ? 'var(--accent)' : 'inherit'}`,
-        }, `${i < doneToday ? '✓ ' : ''}${MODES[m].icon} ${t(MODES[m].name)}`)));
+      const bigNumber = el('div', { class: 'hero__num t-num' }, '0');
 
-      const heroBtn = el('button', {
-        class: 'btn btn--onhero btn--cta',
-        onClick: () => { sound.sessionStart(); ctx.go(MODES[current].route); },
-      }, doneToday === 0 ? t('Начнём ⚡')
-        : doneToday >= 3 ? t('Ещё заход ⚡')
-        : t('Дальше: {v0} →', { v0: t(MODES[current].name) }));
+      const hero = el('div', { class: 'hero' },
+        el('div', { class: 'hero__glow' }),
 
-      const hero = el('div', { class: 'card--hero stack', style: 'gap:var(--sp-3)' },
-        el('div', { style: 'font-size:var(--fs-md);font-weight:700' },
-          doneToday === 0 ? t('Три захода на сегодня') : doneToday >= 3 ? t('Все три захода сделаны') : t('Ты в середине')),
-        chips,
-        heroBtn,
-        el('div', { class: 't-caption', style: 'color:rgba(255,255,255,.75);text-align:center' },
-          t('≈ {v0} мин', { v0: Math.max(2, Math.round(goal * 0.4)) })),
+        el('div', { class: 'hero__row' },
+          el('div', { class: 'hero__left' },
+            el('div', { class: 'hero__hi' }, greeting(s.profile.name)),
+            bigNumber,
+            el('div', { class: 'hero__cap' }, t('слов в твоём английском')),
+            el('div', { class: 'hero__sub' },
+              known > 0 ? t('{v0} из них ты достаёшь не думая', { v0: known })
+                : recognised > 0 ? t('Ты их не учил. Ты их узнал.')
+                : t('Сейчас посчитаем, сколько их у тебя.'))),
+
+          el('div', { class: 'hero__ring' },
+            ringSvg(Math.min(1, todayWords(today) / goal)),
+            el('div', { class: 'hero__ring-mid' },
+              el('div', { class: 'hero__ring-num t-num' }, String(todayWords(today))),
+              el('div', { class: 'hero__ring-cap' }, t('сегодня'))))),
+
+        el('button', {
+          class: 'hero__cta',
+          onClick: () => { sound.sessionStart(); ctx.go(MODES[current].route); },
+        },
+          el('span', { class: 'hero__cta-icon' }, MODES[current].icon),
+          el('span', { class: 'grow', style: 'text-align:left' },
+            doneToday === 0 ? t('Начнём')
+              : doneToday >= 3 ? t('Ещё заход')
+              : t('Дальше: {v0}', { v0: t(MODES[current].name) })),
+          el('span', { class: 'hero__cta-note' }, nextReward(s, today, goal))),
+
+        doneToday >= 3 ? el('button', {
+          class: 'hero__more',
+          onClick: () => { sound.tap(); ctx.go('quests'); },
+        }, t('Все три сделаны. Посмотреть задания и награды →')) : null,
+
+        el('div', { class: 'hero__chips' },
+          ...chain.map((m, i) => el('span', {
+            class: 'chip' + (i < doneToday ? ' chip--done' : i === step ? ' chip--now' : ''),
+          }, `${i < doneToday ? '✓ ' : ''}${MODES[m].icon} ${t(MODES[m].name)}`))),
       );
 
       const pickLink = el('button', {
         class: 'btn btn--ghost', style: 'align-self:flex-start;font-size:var(--fs-sm)',
         onClick: openPicker,
-      }, t('🎛 собрать своё →'));
+      }, t('Выбрать другой заход →'));
+
 
       const softNote = isSoftMode(s.lives) && el('div', { class: 'card card--flat t-sm' },
         t('Сегодня подбираю слова поспокойнее. Искры вернутся сами.'));
-
-      /* Слово дня: берём только из узнаваемых, иначе оно пугает. */
-      const easy = content.deck1.filter(w => w.tier <= 2);
-      // Без сети и без кэша колода приходит пустой: деление на ноль
-      // роняло стартовый экран целиком.
-      const wod = easy.length ? easy[(s.day * 7919) % easy.length] : null;
-      const wordOfDay = wod && el('button', {
-        class: 'card row', style: 'gap:var(--sp-3);text-align:left;width:100%',
-        onClick: () => { sound.tap(); if (speech.available) speech.say(wod.en); },
-      },
-        el('div', { class: 'stack grow', style: 'gap:2px' },
-          el('div', { class: 't-caption' }, t('СЛОВО ДНЯ')),
-          el('div', { class: 'row', style: 'gap:var(--sp-2)' },
-            en(wod.en, 't-h2'),
-            el('span', { class: 't-ipa', 'aria-hidden': 'true' }, wod.tr)),
-          el('div', { class: 't-sm' }, wod.answer)),
-        speech.available ? el('span', { style: 'font-size:20px' }, '🔊') : null,
-      );
-
-      /* Пересчёт: единственное место, где видно изменение способности,
-         а не накопление. Предлагается с седьмого дня и дальше раз в
-         четыре недели. «Не сейчас» есть всегда, ничего не сгорает. */
-      const recheckCard = shouldOfferRecheck(s) && el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
-        el('div', { style: 'font-weight:600' }, t('Посмотрим, что изменилось 📏')),
-        el('div', { class: 't-sm' },
-          t('Те же десять слов, что в первый день. Минута, чтобы увидеть разницу.')),
-        el('button', {
-          class: 'btn btn--primary', onClick: () => { sound.tap(); ctx.go('recheck'); },
-        }, t('Пересчитать 📏')),
-        el('button', {
-          class: 'btn btn--ghost', style: 'font-size:var(--fs-sm)',
-          onClick: () => { store.dispatch({ type: 'RECHECK_SNOOZE' }); ctx.go('home'); },
-        }, t('Не сейчас')),
-      );
-
-      /* Установка на домашний экран: не косметика, а сохранность
-         прогресса. Браузер стирает данные сайтов после недели без
-         открытия, а установленное приложение считает свою неделю
-         отдельно. Предлагаем на седьмой день, когда есть что терять. */
-      const installCard = shouldOfferInstall(s) && el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
-        el('div', { style: 'font-weight:600' }, t('Положи на домашний экран 📲')),
-        el('div', { class: 't-sm' },
-          t('Твои {v0} слов живут вот в этом браузере. На домашнем экране они держатся дольше.', { v0: known })),
-        el('div', { class: 't-caption' },
-          t('На айфоне: «Поделиться» → «На экран Домой». На Андроиде появится предложение установить.')),
-        el('button', {
-          class: 'btn btn--ghost', style: 'font-size:var(--fs-sm)',
-          onClick: () => { store.dispatch({ type: 'INSTALL_SEEN' }); ctx.go('home'); },
-        }, t('Понятно ✓')),
-      );
 
       /* Прерванное занятие. Человек не должен гадать, сохранилось ли
          то, что он успел. */
@@ -202,14 +213,38 @@ export function screen(store, content) {
             }, t('Дальше →')))
         : null;
 
+      /* Пересчёт: единственное место, где видно изменение способности,
+         а не накопление. Предлагается с седьмого дня. */
+      const recheckCard = shouldOfferRecheck(s) && el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
+        el('div', { style: 'font-weight:600' }, t('Посмотрим, что изменилось 📏')),
+        el('div', { class: 't-sm' },
+          t('Те же десять слов, что в первый день. Минута, чтобы увидеть разницу.')),
+        el('button', { class: 'btn btn--primary', onClick: () => { sound.tap(); ctx.go('recheck'); } },
+          t('Пересчитать 📏')),
+        el('button', {
+          class: 'btn btn--ghost', style: 'font-size:var(--fs-sm)',
+          onClick: () => { store.dispatch({ type: 'RECHECK_SNOOZE' }); ctx.go('home'); },
+        }, t('Не сейчас')));
+
+      /* Установка на домашний экран: не косметика, а сохранность слов. */
+      const installCard = shouldOfferInstall(s) && el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
+        el('div', { style: 'font-weight:600' }, t('Положи на домашний экран 📲')),
+        el('div', { class: 't-sm' },
+          t('Твои {v0} слов живут вот в этом браузере. На домашнем экране они держатся дольше.', { v0: known + learning })),
+        el('button', { class: 'btn btn--primary', onClick: () => { sound.tap(); ctx.go('install'); } },
+          t('Показать, как 📲')),
+        el('button', {
+          class: 'btn btn--ghost', style: 'font-size:var(--fs-sm)',
+          onClick: () => { store.dispatch({ type: 'INSTALL_SEEN' }); ctx.go('home'); },
+        }, t('Потом')));
+
       const wrap = el('div', { class: 'screen' },
-        head, proof, open, goalRow, hero, pickLink,
-        recheckCard, installCard, softNote, wordOfDay);
+        head, hero, open, pickLink,
+        recheckCard, installCard, softNote);
       root.replaceChildren(wrap);
 
       enterCard(hero);
-      tweenNumber(bigNumber, 0, recognised, 900);
-      fillBar(barFill, 0, Math.min(1, todayWords(today) / goal));
+      tweenNumber(bigNumber, 0, recognised, 1000);
 
       /* Шторка выбора: все пять режимов, подпись каждого — число из
          данных, а не реклама. Недоступный режим не прячется и не
@@ -270,6 +305,62 @@ function shouldOfferInstall(s) {
   return (s.day - (s.createdDay ?? s.day)) >= 6;
 }
 
+/** Полное название дня недели для разворота истории. */
+function weekdayFull(dayNum) {
+  try {
+    return dayToDate(dayNum).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'short' });
+  } catch { return String(dayNum); }
+}
+
+/* Кольцо дня. Круг вместо полосы: полоса показывает, сколько не
+   пройдено, кольцо — сколько уже есть, и у него нет видимого края. */
+function ringSvg(ratio) {
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 100 100');
+  svg.setAttribute('width', '84'); svg.setAttribute('height', '84');
+  svg.setAttribute('aria-hidden', 'true');
+  const R = 42, C = 2 * Math.PI * R;
+
+  const base = document.createElementNS(NS, 'circle');
+  base.setAttribute('cx', 50); base.setAttribute('cy', 50); base.setAttribute('r', R);
+  base.setAttribute('fill', 'none');
+  base.setAttribute('stroke', 'rgba(255,255,255,.22)');
+  base.setAttribute('stroke-width', 8);
+
+  const arc = document.createElementNS(NS, 'circle');
+  arc.setAttribute('cx', 50); arc.setAttribute('cy', 50); arc.setAttribute('r', R);
+  arc.setAttribute('fill', 'none');
+  arc.setAttribute('stroke', '#fff');
+  arc.setAttribute('stroke-width', 8);
+  arc.setAttribute('stroke-linecap', 'round');
+  arc.setAttribute('transform', 'rotate(-90 50 50)');
+  arc.setAttribute('stroke-dasharray', String(C));
+  arc.setAttribute('stroke-dashoffset', String(C));
+  setTimeout(() => {
+    arc.style.transition = 'stroke-dashoffset 900ms cubic-bezier(.22,1,.36,1)';
+    arc.setAttribute('stroke-dashoffset', String(C * (1 - Math.max(0.04, ratio))));
+  }, 120);
+
+  svg.append(base, arc);
+  return svg;
+}
+
+/* Что даст следующий заход. Показываем только гарантированное:
+   обещать очки, которых может не быть, запрещено. */
+function nextReward(s, today, goal) {
+  const quests = questsForDay(s.day, goal);
+  const claimed = new Set((s.questsClaimed || {})[String(s.day)] || []);
+  const day = s.days[s.day];
+  for (const q of quests) {
+    if (claimed.has(q.id)) continue;
+    if (q.unit === 'sessions' && (day?.sessions || 0) + 1 >= q.need) return `+${q.gems} 💎`;
+  }
+  return '+20';
+}
+
+/* Кольцо дня. Круг вместо полосы: полоса показывает пустую часть,
+   то есть сколько не пройдено, а у кольца нет видимого края. */
 function todayWords(d) {
   return (d.words || 0) + Math.floor((d.touched || 0) / 2);
 }

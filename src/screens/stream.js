@@ -14,7 +14,7 @@ import { t } from '../i18n/index.js';
 import { buildStreamLine, nextTempo, wordsPerMinute, STREAM, STREAM_XP } from '../domain/stream.js';
 import { newRecord } from '../domain/srs.js';
 import { allowedSources } from '../domain/challenge.js';
-import { poolForChallenge } from '../data/content.js';
+import { poolForChallenge, applyWordSet } from '../data/content.js';
 import { animate } from '../core/motion.js';
 import { sound } from '../core/sound.js';
 import { speech } from '../core/speech.js';
@@ -36,7 +36,7 @@ export function screen(store, content) {
       const later = (fn, ms) => { const id = setTimeout(() => { pending.delete(id); fn(); }, ms); pending.add(id); return id; };
 
       const sources = allowedSources(s0.challenge.index);
-      const pool = poolForChallenge(content, sources)
+      const pool = applyWordSet(poolForChallenge(content, sources), content, s0.settings.wordSet)
         .map(w => ({ id: w.id, word: w,
           rec: (s0.srs[w.deck === 'core' ? 'deck2' : 'deck1'] || {})[w.id] || newRecord() }))
         .filter(p => p.rec.box >= (p.word.deck === 'core' ? 2 : 3) && p.word.ex_en);
@@ -48,7 +48,7 @@ export function screen(store, content) {
         el('div', { class: 'session__top' },
           el('button', { class: 'session__close', 'aria-label': t('Выйти'), onClick: () => finish(false) }, '✕'),
           el('div', { class: 'grow' }),
-          el('span', { class: 't-caption' }, t('Поток'))),
+          el('span', { class: 't-caption' }, t('Чтение'))),
         stage);
       root.replaceChildren(wrap);
       intro();
@@ -208,7 +208,7 @@ export function screen(store, content) {
 function notReady(ctx) {
   return el('div', { class: 'screen center stack', style: 'justify-content:center;gap:var(--sp-4)' },
     el('div', { style: 'font-size:48px' }, '👁'),
-    el('h1', { class: 't-h1' }, t('Поток читается по словам, которые уже твои')),
+    el('h1', { class: 't-h1' }, t('Чтение работает по словам, которые уже твои')),
     el('p', { class: 't-sm' }, t('Одно занятие — и здесь будет что читать.')),
     el('button', { class: 'btn btn--primary btn--cta', onClick: () => ctx.go('session/build') }, t('Взять слова 🌱')),
     el('button', { class: 'btn btn--ghost', onClick: () => ctx.go('home') }, t('Не сейчас')));
