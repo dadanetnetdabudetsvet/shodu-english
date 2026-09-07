@@ -17,7 +17,8 @@ import { el, en, setChildren } from '../ui/dom.js';
 import { buildSession, SessionQueue, newRecord, maintenance } from '../domain/srs.js';
 import { selectByChallenge, allowedExerciseTypes, allowedSources, tierOf } from '../domain/challenge.js';
 import { isSoftMode, MAX_LIVES } from '../domain/streak.js';
-import { poolForChallenge, applyWordSet, pickDistractors, shuffle, isTypo } from '../data/content.js';
+import { poolForChallenge, pickDistractors, shuffle, isTypo } from '../data/content.js';
+import { narrowPool, allRecords, MIN_POOL } from '../domain/wordsets.js';
 import { enterCard, enterOptions, popCorrect, shakeWrong, popCombo, fillBar, animate } from '../core/motion.js';
 import { sound } from '../core/sound.js';
 import { toast } from '../ui/toast.js';
@@ -50,7 +51,18 @@ export function screen(store, content) {
       /* Подбор слов: приоритет у алгоритма повторений, сложность управляет
          только свободными слотами. */
       const sources = allowedSources(s0.challenge.index);
-      const basePool = applyWordSet(poolForChallenge(content, sources), content, s0.settings.wordSet);
+      const fullPool = poolForChallenge(content, sources);
+
+      /* Подборка сужает базу, и на узкой теме своих слов у человека может
+         не оказаться вовсе: «Для айти» не пересекается с едой и городом,
+         с которых все начинают. Прежде это упиралось в тупиковый экран, и
+         снаружи выглядело так, будто кнопка «начать» сломана.
+         Проверяем заранее: если внутри подборки нечего показать —
+         добираем из общей базы и говорим об этом вслух. Подборка это
+         предпочтение, а не запрет. */
+      const { pool: basePool, widened } = narrowPool(
+        fullPool, content, s0.settings.wordSet, allRecords(s0),
+        mode === 'build' ? 0 : MIN_POOL);
       const withRecs = basePool.map(w => ({
         id: w.id, word: w,
         rec: (s0.srs[w.deck === 'core' ? 'deck2' : 'deck1'] || {})[w.id] || newRecord(),
@@ -93,6 +105,10 @@ export function screen(store, content) {
           onRetry: (opts) => start(opts && opts.extraPractice),
         }));
         return;
+      }
+
+      if (widened) {
+        toast(t('В этой подборке твоих слов пока мало. Добрал из общей базы.'), { kind: 'info' });
       }
 
       const queue = new SessionQueue(items);
@@ -468,7 +484,8 @@ export function screen(store, content) {
         }
         const st = store.state;
         const sources2 = allowedSources(index);
-        const pool2 = applyWordSet(poolForChallenge(content, sources2), content, st.settings.wordSet).map(w => ({
+        const pool2 = narrowPool(poolForChallenge(content, sources2), content,
+          st.settings.wordSet, allRecords(st), mode === 'build' ? 0 : MIN_POOL).pool.map(w => ({
           id: w.id, word: w,
           rec: (st.srs[w.deck === 'core' ? 'deck2' : 'deck1'] || {})[w.id] || newRecord(),
         }));

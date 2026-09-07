@@ -137,3 +137,44 @@ export function setTitle(set) {
     : { key: 'Подборок: {v0}', vars: { v0: picked.length } };
   return set.size ? { ...name, size: set.size } : name;
 }
+
+/* ── подборка не должна оставлять человека без занятия ─────────────
+ *
+ * Подборка — это предпочтение, а не запрет. Узкая тема может не
+ * пересечься с тем, что человек уже знает: «Для айти» не имеет ничего
+ * общего с едой и городом, с которых все начинают. Режимы, работающие
+ * только по знакомым словам, оставались тогда без материала, и снаружи
+ * это выглядело так, будто кнопка «начать» сломана.
+ *
+ * Поэтому подборка применяется, только если внутри неё занятие
+ * действительно собирается. Иначе берём общую базу и говорим об этом:
+ * молча подменить выбор человека нельзя, это правило Р6.
+ *
+ * @param needKnown сколько знакомых слов нужно режиму: 0 для «Занятия»,
+ *                  которое вводит новые, и 8 для остальных.
+ */
+export const MIN_POOL = 8;
+
+export function narrowPool(fullPool, content, set, srs, needKnown) {
+  if (isEmptySet(set)) return { pool: fullPool, widened: false };
+
+  const allowed = wordsFor(content, set);
+  if (!allowed) return { pool: fullPool, widened: false };
+  const ids = new Set(allowed.map(w => w.id));
+  const pool = fullPool.filter(w => ids.has(w.id));
+
+  if (pool.length < MIN_POOL) return { pool: fullPool, widened: true };
+  if (!needKnown) return { pool, widened: false };
+
+  let known = 0;
+  for (const w of pool) {
+    const r = srs && srs[w.id];
+    if (r && (r.box || 0) >= 1 && ++known >= needKnown) return { pool, widened: false };
+  }
+  return { pool: fullPool, widened: true };
+}
+
+/** Записи повторений одной кучей: подборке всё равно, из какой колоды слово. */
+export function allRecords(state) {
+  return { ...((state.srs || {}).deck1 || {}), ...((state.srs || {}).deck2 || {}) };
+}

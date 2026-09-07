@@ -10,6 +10,7 @@
     "check": "node check.mjs",
     "smoke": "node smoke.mjs",
     "screens": "node screens-check.mjs",
-    "onboarding": "node standalone-check.mjs"
+    "onboarding": "node standalone-check.mjs",
+    "wordsets": "node wordsets-check.mjs"
   }
 }

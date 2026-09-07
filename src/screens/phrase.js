@@ -10,7 +10,9 @@ import { t } from '../i18n/index.js';
 import { buildPhraseTask, checkPlacement, phraseXp, phraseOptions } from '../domain/phrase.js';
 import { newRecord } from '../domain/srs.js';
 import { selectByChallenge, allowedSources } from '../domain/challenge.js';
-import { poolForChallenge, applyWordSet } from '../data/content.js';
+import { poolForChallenge } from '../data/content.js';
+import { narrowPool, allRecords, MIN_POOL } from '../domain/wordsets.js';
+import { toast } from '../ui/toast.js';
 import { enterCard, animate, fillBar } from '../core/motion.js';
 import { sound } from '../core/sound.js';
 import { speech } from '../core/speech.js';
@@ -26,12 +28,21 @@ export function screen(store, content) {
       const stats = { answered: 0, correctFirstTry: 0, mistakes: 0, newWords: 0, times: [], maxCombo: 0 };
 
       const sources = allowedSources(s0.challenge.index);
-      const pool = applyWordSet(poolForChallenge(content, sources), content, s0.settings.wordSet)
+      // Узкая подборка не должна оставлять режим без материала:
+      // при нехватке знакомых слов берётся общая база.
+      const { pool: base, widened } = narrowPool(
+        poolForChallenge(content, sources), content, s0.settings.wordSet,
+        allRecords(s0), MIN_POOL);
+      const pool = base
         .map(w => ({
           id: w.id, word: w,
           rec: (s0.srs[w.deck === 'core' ? 'deck2' : 'deck1'] || {})[w.id] || newRecord(),
         }))
         .filter(p => p.rec.box >= (p.word.deck === 'core' ? 1 : 2) && p.word.ex_en);
+
+      if (widened) {
+        toast(t('В этой подборке твоих слов пока мало. Добрал из общей базы.'), { kind: 'info' });
+      }
 
       if (pool.length < 4) {
         root.append(notReady(ctx));

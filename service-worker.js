@@ -9,7 +9,7 @@
  * по нажатию человека пришлёт сообщение.
  */
 
-const VERSION = 'vdd7219b298';
+const VERSION = 'v62b3e7d18c';
 const CACHE = `shodu-${VERSION}`;
 
 const SHELL = [
@@ -123,6 +123,13 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('message', (e) => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
+  /* Страница спрашивает версию, чтобы не принять за обновление ту же
+     самую сборку. Раздача идёт с нескольких узлов, и во время выкладки
+     соседние запросы могут отдать разные копии файла: без сверки
+     версий приложение уходит в круг «обновись — перезагрузись». */
+  if (e.data === 'VERSION' && e.ports && e.ports[0]) {
+    e.ports[0].postMessage(VERSION);
+  }
 });
 
 /* Кэш отдаётся сразу, свежая копия подтягивается следом.

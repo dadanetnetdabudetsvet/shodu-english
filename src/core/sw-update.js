@@ -32,10 +32,13 @@ export async function takeUpdateBeforeBoot() {
   if (location.protocol === 'file:') return false;
   if (busyNow()) return false;
 
+  if (reloadedRecently()) return false;
+
   let reg;
   try { reg = await navigator.serviceWorker.getRegistration(); }
   catch { return false; }
   if (!reg || !reg.waiting) return false;
+  if (!(await isRealUpdate(reg))) return false;
 
   /* Ждём смены управляющего worker'а, но не бесконечно. Если она по
      какой-то причине не случится, лучше запуститься на прежней
@@ -48,6 +51,7 @@ export async function takeUpdateBeforeBoot() {
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (reloading) return;
       reloading = true;
+      markReload();
       finish(true);
       location.reload();
     }, { once: true });
@@ -68,7 +72,9 @@ export function registerServiceWorker({ onUpdateReady } = {}) {
     .then((reg) => {
       // Ожидающее обновление уже разобрано в takeUpdateBeforeBoot.
       // Здесь остаётся только случай, когда идёт занятие.
-      if (reg.waiting) onUpdateReady?.(() => applyUpdate(reg));
+      if (reg.waiting && busyNow()) {
+        isRealUpdate(reg).then((real) => { if (real) onUpdateReady?.(() => applyUpdate(reg)); });
+      }
       // Проверяем обновление при каждом возврате в приложение.
       document.addEventListener('visibilitychange', () => {
         if (!document.hidden) reg.update().catch(() => {});
@@ -83,12 +89,60 @@ export function registerServiceWorker({ onUpdateReady } = {}) {
              занятие: там следующий запуск может быть не скоро, а
              человек имеет право решить сам. В остальных случаях
              сообщение о версиях — лишний шум. */
-          if (busyNow()) onUpdateReady?.(() => applyUpdate(reg));
+          if (!busyNow()) return;
+          isRealUpdate(reg).then((real) => { if (real) onUpdateReady?.(() => applyUpdate(reg)); });
         });
       });
       return reg;
     })
     .catch(() => null);
+}
+
+/* Версия у рабочего процесса спрашивается напрямую.
+ *
+ * Файл service-worker.js раздаётся с нескольких узлов, и во время
+ * выкладки соседние запросы могут вернуть разные копии. Браузер видит
+ * отличие в байтах и объявляет обновление — даже когда это та же
+ * сборка или откат к прежней. Без сверки версий приложение уходит в
+ * круг «обновись — перезагрузись», и заниматься в нём невозможно.
+ */
+function versionOf(worker) {
+  return new Promise((resolve) => {
+    if (!worker) return resolve(null);
+    let done = false;
+    const finish = (v) => { if (!done) { done = true; resolve(v); } };
+    try {
+      const ch = new MessageChannel();
+      ch.port1.onmessage = (e) => finish(e.data || null);
+      worker.postMessage('VERSION', [ch.port2]);
+      setTimeout(() => finish(null), 1200);
+    } catch { finish(null); }
+  });
+}
+
+/* Обновление настоящее, только если версия действительно другая.
+   Неизвестную версию считаем настоящей: старый worker про VERSION не
+   знает, и застрять на нём хуже, чем лишний раз перезагрузиться. */
+async function isRealUpdate(reg) {
+  if (!reg || !reg.waiting) return false;
+  const [next, now] = await Promise.all([
+    versionOf(reg.waiting),
+    versionOf(reg.active || navigator.serviceWorker.controller),
+  ]);
+  if (next && now && next === now) return false;
+  return true;
+}
+
+/* Две перезагрузки подряд — признак круга. Тогда останавливаемся и
+   работаем на том, что есть: старая сборка лучше карусели. */
+function reloadedRecently() {
+  try {
+    const at = Number(sessionStorage.getItem(RELOAD_GUARD) || 0);
+    return at && Date.now() - at < RELOAD_MIN_GAP;
+  } catch { return false; }
+}
+function markReload() {
+  try { sessionStorage.setItem(RELOAD_GUARD, String(Date.now())); } catch { /* некуда */ }
 }
 
 /* Пока идёт наша собственная перезагрузка, страница разбирается на
@@ -98,6 +152,8 @@ export function registerServiceWorker({ onUpdateReady } = {}) {
  * несуществующей беде ровно в тот момент, когда всё как раз чинится.
  */
 const SWAP_TIMEOUT = 2000;   // дольше ждать нельзя: человек смотрит в пустоту
+const RELOAD_GUARD = 'shodu:reloadedAt';
+const RELOAD_MIN_GAP = 20000;  // две перезагрузки подряд — это уже круг
 let switching = false;
 let reloading = false;
 
@@ -109,6 +165,7 @@ function applyUpdate(reg) {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (reloading) return;
     reloading = true;              // ровно одна перезагрузка
+    markReload();
     location.reload();
   });
   reg.waiting.postMessage('SKIP_WAITING');
