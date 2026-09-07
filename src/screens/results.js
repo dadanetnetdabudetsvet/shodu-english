@@ -167,7 +167,7 @@ export function screen(store, content) {
         const proof = makeProof(ref.invitedBy, ref.selfCode);
         handshake = el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
           el('div', { style: 'font-weight:600' }, t('Тебя позвал друг')),
-          el('div', { class: 't-sm' }, t('Тебе начислено 100 алмазов. Отправь этот код тому, кто позвал, — ему тоже начислят.')),
+          el('div', { class: 't-sm' }, t('Тебе 100 алмазов. Отправь этот код тому, кто позвал: ему за тебя дадут день заморозки.')),
           el('div', { class: 'card card--flat center t-num',
             style: 'font-size:var(--fs-xl);font-weight:800;letter-spacing:.08em' }, proof),
           el('button', {

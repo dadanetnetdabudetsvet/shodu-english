@@ -276,7 +276,7 @@ export function screen(store, content) {
           style: 'width:100%;min-height:48px;text-transform:uppercase;letter-spacing:.08em',
         });
         codeBody.append(
-          el('div', { class: 't-caption' }, t('Друг получает код после первого занятия. Пока нет сервера, приложение не может узнать об этом само.')),
+          el('div', { class: 't-caption' }, t('Друг получает код после первого захода. Сервера у нас нет, поэтому подтверждение идёт кодом, а не само.')),
           proofInput,
           el('button', {
             class: 'btn btn--primary', onClick: () => {
@@ -296,8 +296,13 @@ export function screen(store, content) {
 
           el('div', { class: 't-sm' },
             count === 0
-              ? t('Вдвоём не бросают. За первого друга — 100 алмазов, за второго 200, за третьего 400.')
-              : t('Следующий друг принесёт {v0} алмазов.', { v0: nextGems })),
+              ? t('Вдвоём не бросают. Каждый друг приносит день заморозки: пропустишь день — ритм не тронется.')
+              : t('Следующий друг принесёт день заморозки и {v0} алмазов.', { v0: nextGems })),
+
+          el('div', { class: 't-caption' },
+            count === 0
+              ? t('Плюс алмазы: 100 за первого, 200 за второго, 400 за третьего.')
+              : t('Заморозок сейчас: {v0}', { v0: s.streak.freezes })),
 
           el('button', {
             class: 'btn btn--primary btn--cta',

@@ -344,8 +344,12 @@ console.log('\nПРИГЛАШЕНИЕ ДРУЗЕЙ');
 
   const friend = makeSelfCode();
   const before = store.state.econ.gems;
+  const freezeBefore = store.state.streak.freezes;
   store.dispatch({ type: 'REFERRAL_CONFIRM', proof: makeProof(my, friend) });
   const after = store.state.econ.gems;
+  const freezeAfter = store.state.streak.freezes;
+  if (freezeBefore < 2 && freezeAfter !== freezeBefore + 1) fail('друг не принёс день заморозки');
+  else step('друг принёс заморозку: было ' + freezeBefore + ', стало ' + freezeAfter);
   if (after - before !== 100) fail(`за первого друга начислено ${after - before}, ожидалось 100`);
   else step('первый друг: +' + (after - before));
 

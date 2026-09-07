@@ -69,6 +69,13 @@ export function screen(store, content) {
         el('div', { class: 'topbar__cell' },
           el('div', { class: 'topbar__val' }, String(daysTogether)),
           el('div', { class: 'topbar__cap' }, t('дней вместе'))),
+
+        el('button', {
+          class: 'topbar__cell', 'aria-label': t('Лавка'),
+          onClick: () => { sound.tap(); ctx.go('quests/shop'); },
+        },
+          el('div', { class: 'topbar__val' }, `💎 ${s.econ.gems}`),
+          el('div', { class: 'topbar__cap' }, t('в лавку'))),
       );
 
       /* Улика идёт первой: это главное, что продукт доказывает. */

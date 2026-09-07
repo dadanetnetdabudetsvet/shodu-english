@@ -262,15 +262,28 @@ export function rootReducer(state, action) {
       if (!res.ok) return { state, effects: [fx.toast({ i18n: res.reason }, 'warn')] };
       const nth = r.friends.length + 1;
       const gems = rewardFor(nth);
+
+      /* Друг приносит день заморозки. Это не нарисованное обещание:
+         подтверждение приходит с устройства друга, и заморозка
+         выдаётся по-настоящему. Если запас полон, говорим прямо. */
+      const room = state.streak.freezes < FREEZE.max;
+      const streak = room
+        ? { ...state.streak, freezes: state.streak.freezes + 1 }
+        : state.streak;
+
       return {
         state: {
-          ...state,
+          ...state, streak,
           referral: { ...r, friends: [...r.friends, res.friendCode] },
           econ: { ...state.econ, gems: state.econ.gems + gems },
         },
         effects: [
           fx.sound('medal'), fx.confetti({ count: 90 }),
-          fx.toast({ i18n: 'Друг зачтён. +{v0} алмазов', vars: { v0: gems } }, 'info'), fx.save(),
+          fx.toast(room
+            ? { i18n: 'Друг зачтён. День заморозки и +{v0} алмазов', vars: { v0: gems } }
+            : { i18n: 'Друг зачтён. +{v0} алмазов. Заморозок и так полный запас', vars: { v0: gems } },
+            'info'),
+          fx.save(),
         ],
       };
     }

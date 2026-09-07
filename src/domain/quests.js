@@ -105,7 +105,7 @@ export const ACTIVITIES = [
   { id: 'a10', icon: '💡', title: 'Прочесть одно совпадение',  sub: 'там, где всё как у нас',   route: 'rules' },
   { id: 'a11', icon: '🎚', title: 'Подвинуть планку',     sub: 'если хочется поспокойнее или поплотнее', route: 'profile' },
   { id: 'a12', icon: '🙂', title: 'Выбрать себе облик',      sub: 'аватар и имя',             route: 'profile' },
-  { id: 'a13', icon: '🎁', title: 'Позвать своего',          sub: 'вдвоём не бросают',        route: 'profile' },
+  { id: 'a13', icon: '🎁', title: 'Позвать своего',          sub: 'каждый друг — день заморозки',        route: 'profile' },
   { id: 'a14', icon: '💎', title: 'Заглянуть в лавку',       sub: 'на что уходят алмазы',     route: 'quests', param: 'shop' },
   { id: 'a15', icon: '📊', title: 'Посмотреть свой ритм',    sub: 'график по дням',           route: 'profile' },
   { id: 'a16', icon: '🏅', title: 'Посмотреть медали',        sub: 'что уже открыто',          route: 'profile' },
