@@ -29,8 +29,8 @@ export function screen(store, content) {
       if (!base || !base.ids || !base.ids.length) {
         setChildren(wrap, el('div', { class: 'stack center', style: 'justify-content:center;flex:1;gap:var(--sp-4)' },
           el('div', { style: 'font-size:44px' }, '📏'),
-          el('h1', { class: 't-h1' }, t('Пересчёт будет позже')),
-          el('p', { class: 't-sm' }, t('Точку отсчёта ставит первая проверка. Она у тебя ещё впереди.')),
+          el('h1', { class: 't-h1' }, t('Пересчёт откроется на седьмой день')),
+          el('p', { class: 't-sm' }, t('Сравнивать будем с твоей первой проверкой.')),
           el('button', { class: 'btn btn--primary btn--cta', onClick: () => ctx.go('home') }, t('Понятно ✓'))));
         return { destroy() { for (const id of timers) clearTimeout(id); } };
       }
@@ -98,16 +98,16 @@ export function screen(store, content) {
 
         // Ни в одном исходе не сообщаем человеку, что он не справился.
         const line = grew
-          ? t('Было {v0}, стало {v1}. Это и есть память.', { v0: was, v1: now })
+          ? (s.profile.name ? t('{v2}, было {v0}, стало {v1}. Это и есть память.', { v0: was, v1: now, v2: s.profile.name }) : t('Было {v0}, стало {v1}. Это и есть память.', { v0: was, v1: now }))
           : same
             ? t('Держишь {v0} из {v1}. Ничего не растерялось.', { v0: now, v1: quiz.length })
-            : t('Сегодня {v0}. Слова на месте, просто день такой.', { v0: now });
+            : t('{v0} из {v1}, и это те же слова, что в первый день. Они никуда не делись.', { v0: now, v1: quiz.length });
 
         setChildren(wrap, el('div', { class: 'results' },
           emoji,
           el('h1', { class: 't-h1' }, t('Пересчёт')),
           num,
-          el('div', { class: 't-sm' }, t('из {v0} узнано', { v0: quiz.length })),
+          el('div', { class: 't-sm' }, t('из {v0} — с первого взгляда', { v0: quiz.length })),
           el('p', { class: 't-body center' }, line),
           el('div', { class: 'grow' }),
           el('button', {

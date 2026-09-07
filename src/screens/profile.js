@@ -92,7 +92,7 @@ export function screen(store, content) {
           style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:90;max-width:536px;margin:0 auto',
         },
           el('div', { style: 'font-weight:600' }, t('Как тебя звать?')),
-          el('div', { class: 't-caption' }, t('Можно оставить пустым — это ни на что не влияет.')),
+          el('div', { class: 't-caption' }, t('Так приложение будет называть твой английский.')),
           input,
           el('button', {
             class: 'btn btn--primary btn--cta',
@@ -114,8 +114,8 @@ export function screen(store, content) {
       /* ── статистика ────────────────────────────────────────── */
       function statsGrid({ known, learning, s, totalMs, totalSessions }) {
         const tiles = [
-          ['📗', known, t('слов знаю')],
-          ['📘', learning, t('в работе')],
+          ['📗', known, t('читаю без перевода')],
+          ['📘', learning, t('на подходе')],
           ['🔥', s.streak.current, t('дней подряд')],
           ['👑', s.streak.best, t('лучший ритм')],
           ['⏱', Math.round(totalMs / 60000), t('минут всего')],
@@ -149,7 +149,7 @@ export function screen(store, content) {
 
         if (max === 0) {
           return el('div', { class: 'card center t-sm' },
-            t('Пока пусто. После первого занятия здесь появится твой ритм.'));
+            t('Здесь будет видно, как выглядит твоя неделя.'));
         }
 
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -526,7 +526,11 @@ export function screen(store, content) {
               const blob = new Blob([JSON.stringify(store.state)], { type: 'application/json' });
               const a = document.createElement('a');
               a.href = URL.createObjectURL(blob);
-              a.download = `shodu-progress-${new Date().toISOString().slice(0, 10)}.json`;
+              // Файл экспорта — материальный след: пусть он называется
+              // по-человечески, а не служебным идентификатором.
+              const who = (store.state.profile.name || '').trim().toLowerCase().replace(/\s+/g, '-');
+              const n = countKnown(store.state).known + countKnown(store.state).learning;
+              a.download = `английский-${who ? who + '-' : ''}${n}-слов.json`;
               a.click();
               setTimeout(() => URL.revokeObjectURL(a.href), 30000);
               toast('Файл сохранён. Держи его как страховку.', { kind: 'info' });

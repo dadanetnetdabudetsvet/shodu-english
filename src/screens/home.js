@@ -74,15 +74,17 @@ export function screen(store, content) {
       );
 
       /* Улика идёт первой: это главное, что продукт доказывает. */
+      const recognised = known + learning;
       const bigNumber = el('div', {
         class: 't-num', style: 'font-size:var(--fs-4xl);font-weight:800;line-height:1',
       }, '0');
       const proof = el('div', { class: 'stack', style: 'gap:2px' },
         el('div', { class: 't-caption' }, greeting(s.profile.name)),
         bigNumber,
-        el('div', { class: 't-body' }, known === 0
-          ? t('слов пока в работе: {v0}', { v0: learning })
-          : t('слова уже твои')),
+        el('div', { class: 't-body' }, t('английских слов ты уже узнаёшь')),
+        known > 0
+          ? el('div', { class: 't-caption' }, t('{v0} из них держатся без напоминания', { v0: known }))
+          : null,
       );
 
       const barFill = el('div', { class: 'bar__fill' });
@@ -127,7 +129,7 @@ export function screen(store, content) {
       }, t('🎛 собрать своё →'));
 
       const softNote = isSoftMode(s.lives) && el('div', { class: 'card card--flat t-sm' },
-        t('Мягкий режим: задания попроще. Жизни вернутся сами.'));
+        t('Сегодня подбираю слова поспокойнее. Искры вернутся сами.'));
 
       /* Слово дня: берём только из узнаваемых, иначе оно пугает. */
       const easy = content.deck1.filter(w => w.tier <= 2);
@@ -151,9 +153,9 @@ export function screen(store, content) {
          а не накопление. Предлагается с седьмого дня и дальше раз в
          четыре недели. «Не сейчас» есть всегда, ничего не сгорает. */
       const recheckCard = shouldOfferRecheck(s) && el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
-        el('div', { style: 'font-weight:600' }, t('Проверим, что изменилось 📏')),
+        el('div', { style: 'font-weight:600' }, t('Посмотрим, что изменилось 📏')),
         el('div', { class: 't-sm' },
-          t('Те же десять слов, что в первый день. Полторы минуты, чтобы увидеть разницу.')),
+          t('Те же десять слов, что в первый день. Минута, чтобы увидеть разницу.')),
         el('button', {
           class: 'btn btn--primary', onClick: () => { sound.tap(); ctx.go('recheck'); },
         }, t('Пересчитать 📏')),
@@ -185,7 +187,7 @@ export function screen(store, content) {
       root.replaceChildren(wrap);
 
       enterCard(hero);
-      tweenNumber(bigNumber, 0, known, 900);
+      tweenNumber(bigNumber, 0, recognised, 900);
       fillBar(barFill, 0, Math.min(1, todayWords(today) / goal));
 
       /* Шторка выбора: все пять режимов, подпись каждого — число из
@@ -273,10 +275,10 @@ function modeInfo(key, s, content) {
   if (key === 'sprint') return t('{v0} знакомых слов', { v0: ready });
   if (key === 'stream') return s.profile.readWpm
     ? t('{v0} слов в минуту · 100 секунд', { v0: s.profile.readWpm })
-    : t('первый замер скорости чтения');
+    : t('узнаешь, с какой скоростью читаешь по-английски');
   if (key === 'ether') return t('{v0} слов на слух', { v0: ready });
   if (key === 'phrase') return ready >= 4
     ? t('{v0} фраз можно собрать', { v0: Math.min(7, ready) })
-    : t('нужно ещё немного знакомых слов');
+    : t('откроется после первого занятия');
   return '';
 }

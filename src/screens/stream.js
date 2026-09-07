@@ -160,7 +160,7 @@ export function screen(store, content) {
         const wpm = wordsPerMinute(wordsRead, readMs);
         setChildren(stage, el('div', { class: 'stack center', style: 'gap:var(--sp-3);justify-content:center;flex:1' },
           el('div', { class: 't-h1 t-num' }, String(wpm)),
-          el('div', { class: 't-sm' }, t('слов в минуту')),
+          el('div', { class: 't-sm' }, t('английских слов в минуту — это твоя скорость чтения')),
           el('div', { class: 't-caption' }, t('волна {v0} из {v1} · {v2} строк', {
             v0: wave, v1: STREAM.waves, v2: STREAM.waveSize })),
           el('button', { class: 'btn btn--primary btn--cta', onClick: () => nextWave() },
@@ -206,8 +206,8 @@ export function screen(store, content) {
 function notReady(ctx) {
   return el('div', { class: 'screen center stack', style: 'justify-content:center;gap:var(--sp-4)' },
     el('div', { style: 'font-size:48px' }, '👁'),
-    el('h1', { class: 't-h1' }, t('Поток читается по знакомым словам')),
-    el('p', { class: 't-sm' }, t('Нужно ещё немного слов, которые ты узнаёшь без раздумий. Одно занятие — и возвращайся.')),
+    el('h1', { class: 't-h1' }, t('Поток читается по словам, которые уже твои')),
+    el('p', { class: 't-sm' }, t('Одно занятие — и здесь будет что читать.')),
     el('button', { class: 'btn btn--primary btn--cta', onClick: () => ctx.go('session/build') }, t('Взять слова 🌱')),
     el('button', { class: 'btn btn--ghost', onClick: () => ctx.go('home') }, t('Не сейчас')));
 }

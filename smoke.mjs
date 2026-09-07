@@ -91,7 +91,7 @@ console.log('\nОНБОРДИНГ');
 const click = (el) => { el.dispatchEvent(new window.MouseEvent('click', { bubbles: true })); };
 const btn = (text) => [...root.querySelectorAll('button')].find(b => b.textContent.includes(text));
 
-click(btn('Посчитать') || btn('Начать'));
+click(btn('Убедиться') || btn('Посчитать') || btn('Начать'));
 await sleep(200);
 step('шаг проверки: ' + (root.querySelector('.qcard')?.textContent.slice(0, 40) || '—'));
 
@@ -104,7 +104,7 @@ for (let i = 0; i < 12; i++) {
 step('после десяти ответов: ' + (root.querySelector('h1')?.textContent || root.textContent.slice(0, 40)));
 
 // Цель дня, выбранная в онбординге, должна доехать до настроек.
-let next = btn('дальше') || btn('Дальше');
+let next = btn('остальные') || btn('дальше') || btn('Дальше');
 if (next) { click(next); await sleep(200); }
 const goalBtn = [...root.querySelectorAll('.option')].find(b => b.textContent.includes('5 '));
 if (goalBtn) { click(goalBtn); await sleep(120); step('выбрана цель 5 слов'); }
@@ -192,7 +192,7 @@ else fail('нет голосования по планке на итогах');
 
 /* ── остальные экраны ──────────────────────────────────────── */
 console.log('\nОСТАЛЬНЫЕ ЭКРАНЫ');
-for (const [route, marker] of [['quests', 'Сегодня'], ['words', 'Слова'], ['rules', 'Правила'], ['profile', 'Уровень']]) {
+for (const [route, marker] of [['quests', 'Сегодня'], ['words', 'английск'], ['rules', 'совпадений'], ['profile', 'Уровень']]) {
   window.location.hash = '#/' + route;
   await sleep(400);
   const txt = root.textContent;
@@ -234,14 +234,14 @@ console.log('\nНОВЫЕ РЕЖИМЫ');
     const check = [...root.querySelectorAll('button')].find(b => /Проверить|поставь/.test(b.textContent));
     if (check && !check.disabled) { click(check); await sleep(400); step('Фраза: проверка отработала'); }
     else step('Фраза: полка заполнена не до конца, это допустимо');
-  } else if (txt.includes('собирается из знакомых слов')) {
+  } else if (txt.includes('собираются из твоих слов')) {
     step('Фраза: показан честный экран «пока мало слов» с кнопкой выхода');
   } else fail('Фраза: неизвестное состояние — ' + txt.slice(0, 80));
 
   window.location.hash = '#/stream';
   await sleep(500);
   const st = root.textContent;
-  if (st.includes('читается по знакомым')) {
+  if (st.includes('читается по словам, которые уже твои')) {
     step('Поток: честный экран «нужно больше слов» с кнопкой выхода');
   } else if (root.querySelector('.stream-mode')) {
     const go = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Ровный темп'));
@@ -251,7 +251,7 @@ console.log('\nНОВЫЕ РЕЖИМЫ');
       if (words) step('Поток: строка из ' + words + ' слов на табло');
       else if (st.includes('читается по знакомым')) step('Поток: честный экран «нужно больше слов»');
       else fail('Поток: строка не отрисовалась');
-    } else if (st.includes('читается по знакомым')) {
+    } else if (st.includes('читается по словам, которые уже твои')) {
       step('Поток: честный экран «нужно больше слов»');
     } else fail('Поток: нет кнопки старта');
   } else fail('Поток: экран не смонтирован');

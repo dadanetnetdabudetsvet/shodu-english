@@ -141,7 +141,7 @@ export function screen(store, content) {
         },
           el('div', { style: 'font-weight:600' }, t('Сложность 🎚')),
           val, name, input,
-          el('div', { class: 't-caption center' }, t('Подействует со следующего задания.')),
+          el('div', { class: 't-caption center' }, t('Подействует со следующего слова.')),
           el('button', {
             class: 'btn btn--primary btn--cta',
             onClick: () => {
@@ -198,7 +198,7 @@ export function screen(store, content) {
 
         const card = el('div', { class: 'qcard' },
           el('div', { class: 'teach', },
-            el('div', { class: 'teach__over' }, w.falseFriend ? t('внимание, ловушка') : t('ты это уже знаешь')),
+            el('div', { class: 'teach__over' }, w.falseFriend ? t('внимание, ловушка') : t('ты это уже знал')),
             en(w.en, 't-en'),
             el('div', { class: 't-ipa', 'aria-hidden': 'true' }, w.ipa + '  ·  ' + w.tr),
             el('div', { class: 'teach__ru' }, w.answer),
@@ -381,7 +381,7 @@ export function screen(store, content) {
 
         const title = typo ? t('Считаю верным, это опечатка')
           : right ? pick([t('Верно'), t('Точно'), t('Есть'), t('Так и есть'), t('В точку')])
-          : gaveUp ? t('Честно') : pick([t('Не совсем'), t('Почти'), t('Мимо')]);
+          : gaveUp ? t('Честно') : pick([t('Не совсем'), t('Почти'), t('Смотри')]);
 
         const note = right && !typo
           ? `${w.en} — ${w.answer}`
@@ -509,14 +509,14 @@ function deadEndFix({ mode, ctx, store, content, hasAnyProgress, onRetry }) {
   if (!hasAnyProgress) {
     return el('div', { class: 'screen center stack', style: 'justify-content:center;gap:var(--sp-4)' },
       el('div', { style: 'font-size:48px' }, '🌱'),
-      el('h1', { class: 't-h1' }, t('{v0} — для слов, которые ты уже видел', { v0: modeName })),
+      el('h1', { class: 't-h1' }, t('{v0} работает по словам, которые уже твои', { v0: modeName })),
       el('p', { class: 't-sm' },
-        t('Сейчас их ещё нет. Возьмём первый десяток, это минуты четыре. ') +
+        t('Первый десяток занимает четыре минуты. После этого сюда можно возвращаться сколько угодно.') +
         t('После этого сюда можно возвращаться сколько угодно.')),
       el('button', {
         class: 'btn btn--primary btn--cta',
         onClick: () => { sound.sessionStart(); ctx.go('session/build'); },
-      }, t('Взять первые слова 🌱')),
+      }, t('Открыть первый десяток 🌱')),
       el('button', { class: 'btn btn--ghost', onClick: () => ctx.go('home') }, t('Не сейчас')),
     );
   }
@@ -538,7 +538,7 @@ function deadEndFix({ mode, ctx, store, content, hasAnyProgress, onRetry }) {
       el('div', { class: 'row row--between' },
         el('div', { class: 't-sm' }, t('Сложность {v0} · {v1}', { v0: s.challenge.index, v1: t(bar.name) })),
         el('div', { class: 't-caption' }, t('сложность подбора'))),
-      el('div', { class: 't-caption' }, t('Выше сложность — в подбор попадают слова потруднее и новые типы заданий.')),
+      el('div', { class: 't-caption' }, t('Выше — и в подбор идут слова, всё менее похожие на русские.')),
       el('button', {
         class: 'btn',
         onClick: () => {

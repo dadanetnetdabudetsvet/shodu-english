@@ -125,7 +125,7 @@ export function readRefFromUrl(href) {
 
 /* ── каналы отправки ───────────────────────────────────────────── */
 
-export const INVITE_TEXT = 'Учу английские слова по пять минут в день. Первые двести — те, что мы и так знаем. Держи:';
+export const INVITE_TEXT = 'Оказалось, я уже читаю по-английски. Первые двести слов мы и так знаем. Держи:';
 
 export function shareTargets(url, text = INVITE_TEXT) {
   const u = encodeURIComponent(url);

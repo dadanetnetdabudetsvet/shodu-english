@@ -376,7 +376,7 @@ export function rootReducer(state, action) {
       const owned = state.owned || [];
       if (item.id !== FREEZE.id && isOwned(owned, item)) return { state, effects: [] };
       if (state.econ.gems < item.price) {
-        return { state, effects: [fx.toast({ i18n: 'Не хватает алмазов. Ещё {v0}.', vars: { v0: item.price - state.econ.gems } }, 'warn')] };
+        return { state, effects: [fx.toast({ i18n: 'Ещё {v0} алмазов — и оно твоё.', vars: { v0: item.price - state.econ.gems } }, 'warn')] };
       }
       if (item.id === FREEZE.id) {
         if (state.streak.freezes >= FREEZE.max) {

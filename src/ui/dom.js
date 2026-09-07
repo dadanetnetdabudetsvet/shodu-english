@@ -42,7 +42,8 @@ export const days = (n) => t('{v0} {v1}', { v0: n, v1: plural(n, t('день'), 
 export function greeting(name) {
   const h = new Date().getHours();
   const part = h < 5 ? t('Доброй ночи') : h < 12 ? t('Доброе утро') : h < 18 ? t('Добрый день') : t('Добрый вечер');
-  return name ? `${part}, ${name}` : part;
+  // Разделитель тоже переводится: в китайском и японском запятая своя.
+  return name ? t('{v0}, {v1}', { v0: part, v1: name }) : part;
 }
 
 export function fmtMinutes(ms) {

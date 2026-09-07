@@ -50,11 +50,11 @@ export function screen(store, content) {
       function renderHello() {
         const card = el('div', { class: 'stack', style: 'gap:var(--sp-5);padding-top:var(--sp-12)' },
           el('div', { style: 'font-size:56px;line-height:1' }, '👋'),
-          el('h1', { class: 't-h1' }, t('Ты знаешь английских слов больше, чем думаешь')),
-          el('p', { class: 't-body t-dim' }, t('Сейчас проверим. Две минуты, десять слов, никакой зубрёжки.')),
-          el('p', { class: 't-sm' }, t('Оценок нет, таймера нет, никто не смотрит через плечо.')),
+          el('h1', { class: 't-h1' }, t('Ты уже читаешь по-английски')),
+          el('p', { class: 't-body t-dim' }, t('Сейчас увидишь сам. Минута, без подготовки.')),
+          el('p', { class: 't-sm' }, t('Отвечай не думая. Не думая — честнее.')),
           el('div', { class: 'grow' }),
-          el('button', { class: 'btn btn--primary btn--cta', onClick: () => { sound.tap(); step = 1; startQuiz(); } }, t('Посчитать, сколько я уже знаю 🔍')),
+          el('button', { class: 'btn btn--primary btn--cta', onClick: () => { sound.tap(); step = 1; startQuiz(); } }, t('Убедиться за минуту 👀')),
         );
         wrap.append(card);
         enterCard(card);
@@ -126,7 +126,7 @@ export function screen(store, content) {
 
         wrap.append(
           el('div', { class: 'stack', style: 'gap:var(--sp-4)' },
-            el('p', { class: 't-sm center' }, t('Просто узнавай слова. Промахнёшься — ничего не будет 🙂')),
+            el('p', { class: 't-sm center' }, t('Читай и отвечай не думая. Здесь не ошибаются 🙂')),
             card, opts,
             el('button', {
               class: 'qskip',
@@ -152,24 +152,24 @@ export function screen(store, content) {
 
         // Поведение при слабом результате прописано явно.
         const line = correct >= 8
-          ? t('Ты знал их и до нас. Считай, что они уже в кармане.')
+          ? t('Ты это умел до нас. Мы только посчитали.')
           : correct >= 5
-            ? t('Половина уже твоя. Вторая догонит быстрее, чем ты думаешь.')
-            : t('И это уже слова, за которые не надо садиться за учебник.');
+            ? t('{v0} из десяти — без подготовки и без единого повторения. Это уже чтение.', { v0: correct })
+            : t('{v0} английских слов ты понял с первого взгляда. Ни одного из них ты не учил.', { v0: correct });
 
         const card = el('div', { class: 'results' },
           emoji,
           el('div', { class: 'stack center', style: 'gap:2px' },
             num,
-            el('div', { class: 't-sm' }, t('из {v0} узнал не задумываясь', { v0: QUIZ_SIZE })),
+            el('div', { class: 't-sm' }, t('слов из {v0} ты прочитал по-английски и понял', { v0: QUIZ_SIZE })),
           ),
           el('p', { class: 't-body center' }, line),
-          el('p', { class: 't-sm center' }, t('Ты и так знаешь английский на уровне, о котором не догадывался.')),
+          el('p', { class: 't-sm center' }, t('Русский и английский взяли эти слова из одного места. Они общие.')),
           el('div', { class: 'grow' }),
           el('button', {
             class: 'btn btn--primary btn--cta',
             onClick: () => { sound.tap(); step = 3; render(); },
-          }, t('Так, и что дальше →')),
+          }, t('Хочу увидеть остальные →')),
         );
         wrap.append(card);
         popIn(emoji);
@@ -203,8 +203,8 @@ export function screen(store, content) {
         }
 
         wrap.append(el('div', { class: 'stack', style: 'gap:var(--sp-5);padding-top:var(--sp-8)' },
-          el('h1', { class: 't-h1' }, t('Сколько слов в день потянешь?')),
-          el('p', { class: 't-sm' }, t('Передумаешь — поменяешь в любой момент, никто слова не скажет.')),
+          el('h1', { class: 't-h1' }, t('Сколько слов в день брать?')),
+          el('p', { class: 't-sm' }, t('Поменять можно в любой день, в одно касание.')),
           list,
           el('div', { class: 'grow' }),
           el('button', {

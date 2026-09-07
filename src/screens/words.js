@@ -78,7 +78,7 @@ export function screen(store, content) {
           const r = recOf(w);
           if (isKnown(r)) known++; else if (isLearning(r)) learning++;
         }
-        summary.textContent = t('{v0} слов · {v1} знаю · {v2} учу', { v0: all().length, v1: known, v2: learning });
+        summary.textContent = t('{v1} читаю без перевода · {v2} на подходе · {v0} всего', { v0: all().length, v1: known, v2: learning });
 
         const page = items.slice(0, shown);
         setChildren(list, ...page.map(row));
@@ -90,7 +90,7 @@ export function screen(store, content) {
         }
         if (!items.length) {
           list.append(el('div', { class: 'card card--flat t-sm center' },
-            query ? t('Такого слова пока нет.') : t('Здесь появятся слова, которые ты встретишь.')));
+            query ? t('Такого слова пока нет.') : t('Здесь будет каждое слово, которое стало твоим.')));
         }
       }
 
@@ -107,7 +107,7 @@ export function screen(store, content) {
               en(w.en, ''), w.falseFriend ? el('span', { class: 't-caption' }, '⚠') : null),
             el('div', { class: 't-sm' }, w.answer)),
           el('div', {
-            class: 'rhythm', 'aria-label': t('Сила памяти {v0} из 5', { v0: strength }),
+            class: 'rhythm', 'aria-label': t('держится на {v0} из 5', { v0: strength }),
           }, Array.from({ length: 5 }, (_, i) =>
             el('span', { class: 'rhythm__dot' + (i < strength ? ' rhythm__dot--done' : '') }))),
         );
@@ -161,7 +161,9 @@ export function screen(store, content) {
       }
 
       const wrap = el('div', { class: 'screen' },
-        el('h1', { class: 't-h1' }, t('Слова')),
+        el('h1', { class: 't-h1' }, store.state.profile.name
+          ? t('Английский {v0}', { v0: store.state.profile.name })
+          : t('Твой английский')),
         search, chips, summary, list);
       root.append(wrap);
       render();

@@ -42,10 +42,10 @@ export function screen(store, content) {
       root.replaceChildren(wrap);
 
       const title = !r.completed
-        ? t('Остановился на середине. Всё, что успел, засчитано')
-        : r.mistakes === 0 && r.answered > 0 ? t('Чисто. Ни одного промаха')
-        : r.newWords > 0 ? t('Готово. {v0} новых в копилке', { v0: r.newWords })
-        : t('Готово. Плюс к копилке');
+        ? t('Всё, что прошёл, засчитано')
+        : r.mistakes === 0 && r.answered > 0 ? t('Чисто. Ни одной заминки')
+        : r.newWords > 0 ? t('Ещё {v0} английских слов стали твоими', { v0: r.newWords })
+        : t('Слова подтверждены. Они держатся');
 
       const headline = el('h1', { class: 't-h1 center' }, title);
 
@@ -53,17 +53,17 @@ export function screen(store, content) {
          вчерашнего, чтобы был виден прирост, а не сумма с нуля. */
       const big = el('div', { class: 't-num', style: 'font-size:var(--fs-4xl);font-weight:800;line-height:1' },
         String(knownBefore));
-      const bigCap = el('div', { class: 't-sm' }, t('слов у тебя'));
+      const bigCap = el('div', { class: 't-sm' }, t('английских слов ты уже узнаёшь'));
       const delta = gained > 0
         ? el('div', { class: 't-caption' }, t('сегодня прибавилось {v0}', { v0: gained }))
-        : el('div', { class: 't-caption' }, t('всё на месте'));
+        : el('div', { class: 't-caption' }, t('сегодня подтверждено: {v0}', { v0: r.correctFirstTry || 0 }));
 
       const xpEl = el('div', { class: 'tile__val t-num' }, '0');
       const firstEl = el('div', { class: 'tile__val t-num' }, '0');
       const minEl = el('div', { class: 'tile__val t-num' }, '0');
       const tiles = el('div', { class: 'results__tiles' },
         el('div', { class: 'tile' }, xpEl, el('div', { class: 'tile__cap' }, t('очков за день'))),
-        el('div', { class: 'tile' }, firstEl, el('div', { class: 'tile__cap' }, t('узнал с ходу'))),
+        el('div', { class: 'tile' }, firstEl, el('div', { class: 'tile__cap' }, t('понял сразу'))),
         el('div', { class: 'tile' }, minEl, el('div', { class: 'tile__cap' }, t('минут'))),
       );
 

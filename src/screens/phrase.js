@@ -219,8 +219,8 @@ export function screen(store, content) {
 function notReady(ctx) {
   return el('div', { class: 'screen center stack', style: 'justify-content:center;gap:var(--sp-4)' },
     el('div', { style: 'font-size:48px' }, '🧱'),
-    el('h1', { class: 't-h1' }, t('Фраза собирается из знакомых слов')),
-    el('p', { class: 't-sm' }, t('Пока их мало. Возьми одно занятие, и сюда можно будет возвращаться сколько угодно.')),
+    el('h1', { class: 't-h1' }, t('Фразы собираются из твоих слов')),
+    el('p', { class: 't-sm' }, t('После первого занятия сюда можно возвращаться сколько угодно.')),
     el('button', { class: 'btn btn--primary btn--cta', onClick: () => ctx.go('session/build') }, t('Взять слова 🌱')),
     el('button', { class: 'btn btn--ghost', onClick: () => ctx.go('home') }, t('Не сейчас')));
 }

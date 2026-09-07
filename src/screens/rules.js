@@ -62,21 +62,21 @@ export function screen(store, content) {
             el('div', { class: 't-caption' }, t('ЧТО ЗДЕСЬ ЛЁГКОГО')),
             el('div', { class: 't-sm' }, r.why_easy)) : null,
           el('div', { class: 'card card--flat', style: 'margin-top:var(--sp-2)' },
-            el('div', { class: 't-caption' }, t('КАК В РУССКОМ')),
+            el('div', { class: 't-caption' }, t('ТЫ ТАК УЖЕ ГОВОРИШЬ')),
             el('div', { class: 't-sm' }, r.ru_parallel)),
           el('div', { class: 'card card--flat', style: 'margin-top:var(--sp-2)' },
             el('div', { lang: 'en', style: 'font-weight:600' }, r.en_example),
             el('div', { class: 't-sm' }, r.ru_example)),
           r.gotcha ? el('div', {
             class: 'card card--flat',
-            style: 'margin-top:var(--sp-2);background:var(--answer-wrong-soft)',
+            style: 'margin-top:var(--sp-2)',
           },
-            el('div', { class: 't-caption' }, t('ЕДИНСТВЕННОЕ ОТЛИЧИЕ')),
+            el('div', { class: 't-caption' }, t('ВСЯ РАЗНИЦА')),
             el('div', { class: 't-sm' }, r.gotcha)) : null,
           el('button', {
             class: 'btn btn--primary btn--cta', style: 'margin-top:var(--sp-3)',
             onClick: close,
-          }, t('Понятно ✓')),
+          }, t('Так и знал ✓')),
         );
         const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:79', onClick: close });
         document.body.append(back, sheet);
@@ -89,8 +89,8 @@ export function screen(store, content) {
       }
 
       const wrap = el('div', { class: 'screen' },
-        el('h1', { class: 't-h1' }, t('Правила')),
-        el('p', { class: 't-sm' }, t('Коротко и только то, что устроено как у нас.')),
+        el('h1', { class: 't-h1' }, t('Триста совпадений')),
+        el('p', { class: 't-sm' }, t('У 299 правил из 300 разница с русским ровно одна. У одного её нет вовсе.')),
         list);
       root.append(wrap);
       render();
