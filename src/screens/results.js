@@ -15,6 +15,7 @@ import { takeResult } from './session.js';
 import { countKnown, levelInfo } from '../ui/reducer.js';
 import { VOTE_REPLY, tierOf } from '../domain/challenge.js';
 import { MEDALS } from '../domain/medals.js';
+import { KEYS, keyCoverage, unseenByKey } from '../domain/keys.js';
 import { makeProof } from '../domain/referral.js';
 import { popIn, tweenNumber, animate } from '../core/motion.js';
 import { confetti } from '../core/confetti.js';
@@ -68,9 +69,9 @@ export function screen(store, content) {
       );
 
       const goalLine = wordsToday >= goal
-        ? el('div', { class: 'card card--flat center t-sm' }, t('Цель дня закрыта.'))
+        ? el('div', { class: 'card card--flat center t-sm' }, t('День засчитан.'))
         : el('div', { class: 'card card--flat center t-sm' },
-            t('До цели дня: {v0}', { v0: goal - wordsToday }));
+            t('Круглый день — это ещё {v0} слов. Идти туда необязательно.', { v0: goal - wordsToday }));
 
       /* Медали выдаются в редьюсере, здесь их только показывают:
          раньше человек узнавал о награде, только если заходил в профиль. */
@@ -82,6 +83,40 @@ export function screen(store, content) {
         el('div', { class: 't-sm' }, t('+{v0} 💎', { v0: fresh[0].gems })),
       );
 
+      /* Ключ открылся. Это самое сильное событие продукта: человеку
+         показывают слово, которого он здесь не видел, и он его понимает.
+         После этого «я знаю английский» перестаёт быть авансом. */
+      const freshKeys = (s.lastKeys || []).map(id => KEYS.find(k => k.id === id)).filter(Boolean);
+      let keyCard = null;
+      if (freshKeys.length) {
+        const key = freshKeys[0];
+        const covers = keyCoverage(key, content);
+        const unseen = unseenByKey(key, s, content);
+        const revealed = el('div', { class: 't-sm', hidden: true });
+        keyCard = el('div', { class: 'card--hero stack', style: 'gap:var(--sp-2)' },
+          el('div', { class: 't-caption', style: 'color:rgba(255,255,255,.8)' }, t('ОТКРЫЛСЯ КЛЮЧ')),
+          el('div', { style: 'font-size:var(--fs-lg);font-weight:700' }, key.title),
+          el('div', { class: 't-sm', style: 'color:rgba(255,255,255,.9)' }, t(key.line)),
+          el('div', { class: 't-sm', style: 'color:rgba(255,255,255,.9)' },
+            t('Это не одно слово, а правило. В словаре под него подпадает {v0} слов.', { v0: covers })),
+          unseen ? el('div', { class: 'card', style: 'margin-top:var(--sp-2)' },
+            el('div', { class: 't-caption' }, t('ЭТО СЛОВО МЫ ТЕБЕ НЕ ПОКАЗЫВАЛИ')),
+            el('div', { lang: 'en', style: 'font-size:var(--fs-xl);font-weight:800;margin:4px 0' }, unseen.en),
+            el('button', {
+              class: 'btn',
+              onClick: (e) => {
+                revealed.hidden = false;
+                revealed.textContent = unseen.answer;
+                e.currentTarget.remove();
+                sound.medal();
+              },
+            }, t('Кажется, я понял 👀')),
+            revealed,
+            el('div', { class: 't-caption', style: 'margin-top:4px' },
+              t('Ты узнал его сам. Мы к этому не притрагивались.'))) : null,
+        );
+      }
+
       const wpmLine = r.wpm
         ? el('div', { class: 't-sm center' }, t('{v0} слов в минуту', { v0: r.wpm }))
         : null;
@@ -91,9 +126,9 @@ export function screen(store, content) {
       const voteBox = el('div', { class: 'stack', style: 'gap:var(--sp-2)' });
       if (r.mode !== 'stream') {
         setChildren(voteBox,
-          el('div', { class: 't-sm center' }, t('Ну как, зашло?')),
-          el('div', { class: 'vote' }, voteBtn('easy', t('Легко 😎')),
-            voteBtn('normal', t('В самый раз 🙂')), voteBtn('hard', t('Было сложно 😅'))));
+          el('div', { class: 't-sm center' }, t('Как было по темпу?')),
+          el('div', { class: 'vote' }, voteBtn('easy', t('Слишком спокойно 😎')),
+            voteBtn('normal', t('В самый раз 🙂')), voteBtn('hard', t('Плотновато 😅'))));
       }
       const voteReply = el('div', { class: 't-caption center' });
 
@@ -151,16 +186,16 @@ export function screen(store, content) {
       const again = el('button', {
         class: goalMet ? 'btn btn--cta' : 'btn btn--primary btn--cta',
         onClick: () => { sound.sessionStart(); ctx.go(routeFor(r.mode)); },
-      }, t('Ещё разок ⚡'));
+      }, t('Ещё заход ⚡'));
       const stop = el('button', {
         class: goalMet ? 'btn btn--primary btn--cta' : 'btn btn--ghost btn--cta',
         onClick: () => ctx.go('home'),
-      }, t('Хватит на сегодня 👌'));
+      }, t('На сегодня всё 👌'));
 
       setChildren(wrap,
         headline,
         el('div', { class: 'stack center', style: 'gap:2px' }, big, bigCap, delta),
-        tiles, goalLine, medalBlock, wpmLine,
+        tiles, goalLine, keyCard, medalBlock, wpmLine,
         r.maxCombo >= 5 ? el('div', { class: 't-sm center' }, t('Лучшая серия: {v0} подряд', { v0: r.maxCombo })) : null,
         voteBox, voteReply, handshake,
         el('div', { class: 'grow' }),

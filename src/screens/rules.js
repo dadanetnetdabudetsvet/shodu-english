@@ -22,7 +22,7 @@ export function screen(store, content) {
             el('div', { class: 't-sm' },
               t('Первые правила — это места, где английский устроен ровно как русский. Ты уже так говоришь, просто другими словами.')),
             el('div', { class: 't-caption' },
-              t('{v0} из {v1} разобрано', { v0: done, v1: content.rules.length }))),
+              t('{v0} совпадений ты уже видел', { v0: done, v1: content.rules.length }))),
           ...content.rules.map(rule),
         );
       }
@@ -59,7 +59,7 @@ export function screen(store, content) {
             class: 'card card--flat',
             style: 'margin-top:var(--sp-3);background:var(--accent-soft)',
           },
-            el('div', { class: 't-caption' }, t('ЧТО ЗДЕСЬ ЛЁГКОГО')),
+            el('div', { class: 't-caption' }, t('ЧТО ЗДЕСЬ УЖЕ ЗНАКОМО')),
             el('div', { class: 't-sm' }, r.why_easy)) : null,
           el('div', { class: 'card card--flat', style: 'margin-top:var(--sp-2)' },
             el('div', { class: 't-caption' }, t('ТЫ ТАК УЖЕ ГОВОРИШЬ')),
@@ -76,7 +76,7 @@ export function screen(store, content) {
           el('button', {
             class: 'btn btn--primary btn--cta', style: 'margin-top:var(--sp-3)',
             onClick: close,
-          }, t('Так и знал ✓')),
+          }, t('Ровно так и говорю ✓')),
         );
         const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:79', onClick: close });
         document.body.append(back, sheet);

@@ -51,6 +51,7 @@ async function boot() {
       stream:  () => import('./screens/stream.js').then(m => m.screen(store, content)),
       recheck: () => import('./screens/recheck.js').then(m => m.screen(store, content)),
       quests:  () => import('./screens/quests.js').then(m => m.screen(store, content)),
+      today:   () => import('./screens/today.js').then(m => m.screen(store, content)),
       results: () => import('./screens/results.js').then(m => m.screen(store, content)),
       words:   () => import('./screens/words.js').then(m => m.screen(store, content)),
       rules:   () => import('./screens/rules.js').then(m => m.screen(store, content)),
@@ -101,7 +102,7 @@ async function boot() {
 /* Подписи навигации живут в разметке, поэтому переводятся отдельно.
    Раньше они не попадали в каталог и на любом языке оставались русскими. */
 function localizeTabbar() {
-  const labels = { home: 'Дом', quests: 'Челлендж', words: 'Слова', rules: 'Правила', profile: 'Профиль' };
+  const labels = { today: 'Сегодня', home: 'Дом', quests: 'Челлендж', words: 'Слова', rules: 'Правила', profile: 'Профиль' };
   for (const item of tabbar.querySelectorAll('[data-tab]')) {
     const node = item.querySelector('.tabbar__label');
     if (node) node.textContent = t(labels[item.dataset.tab] || '');
@@ -167,7 +168,7 @@ function wireStoragePersistence(store) {
   });
   storage.addEventListener('nostorage', (e) => {
     toast(e.detail?.quota
-      ? t('Память браузера переполнена. Прогресс держится только в этой вкладке.')
+      ? t('Слова на месте. Пока держу их только в этой вкладке.')
       : t('Браузер не даёт сохранять. Прогресс держится только в этой вкладке.'),
       { kind: 'warn', sticky: true });
   });
@@ -199,7 +200,7 @@ function shade(hex, amount) {
 
 boot().catch((err) => {
   console.error(err);
-  root.innerHTML = `<div class="screen"><h1 class="t-h1">${t('Что-то пошло не так')}</h1>
+  root.innerHTML = `<div class="screen"><h1 class="t-h1">${t('Экран не собрался')}</h1>
     <p class="t-sm">${t('Прогресс на месте. Попробуй перезагрузить страницу.')}</p>
     <pre class="t-caption" style="white-space:pre-wrap">${String(err && err.message || err)}</pre></div>`;
 });

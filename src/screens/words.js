@@ -16,10 +16,10 @@ import { t } from '../i18n/index.js';
    ещё не загружен, и они бы навсегда остались русскими. */
 const FILTERS = [
   { id: 'all', label: 'Все' },
-  { id: 'known', label: 'Знаю' },
-  { id: 'learning', label: 'Учу' },
-  { id: 'new', label: 'Новые' },
-  { id: 'traps', label: 'Ловушки' },
+  { id: 'known', label: 'Мои' },
+  { id: 'learning', label: 'На подходе' },
+  { id: 'new', label: 'Ещё не виделись' },
+  { id: 'traps', label: 'Двойники' },
 ];
 
 export function screen(store, content) {
@@ -68,6 +68,7 @@ export function screen(store, content) {
         if (filter === 'known') items = items.filter(w => isKnown(recOf(w)));
         else if (filter === 'learning') items = items.filter(w => isLearning(recOf(w)));
         else if (filter === 'new') items = items.filter(w => recOf(w).box === 0 && !w.falseFriend);
+        else if (filter === 'traps') items = items.filter(w => w.falseFriend);
         if (filter !== 'all' || query) shown = Math.max(shown, PAGE);
         else if (filter === 'traps') items = items.filter(w => w.falseFriend);
         if (query) items = items.filter(w =>
@@ -78,7 +79,7 @@ export function screen(store, content) {
           const r = recOf(w);
           if (isKnown(r)) known++; else if (isLearning(r)) learning++;
         }
-        summary.textContent = t('{v1} читаю без перевода · {v2} на подходе · {v0} всего', { v0: all().length, v1: known, v2: learning });
+        summary.textContent = t('{v1} читаю без перевода · {v2} на подходе · {v0} в словаре', { v0: all().length, v1: known, v2: learning });
 
         const page = items.slice(0, shown);
         setChildren(list, ...page.map(row));
@@ -90,7 +91,7 @@ export function screen(store, content) {
         }
         if (!items.length) {
           list.append(el('div', { class: 'card card--flat t-sm center' },
-            query ? t('Такого слова пока нет.') : t('Здесь будет каждое слово, которое стало твоим.')));
+            query ? t('Этого слова тут нет.') : t('Здесь будет каждое слово, которое стало твоим.')));
         }
       }
 
@@ -107,7 +108,7 @@ export function screen(store, content) {
               en(w.en, ''), w.falseFriend ? el('span', { class: 't-caption' }, '⚠') : null),
             el('div', { class: 't-sm' }, w.answer)),
           el('div', {
-            class: 'rhythm', 'aria-label': t('держится на {v0} из 5', { v0: strength }),
+            class: 'rhythm', 'aria-label': t('держится крепко: {v0}', { v0: strength }),
           }, Array.from({ length: 5 }, (_, i) =>
             el('span', { class: 'rhythm__dot' + (i < strength ? ' rhythm__dot--done' : '') }))),
         );
@@ -121,7 +122,7 @@ export function screen(store, content) {
           role: 'dialog', 'aria-modal': 'true',
         },
           el('div', { class: 'teach' },
-            el('div', { class: 'teach__over' }, w.falseFriend ? t('ловушка') : w.topic || ''),
+            el('div', { class: 'teach__over' }, w.falseFriend ? t('двойник') : w.topic || ''),
             en(w.en, 't-en'),
             el('div', { class: 't-ipa', 'aria-hidden': 'true' }, `${w.ipa}  ·  ${w.tr}`),
             el('div', { class: 'teach__ru' }, w.answer),

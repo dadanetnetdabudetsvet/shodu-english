@@ -98,7 +98,11 @@ export function weekRhythm(days, today) {
     const rec = days[d];
     out.push({
       day: d,
-      done: !!(rec && rec.sessions > 0),
+      // Присутствие тоже день: продукт про состояние, а не про норму
+      // выработки. Точка рисуется мягче, чтобы не выдавать чтение
+      // за занятие.
+      done: !!(rec && (rec.sessions > 0 || rec.present)),
+      light: !!(rec && rec.present && !rec.sessions),
       isToday: i === 0,
     });
   }

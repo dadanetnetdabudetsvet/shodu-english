@@ -160,8 +160,21 @@ export function isLearning(rec) {
 export function buildSession(pool, opts) {
   const {
     day, mode = 'build', size = ITEMS_PER_SESSION,
-    newBudget = NEW_PER_DAY, rnd = Math.random,
+    newBudget = NEW_PER_DAY, rnd = Math.random, gapDays = 0,
   } = opts;
+
+  /* Возврат после паузы. Долг накопился, и обычный отбор выдал бы
+     двадцать четыре самых слабых слова подряд — то есть подтвердил бы
+     худшую догадку человека о себе ровно в тот день, когда он решился
+     вернуться. Берём то, что помнится лучше всего, а долг ждёт до
+     завтра. */
+  if (gapDays >= 3) {
+    const warm = pool
+      .filter(p => p.rec.box >= 3)
+      .sort((a, b) => b.rec.box - a.rec.box)
+      .slice(0, 8);
+    if (warm.length >= 5) return warm.map(p => ({ ...p, gentle: true }));
+  }
 
   const newAllowed = mode === 'build' ? Math.min(NEW_PER_SESSION, newBudget) : 0;
 

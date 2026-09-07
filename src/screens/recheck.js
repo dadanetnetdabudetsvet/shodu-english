@@ -29,7 +29,7 @@ export function screen(store, content) {
       if (!base || !base.ids || !base.ids.length) {
         setChildren(wrap, el('div', { class: 'stack center', style: 'justify-content:center;flex:1;gap:var(--sp-4)' },
           el('div', { style: 'font-size:44px' }, '📏'),
-          el('h1', { class: 't-h1' }, t('Пересчёт откроется на седьмой день')),
+          el('h1', { class: 't-h1' }, t('Пересчёт сравнивает с первым днём')),
           el('p', { class: 't-sm' }, t('Сравнивать будем с твоей первой проверкой.')),
           el('button', { class: 'btn btn--primary btn--cta', onClick: () => ctx.go('home') }, t('Понятно ✓'))));
         return { destroy() { for (const id of timers) clearTimeout(id); } };

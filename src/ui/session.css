@@ -95,15 +95,14 @@
 }
 /* Цвет никогда не единственный носитель смысла: к цвету всегда иконка и текст. */
 .option--right {
-  background: color-mix(in oklab, var(--text) 6%, var(--surface));
-  border-color: var(--text);
-  box-shadow: inset 3px 0 0 var(--text);
+  background: var(--answer-right-soft);
+  border-color: var(--answer-right-border);
+  box-shadow: inset 3px 0 0 var(--answer-right);
   font-weight: var(--fw-bold);
 }
-.option--wrong {
-  opacity: .55;
-  box-shadow: inset 3px 0 0 var(--answer-wrong);
-}
+/* Промах теряет плотность и не получает цвета: цвет достаётся тому,
+   что верно. Иначе взгляд после ответа идёт к метке ошибки. */
+.option--wrong { opacity: .45; }
 .option__mark { margin-left: auto; font-size: 18px; }
 
 .qskip { align-self: center; color: var(--text-3); font-size: var(--fs-sm); min-height: var(--tap-min); }
@@ -111,10 +110,13 @@
 /* Футер-отклик. Красный здесь запрещён правилом Р1. */
 .feedback {
   position: fixed; left: 0; right: 0;
-  bottom: 0; padding-bottom: calc(var(--sp-4) + var(--safe-b));
+  bottom: 0;
   max-width: 560px; margin: 0 auto;
   border-radius: var(--r-lg) var(--r-lg) 0 0;
+  /* Порядок важен: короткая запись padding затирала безопасную зону,
+     и кнопка уезжала под домашнюю полосу айфона. */
   padding: var(--sp-4);
+  padding-bottom: calc(var(--sp-4) + var(--safe-b));
   display: flex; flex-direction: column; gap: var(--sp-2);
   box-shadow: var(--sh-4);
 }
@@ -131,8 +133,9 @@
 .teach { text-align: center; display: flex; flex-direction: column; gap: var(--sp-3); align-items: center; }
 .teach__over { font-size: var(--fs-micro); color: var(--text-3); }
 .teach__ru { font-size: var(--fs-xl); font-weight: var(--fw-semi); }
+/* Главная строка продукта была самой мелкой и бледной на карточке. */
 .teach__lesson {
-  font-size: var(--fs-micro); color: var(--text-2);
+  font-size: var(--fs-sm); color: var(--text);
   background: var(--surface-2); border-radius: var(--r-sm);
   padding: var(--sp-2) var(--sp-3); max-width: 34ch;
 }

@@ -115,7 +115,7 @@ function normalizeFalseFriend(x, i) {
     bridge: x.looks_like,
     ipa: x.ipa || '',
     tr: x.tr || '',
-    hint: x.hint || t('Не «{v0}». {v1} — это {v2}.', { v0: x.looks_like, v1: x.en, v2: x.actual_ru }),
+    hint: x.hint || t('{v1} — это {v2}. А {v0} — другое слово.', { v0: x.looks_like, v1: x.en, v2: x.actual_ru }),
     note: x.note || '',
     ex_en: x.ex_en || '',
     ex_ru: x.ex_ru || '',

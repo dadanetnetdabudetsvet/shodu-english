@@ -138,7 +138,7 @@ export function screen(store, content) {
                 rightBtn.append(el('span', { class: 'option__mark' }, '✓'));
                 setTimeout(() => { qi++; if (qi >= quiz.length) step = 2; render(); }, 900);
               },
-            }, t('не знаю 🤷')),
+            }, t('пропустить 👀')),
           )
         );
         enterCard(card);
@@ -221,7 +221,7 @@ export function screen(store, content) {
               });
               ctx.go('session/build');
             },
-          }, t('Всё, поехали 🚀')),
+          }, t('Хочу свои слова 🚀')),
         ));
       }
 

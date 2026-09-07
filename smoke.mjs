@@ -108,7 +108,7 @@ let next = btn('остальные') || btn('дальше') || btn('Дальше
 if (next) { click(next); await sleep(200); }
 const goalBtn = [...root.querySelectorAll('.option')].find(b => b.textContent.includes('5 '));
 if (goalBtn) { click(goalBtn); await sleep(120); step('выбрана цель 5 слов'); }
-const done = btn('поехали') || btn('Готово');
+const done = btn('свои слова') || btn('поехали') || btn('Готово');
 if (!done) fail('нет кнопки завершения онбординга');
 else { click(done); await sleep(400); }
 if (goalBtn && store.state.settings.dailyGoalWords !== 5)
@@ -132,9 +132,9 @@ await sleep(500);
 {
   const txt = root.textContent;
   if (root.querySelector('.session')) step('блиц запустился сразу (колода не пуста)');
-  else if (txt.includes('для слов, которые ты уже видел')) {
+  else if (txt.includes('работает по словам, которые уже твои')) {
     step('тупик заменён объяснением');
-    const fixBtn = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Взять первые слова'));
+    const fixBtn = [...root.querySelectorAll('button')].find(b => /Открыть первый десяток|Взять первые слова/.test(b.textContent));
     if (!fixBtn) fail('нет кнопки выхода из тупика');
     else { step('кнопка решения на месте: «' + fixBtn.textContent + '»'); }
   } else fail('неизвестное состояние блица: ' + txt.slice(0, 80));
@@ -186,7 +186,7 @@ step('очков всего: ' + store.state.econ.xpTotal + ' · слов в р�
      Object.keys(store.state.srs.deck1).length);
 
 /* голос по планке */
-const easy = btn('Легко');
+const easy = btn('спокойно') || btn('Легко');
 if (easy) { click(easy); await sleep(100); step('планка после «легко»: ' + store.state.challenge.index); }
 else fail('нет голосования по планке на итогах');
 
@@ -281,7 +281,7 @@ console.log('\nРЕЖИМЫ НА НАПОЛНЕННОМ СЛОВАРЕ');
       if (!free.length) break;
       click(free[0]); await sleep(50);
     }
-    const check = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Проверить'));
+    const check = [...root.querySelectorAll('button')].find(b => /Смотрим|Проверить|поставь/.test(b.textContent));
     if (!check) fail('Фраза: кнопка проверки не появилась');
     else { click(check); await sleep(600); step('Фраза: проверка отработала, очков всего ' + store.state.econ.xpTotal); }
   }
@@ -411,6 +411,33 @@ console.log('\nЧЕЛЛЕНДЖИ И ЛАВКА');
     store.dispatch({ type: 'SHOP_BUY', id: 'b09' });
     if ((store.state.owned || []).filter(x => x === 'b09').length > 1) fail('предмет куплен дважды');
     else step('повторная покупка не проходит');
+  }
+}
+
+/* ── ключи соответствий ────────────────────────────────────── */
+console.log('\nКЛЮЧИ СООТВЕТСТВИЙ');
+{
+  const { KEYS, evaluateKeys, keyCoverage, unseenByKey } = await imp('src/domain/keys.js');
+  const { isKnown } = await imp('src/domain/srs.js');
+  const { content } = window.__shodu;
+
+  step('ключей всего: ' + KEYS.length);
+  const covers = KEYS.map(k => `${k.title}: ${keyCoverage(k, content)}`).join(' · ');
+  step('покрытие: ' + covers);
+
+  // Три верных ответа на слова одной модели открывают ключ.
+  const st = store.state;
+  const tion = content.all.filter(w => /tion$/i.test(w.en)).slice(0, 3);
+  if (tion.length < 3) fail('в базе меньше трёх слов на -tion');
+  else {
+    for (const w of tion) st.srs.deck1[w.id] = { box: 2, ok: 2, fail: 0, streak: 2, dueDay: st.day, lastDay: st.day, prodOk: 1, seen: 2, failRow: 0, leech: false, lastMs: 900 };
+    const fresh = evaluateKeys(st, content, isKnown);
+    if (!fresh.some(k => k.id === 'tion')) fail('ключ -tion не открылся после трёх верных');
+    else step('ключ -tion открывается после трёх слов модели');
+
+    const unseen = unseenByKey(fresh.find(k => k.id === 'tion'), st, content);
+    if (!unseen) fail('нет непоказанного слова для проверки ключа');
+    else step('слово для проверки ключа: ' + unseen.en + ' → ' + unseen.answer);
   }
 }
 

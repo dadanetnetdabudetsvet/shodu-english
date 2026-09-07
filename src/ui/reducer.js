@@ -11,6 +11,7 @@ import { applyVote, autoAdjust, setManual, clampIndex } from '../domain/challeng
 import { makeSelfCode, verifyProof, rewardFor, NEWCOMER_GEMS } from '../domain/referral.js';
 import { evaluateMedals } from '../domain/medals.js';
 import { questsForDay, questDone } from '../domain/quests.js';
+import { evaluateKeys } from '../domain/keys.js';
 import { itemById, isOwned, FREEZE } from '../domain/shop.js';
 import { weekDone } from '../domain/streak.js';
 import { fx } from './store.js';
@@ -30,8 +31,8 @@ export function rootReducer(state, action) {
         if (e.type === 'freezeUsed') {
           // Правило Р6: валюта не тратится молча.
           effects.push(fx.toast(e.count === 1
-            ? { i18n: 'Заморозка спасла ритм за вчера.' }
-            : { i18n: 'Заморозки спасли ритм за {v0} дня.', vars: { v0: e.count } }, 'info'));
+            ? { i18n: 'Вчера закрыто заморозкой. Ритм цел.' }
+            : { i18n: 'Вчерашние дни закрыты заморозками. Ритм цел.', vars: { v0: e.count } }, 'info'));
         }
         if (e.type === 'paused') {
           effects.push(fx.toast({ i18n: 'Ритм на паузе. Он вернётся с первого же занятия.' }, 'info'));
@@ -77,7 +78,8 @@ export function rootReducer(state, action) {
          Раньше сдача давала строго ноль, потому что множитель применялся
          только к уже ненулевому значению. */
       if (usedHint) xp = Math.max(1, Math.round(answerXp(mode, { correct: true, comboAfter: 0, attempt: 2, listens: 3, exerciseType }) / 2));
-      if (soft) xp = Math.round(xp * SOFT_MODE_XP_FACTOR);
+      // Мягкий режим меняет тип заданий, но не отнимает очки:
+      // это была плата за плохой день под видом ресурса.
 
       // Жизни восстанавливаются по времени при каждом ответе: раньше это
       // жило только в пересчёте дня, который не срабатывал, и человек
@@ -88,7 +90,6 @@ export function rootReducer(state, action) {
       if (!correct && !typoOnly) {
         if (costsLife({ mode, rec: { ok: boxBefore >= 3 ? 3 : rec.ok - 1 }, usedHint, typoOnly })) {
           lives = loseLife(lives, action.at);
-          effects.push(fx.sound('lifeLost'));
         }
         // У ошибки нет звука. Правило Р1.
       } else {
@@ -103,6 +104,9 @@ export function rootReducer(state, action) {
         econ.gems += GEMS.levelUp;
         effects.push(fx.sound('levelUp'), fx.confetti({ count: 70 }));
       }
+
+      const everRecognised = Math.max(state.everRecognised || 0,
+        rawRecognised({ ...state, srs }));
 
       const days = { ...state.days };
       const d = { ...(days[day] || emptyDay()) };
@@ -123,7 +127,8 @@ export function rootReducer(state, action) {
       days[day] = d;
 
       return {
-        state: { ...state, srs, econ, lives, days, profile: { ...state.profile, level: levelAfter } },
+        state: { ...state, srs, econ, lives, days, everRecognised,
+                 profile: { ...state.profile, level: levelAfter } },
         effects: [...effects, fx.save()],
       };
     }
@@ -178,6 +183,20 @@ export function rootReducer(state, action) {
         effects.push(fx.sound('gems', 5));
       }
 
+      /* Ключи соответствий: если человек трижды верно ответил на слова
+         одной модели, модель считается замеченной. Открытый ключ — это
+         не слово, а правило, применимое к словам, которых приложение
+         не показывало. */
+      let keys = state.keys;
+      let freshKeys = [];
+      if (action.content) {
+        freshKeys = evaluateKeys({ ...state, days }, action.content, isKnown);
+        if (freshKeys.length) {
+          keys = { ...keys };
+          for (const k of freshKeys) keys[k.id] = day;
+        }
+      }
+
       /* Медали выдаются здесь, а не при заходе в профиль. Раньше человек,
          который не открывал профиль, не получал ни одной медали и ни одного
          алмаза за них. */
@@ -203,9 +222,10 @@ export function rootReducer(state, action) {
         effects.push(fx.sound('levelUp'), fx.confetti({ count: 70 }));
       }
       return {
-        state: { ...state, days, econ, streak, medals, lastModes,
+        state: { ...state, days, econ, streak, medals, lastModes, keys,
                  profile: { ...state.profile, level },
-                 lastMedals: fresh.map(m => m.id) },
+                 lastMedals: fresh.map(m => m.id),
+                 lastKeys: freshKeys.map(k => k.id) },
         effects: [...effects, fx.save()],
       };
     }
@@ -316,6 +336,19 @@ export function rootReducer(state, action) {
       };
     }
 
+    /* Присутствие: человек пришёл и что-то взял, не занимаясь.
+       Это засчитывается в ритм недели, но не в счётчик занятий:
+       мы не выдаём чтение за упражнение. */
+    case 'PRESENCE': {
+      const day = state.day;
+      const days = { ...state.days };
+      const d = { ...(days[day] || emptyDay()) };
+      if (d.present || d.sessions > 0) return { state, effects: [] };
+      d.present = true;
+      days[day] = d;
+      return { state: { ...state, days }, effects: [fx.save()] };
+    }
+
     case 'RECHECK_SNOOZE':
       return { state: { ...state, recheckSnoozedDay: state.day }, effects: [fx.save()] };
 
@@ -380,7 +413,7 @@ export function rootReducer(state, action) {
       }
       if (item.id === FREEZE.id) {
         if (state.streak.freezes >= FREEZE.max) {
-          return { state, effects: [fx.toast({ i18n: 'Заморозок и так достаточно.' }, 'info')] };
+          return { state, effects: [fx.toast({ i18n: 'Их уже достаточно, больше не поместится.' }, 'info')] };
         }
         return {
           state: {
@@ -465,6 +498,27 @@ function countKnownIn(state) {
   let n = 0;
   for (const deck of ['deck1', 'deck2']) {
     for (const rec of Object.values(state.srs[deck] || {})) if (isKnown(rec)) n++;
+  }
+  return n;
+}
+
+/**
+ * Сколько английских слов человек узнаёт. Монотонная величина.
+ *
+ * Раньше считалось от текущей коробки, а коробка падает при ошибке:
+ * главное число продукта умело уменьшаться, и экран итогов анимировал
+ * его вниз. Это прямое нарушение правила Р3 и удар по первой цели Р0.
+ *
+ * Теперь слово, однажды отвеченное верно, из счёта не выпадает.
+ */
+export function recognised(state) {
+  return Math.max(state.everRecognised || 0, rawRecognised(state));
+}
+
+function rawRecognised(state) {
+  let n = 0;
+  for (const deck of ['deck1', 'deck2']) {
+    for (const rec of Object.values(state.srs[deck] || {})) if (rec.box > 0 || rec.ok > 0) n++;
   }
   return n;
 }

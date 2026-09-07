@@ -9,7 +9,7 @@
  * по нажатию человека пришлёт сообщение.
  */
 
-const VERSION = 'vf30ab22e7c';
+const VERSION = 'v4f9c56b25f';
 const CACHE = `shodu-${VERSION}`;
 
 const SHELL = [
@@ -20,6 +20,7 @@ const SHELL = [
   './src/core/confetti.js',
   './src/core/day.js',
   './src/core/haptics.js',
+  './src/core/mood.js',
   './src/core/motion.js',
   './src/core/sound.js',
   './src/core/speech.js',
@@ -27,6 +28,7 @@ const SHELL = [
   './src/core/sw-update.js',
   './src/data/content.js',
   './src/domain/challenge.js',
+  './src/domain/keys.js',
   './src/domain/medals.js',
   './src/domain/phrase.js',
   './src/domain/quests.js',
@@ -36,6 +38,7 @@ const SHELL = [
   './src/domain/srs.js',
   './src/domain/streak.js',
   './src/domain/stream.js',
+  './src/domain/today.js',
   './src/i18n/catalog.json',
   './src/i18n/index.js',
   './src/i18n/locales/ar.json',
@@ -66,6 +69,7 @@ const SHELL = [
   './src/screens/rules.js',
   './src/screens/session.js',
   './src/screens/stream.js',
+  './src/screens/today.js',
   './src/screens/welcome.js',
   './src/screens/words.js',
   './src/ui/anim.css',

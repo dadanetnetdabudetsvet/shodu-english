@@ -76,7 +76,7 @@ export function screen(store, content) {
           el('div', { class: 't-sm' }, t('Уровень {v0} · {v1}', { v0: lvl.level, v1: t(grade.name) })),
           el('div', { class: 't-caption' }, t(grade.line)),
           el('div', { class: 'bar', style: 'width:100%;margin-top:var(--sp-2)' }, bar),
-          el('div', { class: 't-caption' }, t('{v0} из {v1} очков до следующего', { v0: lvl.inLevel, v1: lvl.needed })),
+          el('div', { class: 't-caption' }, t('{v0} очков на этом уровне, весь уровень — {v1}', { v0: lvl.inLevel, v1: lvl.needed })),
         );
       }
 
@@ -220,7 +220,7 @@ export function screen(store, content) {
                 class: 'tile',
                 style: has ? '' : 'opacity:.45;filter:grayscale(1)',
                 title: t(m.hint),
-                'aria-label': has ? t('{v0}. Получена.', { v0: t(m.name) }) : t('{v0}. Закрыта. {v1}', { v0: t(m.name), v1: t(m.hint) }),
+                'aria-label': has ? t('{v0}. Получена.', { v0: t(m.name) }) : t('{v0}. Ещё впереди. {v1}', { v0: t(m.name), v1: t(m.hint) }),
               },
                 el('div', { style: 'font-size:22px' }, has ? m.icon : '🔒'),
                 el('div', { class: 'tile__cap' }, t(m.name)));
@@ -376,7 +376,7 @@ export function screen(store, content) {
       }
 
       function goalRow(s) {
-        return selectRow(t('Цель на день'), s.settings.dailyGoalWords,
+        return selectRow(t('Сколько слов в день'), s.settings.dailyGoalWords,
           [[5, t('5 слов')], [10, t('10 слов')], [20, t('20 слов')]],
           v => store.dispatch({ type: 'SETTINGS_SET', patch: { dailyGoalWords: Number(v) } }));
       }
@@ -389,10 +389,10 @@ export function screen(store, content) {
       function challengeBlock(s) {
         return el('div', { class: 'card stack', style: 'gap:var(--sp-3)' },
           el('div', { class: 'row row--between' },
-            el('div', { style: 'font-weight:600' }, t('Сложность 🎚')),
+            el('div', { style: 'font-weight:600' }, t('Планка 🎚')),
             el('div', { class: 't-caption' }, t(tierOf(s.challenge.index).name))),
           el('div', { class: 't-sm' },
-            t('Насколько трудные слова подбирать. Можно двигать самому, а можно просто отвечать после занятий.')),
+            t('Какие слова тебе подбирать. Двигай сам или просто отвечай после захода.')),
           challengeRow(s),
         );
       }
@@ -402,7 +402,7 @@ export function screen(store, content) {
         const desc = el('div', { class: 't-caption' }, t(tierOf(s.challenge.index).desc));
         const input = el('input', {
           type: 'range', min: MIN_INDEX, max: MAX_INDEX, value: s.challenge.index,
-          style: 'width:100%', 'aria-label': t('Ручка сложности'),
+          style: 'width:100%', 'aria-label': t('Ручка планки'),
           onInput: (e) => {
             val.textContent = e.target.value;
             desc.textContent = t(tierOf(Number(e.target.value)).desc);
@@ -601,7 +601,7 @@ export function screen(store, content) {
       /* Четвёртый барьер: окно отмены. Данные стираются не сразу. */
       function startWipe() {
         let cancelled = false;
-        toast(t('Прогресс будет удалён через 10 секунд.'), {
+        toast(t('Через 10 секунд твои слова уйдут. Ещё можно вернуть.'), {
           sticky: true, kind: 'warn',
           action: {
             label: t('Вернуть'),

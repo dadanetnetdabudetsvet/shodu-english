@@ -77,7 +77,7 @@ export function screen(store, content) {
 
         const shelf = el('div', { class: 'shelf' });
         const bank = el('div', { class: 'bank' });
-        const check = el('button', { class: 'btn btn--primary btn--cta', disabled: true }, t('Проверить ✓'));
+        const check = el('button', { class: 'btn btn--primary btn--cta', disabled: true }, t('Смотрим ✓'));
 
         function drawShelf() {
           setChildren(shelf, ...placed.map((tile, idx) =>
@@ -91,7 +91,7 @@ export function screen(store, content) {
               // осмысленнее, чем добавлять дистракторы.
               : el('span', { class: opts.showSlots ? 'tile-slot' : 'tile-slot tile-slot--blind' })));
           check.disabled = placed.some(x => !x);
-          check.textContent = check.disabled ? t('поставь все слова') : t('Проверить ✓');
+          check.textContent = check.disabled ? t('поставь все слова') : t('Смотрим ✓');
         }
 
         function drawBank() {
@@ -182,11 +182,11 @@ export function screen(store, content) {
             stage.append(el('button', {
               class: 'btn btn--primary btn--cta',
               onClick: () => { i++; if (i >= tasks.length) finish(true); else render(); },
-            }, i + 1 >= tasks.length ? t('Показать итог →') : t('Красота, дальше →')));
+            }, i + 1 >= tasks.length ? t('Показать итог →') : t('Собрано, дальше →')));
           }, 1400);
         }
 
-        const skip = el('button', { class: 'qskip', onClick: () => solve() }, t('не помню 🤷'));
+        const skip = el('button', { class: 'qskip', onClick: () => solve() }, t('показать 👀'));
         drawShelf(); drawBank();
         const card = el('div', { class: 'stack', style: 'gap:var(--sp-3)' },
           el('div', { class: 'phrase-ru' }, task.ru),
@@ -201,7 +201,7 @@ export function screen(store, content) {
         finished = true;
         const ms = Date.now() - startedAt;
         store.dispatch({
-          type: 'SESSION_FINISHED', mode: 'phrase', completed, ms,
+          type: 'SESSION_FINISHED', content, mode: 'phrase', completed, ms,
           mistakes: stats.mistakes, newWords: 0, isReview: false,
         });
         const times = stats.times.slice().sort((a, b) => a - b);

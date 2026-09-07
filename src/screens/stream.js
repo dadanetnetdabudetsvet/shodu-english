@@ -56,8 +56,8 @@ export function screen(store, content) {
       function intro() {
         setChildren(stage, el('div', { class: 'stack center', style: 'gap:var(--sp-4);justify-content:center;flex:1' },
           el('div', { style: 'font-size:44px' }, '👁'),
-          el('h1', { class: 't-h1' }, t('Читай и лови подмену')),
-          el('p', { class: 't-sm' }, t('В каждой строке одно слово заменили. Тапни по нему. Не успел — строка сама покажет.')),
+          el('h1', { class: 't-h1' }, t('Читай. Одно слово в строке чужое.')),
+          el('p', { class: 't-sm' }, t('В каждой строке одно слово чужое. Тапни по нему. Не успеешь — строка покажет сама.')),
           el('button', { class: 'btn btn--primary btn--cta', onClick: () => { steady = false; start(); } }, t('С ускорением ⚡')),
           el('button', { class: 'btn', onClick: () => { steady = true; start(); } }, t('Ровный темп 🌊'))));
       }
@@ -96,7 +96,9 @@ export function screen(store, content) {
         const ru = el('div', { class: 'stream-ru' }, line.ru);
         setChildren(stage, el('div', { class: 'stream-card' }, bar, row, ru));
 
-        animate(bar, [{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }],
+        // Полоса наполняется, а не опустошается: опустошение читается
+        // как утекающее время, то есть как фигура проигрыша.
+        animate(bar, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }],
           { duration: tempo, easing: 'linear', fill: 'forwards' });
         animate(row, [{ opacity: 0, transform: 'translateY(18px)' }, { opacity: 1, transform: 'none' }],
           { duration: 260, easing: 'cubic-bezier(.22,1,.36,1)' });
@@ -165,7 +167,7 @@ export function screen(store, content) {
             v0: wave, v1: STREAM.waves, v2: STREAM.waveSize })),
           el('button', { class: 'btn btn--primary btn--cta', onClick: () => nextWave() },
             wave >= STREAM.waves ? t('Показать итог →') : t('Дальше волна →')),
-          el('button', { class: 'btn btn--ghost', onClick: () => finish(true) }, t('Хватит на сегодня 👌'))));
+          el('button', { class: 'btn btn--ghost', onClick: () => finish(true) }, t('На сегодня всё 👌'))));
       }
 
       let finished = false;
@@ -181,7 +183,7 @@ export function screen(store, content) {
         const best = store.state.profile.readWpm || 0;
         if (wpm > best) store.dispatch({ type: 'PROFILE_SET', patch: { readWpm: wpm } });
         store.dispatch({
-          type: 'SESSION_FINISHED', mode: 'stream', completed, ms,
+          type: 'SESSION_FINISHED', content, mode: 'stream', completed, ms,
           mistakes: stats.mistakes, newWords: 0, isReview: false, newRecord: wpm > best,
         });
         const times = stats.times.slice().sort((a, b) => a - b);

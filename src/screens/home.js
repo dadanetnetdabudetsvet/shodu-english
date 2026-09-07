@@ -24,7 +24,7 @@ import { speech } from '../core/speech.js';
 const MODES = {
   build:  { icon: '📘', name: 'Занятие', sub: 'новые слова', route: 'session/build', slot: 'core' },
   sprint: { icon: '⚡', name: 'Блиц',    sub: 'на скорость', route: 'session/sprint', slot: 'in' },
-  stream: { icon: '👁', name: 'Поток',   sub: 'читай быстрее', route: 'stream',       slot: 'in' },
+  stream: { icon: '👁', name: 'Поток',   sub: 'слова идут сами', route: 'stream',       slot: 'in' },
   ether:  { icon: '🎧', name: 'На слух', sub: 'звучание',    route: 'session/ether',  slot: 'out' },
   phrase: { icon: '🧱', name: 'Фраза',   sub: 'собери мысль', route: 'phrase',        slot: 'out' },
 };
@@ -48,29 +48,27 @@ export function screen(store, content) {
          строке фиксированной высоты. Раньше это была свободная строка,
          которая разъезжалась, как только числа становились длиннее. */
       const dots = rhythm.slice(Math.max(0, 7 - Math.max(daysLived, 1)));
+      /* В шапке остаётся только ритм и число дней, проведённых вместе.
+         Стрик, алмазы и уровень отсюда убраны: три счётчика из четырёх
+         говорили человеку, сколько он должен, и делали это первым, что
+         он видит на экране. */
+      const daysTogether = Object.values(s.days || {}).filter(d => d.sessions > 0 || d.present).length;
       const head = el('div', { class: 'topbar' },
-        el('div', { class: 'topbar__cell' },
+        el('div', { class: 'topbar__cell', style: 'flex:2 1 0' },
           el('div', { class: 'rhythm', role: 'img',
-            'aria-label': t('Ритм недели: {v0} из 7 дней', { v0: doneThisWeek }) },
+            'aria-label': t('Дней с английским на этой неделе: {v0}', { v0: doneThisWeek }) },
             dots.map(d => el('span', {
-              class: 'rhythm__dot' + (d.done ? ' rhythm__dot--done' : '') + (d.isToday ? ' rhythm__dot--today' : ''),
+              class: 'rhythm__dot'
+                + (d.done ? (d.light ? ' rhythm__dot--light' : ' rhythm__dot--done') : '')
+                + (d.isToday ? ' rhythm__dot--today' : ''),
             }))),
-          el('div', { class: 'topbar__cap' },
-            doneThisWeek >= WEEK_TARGET ? t('ритм набран') : t('{v0} из {v1}', { v0: doneThisWeek, v1: WEEK_TARGET }))),
+          el('div', { class: 'topbar__cap' }, t('эта неделя'))),
 
         el('div', { class: 'topbar__sep' }),
 
         el('div', { class: 'topbar__cell' },
-          el('div', { class: 'topbar__val' }, s.streak.current > 0 ? `🔥 ${s.streak.current}` : '🔥 —'),
-          el('div', { class: 'topbar__cap' }, t('подряд'))),
-
-        el('div', { class: 'topbar__cell' },
-          el('div', { class: 'topbar__val' }, `💎 ${s.econ.gems}`),
-          el('div', { class: 'topbar__cap' }, t('алмазы'))),
-
-        el('div', { class: 'topbar__cell' },
-          el('div', { class: 'topbar__val' }, `${lvl.level}`),
-          el('div', { class: 'topbar__cap' }, t('уровень'))),
+          el('div', { class: 'topbar__val' }, String(daysTogether)),
+          el('div', { class: 'topbar__cap' }, t('дней вместе'))),
       );
 
       /* Улика идёт первой: это главное, что продукт доказывает. */
@@ -90,8 +88,8 @@ export function screen(store, content) {
       const barFill = el('div', { class: 'bar__fill' });
       const goalRow = el('div', { class: 'stack', style: 'gap:6px' },
         el('div', { class: 't-sm' }, todayWords(today) >= goal
-          ? t('Цель дня закрыта: {v0} из {v1}', { v0: todayWords(today), v1: goal })
-          : t('сегодня {v0} из {v1} слов', { v0: todayWords(today), v1: goal })),
+          ? t('День засчитан. Слов сегодня: {v0}', { v0: todayWords(today), v1: goal })
+          : t('сегодня твоих стало больше на {v0}', { v0: todayWords(today), v1: goal })),
         el('div', { class: 'bar' }, barFill),
       );
 
@@ -110,13 +108,13 @@ export function screen(store, content) {
       const heroBtn = el('button', {
         class: 'btn btn--onhero btn--cta',
         onClick: () => { sound.sessionStart(); ctx.go(MODES[current].route); },
-      }, doneToday === 0 ? t('Погнали ⚡')
-        : doneToday >= 3 ? t('Ещё разок ⚡')
+      }, doneToday === 0 ? t('Начнём ⚡')
+        : doneToday >= 3 ? t('Ещё заход ⚡')
         : t('Дальше: {v0} →', { v0: t(MODES[current].name) }));
 
       const hero = el('div', { class: 'card--hero stack', style: 'gap:var(--sp-3)' },
         el('div', { style: 'font-size:var(--fs-md);font-weight:700' },
-          doneToday === 0 ? t('Связка на сегодня') : doneToday >= 3 ? t('Связка пройдена') : t('Продолжаем')),
+          doneToday === 0 ? t('Связка на сегодня') : doneToday >= 3 ? t('Связка сложилась') : t('Ты в середине')),
         chips,
         heroBtn,
         el('div', { class: 't-caption', style: 'color:rgba(255,255,255,.75);text-align:center' },
@@ -172,7 +170,7 @@ export function screen(store, content) {
       const installCard = shouldOfferInstall(s) && el('div', { class: 'card stack', style: 'gap:var(--sp-2)' },
         el('div', { style: 'font-weight:600' }, t('Положи на домашний экран 📲')),
         el('div', { class: 't-sm' },
-          t('Браузер стирает данные сайтов после недели без открытия. Твои {v0} слов живут вот в этом браузере.', { v0: known })),
+          t('Твои {v0} слов живут вот в этом браузере. На домашнем экране они держатся дольше.', { v0: known })),
         el('div', { class: 't-caption' },
           t('На айфоне: «Поделиться» → «На экран Домой». На Андроиде появится предложение установить.')),
         el('button', {
@@ -271,7 +269,7 @@ function modeInfo(key, s, content) {
       if (isKnown(rec)) ready++;
     }
   }
-  if (key === 'build') return t('{v0} слов ждут повторения', { v0: due });
+  if (key === 'build') return t('{v0} слов сегодня можно подтвердить', { v0: due });
   if (key === 'sprint') return t('{v0} знакомых слов', { v0: ready });
   if (key === 'stream') return s.profile.readWpm
     ? t('{v0} слов в минуту · 100 секунд', { v0: s.profile.readWpm })
@@ -279,6 +277,6 @@ function modeInfo(key, s, content) {
   if (key === 'ether') return t('{v0} слов на слух', { v0: ready });
   if (key === 'phrase') return ready >= 4
     ? t('{v0} фраз можно собрать', { v0: Math.min(7, ready) })
-    : t('откроется после первого занятия');
+    : t('появится, когда наберётся четыре слова');
   return '';
 }

@@ -11,11 +11,11 @@
  */
 
 export const MEDALS = [
-  { id: 'first_word', icon: '🌱', name: 'Первое слово', hint: 'Один верный ответ', gems: 10,
+  { id: 'first_word', icon: '🌱', name: 'Первое своё', hint: 'Один верный ответ', gems: 10,
     check: (c) => c.answersCorrect >= 1 },
-  { id: 'debut', icon: '🎬', name: 'Дебют', hint: 'Первое занятие целиком', gems: 20,
+  { id: 'debut', icon: '🎬', name: 'Первый заход', hint: 'Первый заход до конца', gems: 20,
     check: (c) => c.sessions >= 1 },
-  { id: 'five', icon: '🖐', name: 'Пятёрка', hint: 'Пять слов читаешь без перевода', gems: 20,
+  { id: 'five', icon: '🖐', name: 'Первая горсть', hint: 'Пять слов читаешь без перевода', gems: 20,
     check: (c) => c.known >= 5 },
   { id: 'three_days', icon: '🔥', name: 'Три дня', hint: 'Три дня подряд', gems: 30,
     check: (c) => c.streakBest >= 3 },
@@ -27,12 +27,12 @@ export const MEDALS = [
     check: (c) => c.known >= 50 },
   { id: 'two_hundred', icon: '📚', name: 'Двести', hint: 'Двести слов читаешь как русские', gems: 150,
     check: (c) => c.known >= 200 },
-  { id: 'clean', icon: '🎯', name: 'Чистое занятие', hint: 'Занятие без единой ошибки', gems: 40,
+  { id: 'clean', icon: '🎯', name: 'Без единой заминки', hint: 'Стопка, где ты не запнулся ни разу', gems: 40,
     check: (c) => c.cleanSessions >= 1 },
   // Ошибка как валюта достижения.
-  { id: 'review', icon: '🛠', name: 'Разбор', hint: 'Пятьдесят исправленных ошибок', gems: 80,
+  { id: 'review', icon: '🛠', name: 'Упрямые слова', hint: 'Пятьдесят слов, которые сначала не дались', gems: 80,
     check: (c) => c.corrected >= 50 },
-  { id: 'traps', icon: '🪤', name: 'Не попался', hint: 'Десять ложных друзей выучено', gems: 60,
+  { id: 'traps', icon: '🪤', name: 'Вижу двойников', hint: 'Десять двойников теперь узнаёшь', gems: 60,
     check: (c) => c.trapsKnown >= 10 },
   { id: 'first_friend', icon: '🤝', name: 'Первый друг', hint: 'Позвать и зачесть одного друга', gems: 50,
     check: (c) => c.friends >= 1 },

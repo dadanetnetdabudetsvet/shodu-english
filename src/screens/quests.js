@@ -46,7 +46,7 @@ export function screen(store, content) {
           el('div', { class: 'row row--between' },
             el('div', { style: 'font-size:var(--fs-md);font-weight:700;text-transform:capitalize' }, monthName),
             el('div', { class: 't-caption', style: 'color:rgba(255,255,255,.8)' },
-              t('всего {v0} слов', { v0: known }))),
+              t('{v0} слов у тебя', { v0: known }))),
           el('div', { class: 'row', style: 'align-items:flex-end;gap:var(--sp-3)' },
             el('div', { class: 'stack', style: 'gap:0' },
               num,
@@ -60,7 +60,7 @@ export function screen(store, content) {
               el('div', { class: 't-caption', style: 'color:rgba(255,255,255,.8)' }, t('подряд')))),
           el('div', { class: 'bar', style: 'background:rgba(255,255,255,.22)' }, fill),
           el('div', { class: 't-caption', style: 'color:rgba(255,255,255,.75)' },
-            t('{v0} из {v1} дней месяца позади', { v0: m.passed, v1: m.daysInMonth })),
+            t('Идёт {v0}-й день месяца', { v0: m.passed, v1: m.daysInMonth })),
           (() => { setTimeout(() => { tweenNumber(num, 0, m.words, 900); fillBar(fill, 0, Math.min(1, m.words / target)); }, 60); return null; })(),
         );
       }
@@ -103,7 +103,7 @@ export function screen(store, content) {
         const claimBtn = ready && el('button', {
           class: 'btn btn--primary btn--cta',
           onClick: () => { store.dispatch({ type: 'QUEST_CLAIM' }); render(); },
-        }, t('Забрать награду 💎'));
+        }, t('Это твоё 💎'));
 
         return el('div', { class: 'stack', style: 'gap:var(--sp-3)' },
           el('div', { class: 'row row--between' },
@@ -180,7 +180,7 @@ export function screen(store, content) {
           el('div', { class: 'card row row--between' },
             el('div', { class: 'stack', style: 'gap:2px' },
               el('div', { style: 'font-weight:600' }, t('У тебя {v0} алмазов', { v0: s.econ.gems })),
-              el('div', { class: 't-caption' }, t('Учебное здесь не продаётся. Только облик и защита ритма.'))),
+              el('div', { class: 't-caption' }, t('Слова здесь не продаются. Только облик и защита ритма.'))),
             el('div', { style: 'font-size:26px' }, '💎')),
           freezeCard,
           ...sections,

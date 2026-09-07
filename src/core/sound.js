@@ -337,17 +337,16 @@ export class SoundEngine {
     this._tone({ type: 'sine', f0: 520, f1: 700, dur: 0.09, gain: 0.06, lp: 4000 });
   }
 
-  /** Потеря жизни: короткий спад без драмы. */
-  lifeLost() {
-    if (!this._ready(null)) { this._play('lifeLost', () => this.lifeLost()); return; }
-    this._tone({ f0: 392, f1: 262, dur: 0.3, gain: 0.15, attack: 0.01, lp: 1600 });
-  }
+  /* Звуков утраты в этом продукте нет. Правило Р1: звук только у
+     успеха. Раньше здесь жили нисходящий тон потери жизни и глиссандо
+     сгорания стрика — второй не вызывался ниоткуда, но такой код
+     однажды подключают. */
 
-  /** Сгорание стрика: глиссандо вниз с закрывающимся фильтром. */
-  streakLost() {
-    if (!this._ready(null)) { this._play('streakLost', () => this.streakLost()); return; }
-    this._tone({ f0: note('A5'), f1: note('A3'), dur: 1.1, gain: 0.17, attack: 0.02, lp: [4000, 220] });
-    this._tone({ type: 'sine', f0: 90, f1: 55, t0: 0.7, dur: 0.5, gain: 0.12 });
+  /** Тихий выдох в конце занятия. Не награда, а закрытие. */
+  close() {
+    if (!this._ready(null)) { this._play('close', () => this.close()); return; }
+    this._tone({ type: 'sine', f0: note('G4'), dur: 0.5, gain: 0.10, attack: 0.03, lp: 2200 });
+    this._tone({ type: 'sine', f0: note('C4'), t0: 0.14, dur: 0.7, gain: 0.09, attack: 0.04, lp: 1800 });
   }
 }
 
