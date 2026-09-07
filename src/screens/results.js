@@ -128,8 +128,8 @@ export function screen(store, content) {
       if (r.mode !== 'stream') {
         setChildren(voteBox,
           el('div', { class: 't-sm center' }, t('Как было по темпу?')),
-          el('div', { class: 'vote' }, voteBtn('easy', t('Слишком спокойно 😎')),
-            voteBtn('normal', t('В самый раз 🙂')), voteBtn('hard', t('Плотновато 😅'))));
+          el('div', { class: 'vote' }, voteBtn('easy', t('Легко 😎')),
+            voteBtn('normal', t('В самый раз 🙂')), voteBtn('hard', t('Сложно 😅'))));
       }
       const voteReply = el('div', { class: 't-caption center' });
 
@@ -205,6 +205,17 @@ export function screen(store, content) {
         goalMet ? stop : again,
         goalMet ? again : stop,
       );
+
+      /* Ритуал закрытия. Занятие раньше обрывалось табло и сразу звало
+         обратно. Пауза в конце — не пустое место, а единственный момент,
+         когда сделанное успевает улечься. */
+      const closing = el('div', { class: 'results__close t-caption center' });
+      wrap.append(closing);
+      later(() => {
+        closing.textContent = t('Слова останутся, даже пока тебя здесь нет.');
+        animate(closing, [{ opacity: 0 }, { opacity: 1 }], { duration: 600, easing: 'linear', fill: 'both' });
+        sound.close();
+      }, 2600);
 
       /* Последовательность, а не всё сразу: заголовок, число, плитки. */
       animate(headline, [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }],

@@ -56,6 +56,26 @@ export function trapOfDay(content, day) {
   return pick(content.falseFriends || [], day, SALT.trap);
 }
 
+/**
+ * Слова, которые улеглись, пока человека не было.
+ *
+ * Пропуск дней превращается в приобретение, а не в потерю: память
+ * работает и без присутствия, и это правда, а не утешение. Берём
+ * слова, которые давно не показывались и стоят высоко в коробках.
+ */
+export function settled(state, content, day) {
+  const out = [];
+  for (const deck of ['deck1', 'deck2']) {
+    for (const [id, rec] of Object.entries(state.srs[deck] || {})) {
+      if ((rec.box || 0) >= 4 && (day - (rec.lastDay || 0)) >= 3) {
+        const w = content.byId.get(id);
+        if (w) out.push(w);
+      }
+    }
+  }
+  return out;
+}
+
 /* ── строка про человека ──────────────────────────────────────── */
 
 /**

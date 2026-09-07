@@ -10,7 +10,7 @@
 
 import { el, en, setChildren, greeting } from '../ui/dom.js';
 import { t } from '../i18n/index.js';
-import { wordOfDay, ruleOfDay, differenceOfDay, trapOfDay, portrait } from '../domain/today.js';
+import { wordOfDay, ruleOfDay, differenceOfDay, trapOfDay, portrait, settled } from '../domain/today.js';
 import { isKnown } from '../domain/srs.js';
 import { moodFor } from '../core/mood.js';
 import { KEYS, keyCoverage } from '../domain/keys.js';
@@ -32,6 +32,7 @@ export function screen(store, content) {
       const tr = trapOfDay(content, day);
       const me = portrait(s, content, isKnown);
       const openKeys = KEYS.filter(k => (s.keys || {})[k.id]);
+      const rested = settled(s, content, day);
 
       /* Присутствие засчитывается: человек пришёл и что-то взял.
          Без этого весь разворот — декор вокруг единственного
@@ -55,6 +56,15 @@ export function screen(store, content) {
           el('h1', { class: 't-h1' }, greeting(s.profile.name))),
 
         mood.line ? el('div', { class: 't-sm' }, t(mood.line)) : null,
+
+        /* Находка вместо потери: пока человека не было, слова улеглись
+           сами. Это правда о том, как работает память, а не утешение. */
+        rested.length >= 3 ? el('div', { class: 'card stack', style: 'gap:4px' },
+          el('div', { class: 't-caption' }, t('ПОКА ТЕБЯ НЕ БЫЛО')),
+          el('div', { style: 'font-weight:600' },
+            t('{v0} слов улеглись сами', { v0: rested.length })),
+          el('div', { class: 't-sm' },
+            t('Память доделывает работу без тебя. Эти слова теперь достаются легче, чем когда ты их оставил.'))) : null,
 
         me ? el('div', { class: 'card--hero stack', style: 'gap:4px' },
           el('div', { class: 't-caption', style: 'color:rgba(255,255,255,.8)' }, t('ПРО ТЕБЯ')),

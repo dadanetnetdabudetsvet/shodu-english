@@ -9,7 +9,7 @@
  * по нажатию человека пришлёт сообщение.
  */
 
-const VERSION = 'v5e5129cd99';
+const VERSION = 'v2f2031d552';
 const CACHE = `shodu-${VERSION}`;
 
 const SHELL = [

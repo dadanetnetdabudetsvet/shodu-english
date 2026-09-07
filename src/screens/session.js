@@ -114,7 +114,10 @@ export function screen(store, content) {
       const gear = el('button', {
         class: 'session__gear', 'aria-label': t('Сложность'),
         onClick: openDifficulty,
-      }, '🎚');
+      },
+        el('span', { style: 'font-size:15px' }, '📶'),
+        el('span', { class: 'session__gear-val t-num' }, String(store.state.challenge.index)),
+      );
 
       const top = el('div', { class: 'session__top' },
         el('button', { class: 'session__close', 'aria-label': t('Выйти'), onClick: confirmExit }, '✕'),
@@ -155,6 +158,8 @@ export function screen(store, content) {
               store.dispatch({ type: 'CHALLENGE_SET', index: next });
               sound.select();
               close();
+              const val = gear.querySelector('.session__gear-val');
+              if (val) val.textContent = String(next);
               rebuildTail(next);
             },
           }, t('Готово ✓')),

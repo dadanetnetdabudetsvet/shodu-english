@@ -27,14 +27,21 @@
 .session__close::after { content: ''; position: absolute; inset: -8px; }
 
 /* Кнопка смены сложности прямо в занятии: справа сверху, рядом с прогрессом. */
+/* Кнопка сложности была круглой иконкой без подписи, и её не находили.
+   Теперь это таблетка с текущим значением: видно, что она про число,
+   и видно, какое это число. */
 .session__gear {
-  width: 44px; height: 44px; flex: none;
+  min-width: 62px; height: 44px; flex: none;
+  padding: 0 var(--sp-3);
   border-radius: var(--r-full);
-  display: grid; place-items: center;
-  font-size: 18px; color: var(--text-2);
-  background: var(--surface-2);
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  color: var(--text);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  font-weight: var(--fw-semi);
   position: relative;
 }
+.session__gear-val { font-size: var(--fs-sm); }
 .session__gear::after { content: ''; position: absolute; inset: -8px; }
 .session__gear:active { background: var(--surface-3); }
 
@@ -229,3 +236,7 @@
 
 /* Слепое гнездо: на высокой сложности длина ответа не подсказывается. */
 .tile-slot--blind { width: 28px; border-style: dotted; opacity: .25; }
+
+/* Тихая строка закрытия: появляется последней, после того как числа
+   досчитались. Пауза перед ней — часть ритуала, а не пустое место. */
+.results__close { padding: var(--sp-4) 0 var(--sp-2); min-height: 20px; }
