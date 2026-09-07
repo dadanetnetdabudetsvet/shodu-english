@@ -119,6 +119,31 @@ ffIncomplete.length === 0 ? ok('ложные друзья пригодны дл�
   : bad(`неполных ложных друзей: ${ffIncomplete.length}`);
 
 
+// Правила должны держать идею приложения: сначала полное совпадение
+// с русским, примеры собраны из слов, которые человек и так узнаёт.
+const sameness = rules.rules.map(r => r.sameness);
+const sorted = sameness.every((v, i) => i === 0 || sameness[i - 1] >= v);
+sorted ? ok('правила отсортированы по совпадению с русским')
+  : bad('порядок правил не соответствует совпадению с русским');
+sameness.slice(0, 40).every(v => v === 5)
+  ? ok('первые сорок правил — полное совпадение')
+  : bad('в первых сорока правилах есть неполные совпадения');
+
+const deckWords = new Set(allDeckWords.map(w => String(w.en).toLowerCase()));
+let tokens = 0, known = 0;
+for (const r of rules.rules) {
+  for (const ex of [r.en_example, r.en_example2]) {
+    for (const tk of (String(ex || '').toLowerCase().match(/[a-z']+/g) || [])) {
+      tokens++;
+      if (deckWords.has(tk)) known++;
+    }
+  }
+}
+const share = tokens ? known / tokens : 0;
+share >= 0.8
+  ? ok(`в примерах правил ${Math.round(share * 100)}% слов из словаря приложения`)
+  : bad(`в примерах правил только ${Math.round(share * 100)}% слов из словаря`);
+
 console.log('\n4. Локализация');
 try {
   const cat = JSON.parse(readFileSync('src/i18n/catalog.json', 'utf8'));

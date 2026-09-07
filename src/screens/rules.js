@@ -27,6 +27,19 @@ export function screen(store, content) {
         );
       }
 
+      /* Значок совпадения с русским. Знак равенства читается мгновенно
+         и говорит именно то, что нужно: тут всё так же. */
+      function sameMark(n) {
+        return n >= 5 ? '=' : n === 4 ? '≈' : n === 3 ? '~' : n === 2 ? '±' : '≠';
+      }
+      function sameLabel(n) {
+        return n >= 5 ? t('всё как в русском')
+          : n === 4 ? t('почти как в русском')
+          : n === 3 ? t('похоже, но есть особенность')
+          : n === 2 ? t('кое-что иначе')
+          : t('здесь по-своему');
+      }
+
       function rule(r) {
         const isRead = !!(store.state.rulesRead || {})[r.id];
         return el('button', {
@@ -35,12 +48,13 @@ export function screen(store, content) {
         },
           el('div', {
             style: `width:36px;height:36px;flex:none;border-radius:var(--r-full);display:grid;place-items:center;
-                    background:${isRead ? 'var(--success-soft)' : 'var(--surface-2)'};font-size:15px`,
-          }, isRead ? '✓' : String(r.difficulty)),
+                    background:${isRead ? 'var(--answer-right-soft)' : 'var(--surface-2)'};font-size:15px`,
+            title: sameLabel(r.sameness),
+          }, isRead ? '✓' : sameMark(r.sameness)),
           el('div', { class: 'stack grow', style: 'gap:1px' },
             el('div', { style: 'font-weight:600' }, r.title),
             el('div', { class: 't-sm' }, r.idea),
-            r.why_easy ? el('div', { class: 't-caption' }, r.why_easy) : null),
+            el('div', { class: 't-caption' }, sameLabel(r.sameness))),
         );
       }
 

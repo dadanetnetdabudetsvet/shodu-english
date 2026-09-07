@@ -19,6 +19,36 @@ for (const d of [deck4, deck5, deck6]) for (const w of d) APP456.add(norm(w.en))
 // Irregular / suppletive forms of lemmas that live in decks 1-3.
 export const IRREGULAR = {
   // be
+  'told':'tell','telling':'tell','tells':'tell',
+  'left':'leave','leaving':'leave','leaves':'leave',
+  'built':'build','builds':'build',
+  'met':'meet','meets':'meet','meeting':'meet',
+  'broke':'break','broken':'break','breaks':'break',
+  'forgot':'forget','forgotten':'forget','forgets':'forget',
+  'knives':'knife','wives':'wife',
+  'sounds':'sound','sounded':'sound','sounding':'sound',
+  'felt':'feel','thought':'think','taught':'teach','caught':'catch',
+  'brought':'bring','sent':'send','spent':'spend','sold':'sell','paid':'pay',
+  'kept':'keep','held':'hold','understood':'understand','chose':'choose',
+  'won':'win','lost':'lose','ran':'run','sat':'sit','stood':'stand',
+  'slept':'sleep','began':'begin','wore':'wear','drove':'drive','flew':'fly',
+  'asked':'ask','asking':'ask','asks':'ask',
+  'stopped':'stop','stopping':'stop','stops':'stop',
+  'waited':'wait','waiting':'wait','waits':'wait',
+  'called':'call','calling':'call','calls':'call',
+  'cleaned':'clean','cleans':'clean','cleaning':'clean',
+  'picked':'pick','picking':'pick','picks':'pick',
+  'studied':'study','studies':'study','studying':'study',
+  'promised':'promise','promises':'promise',
+  'agreed':'agree','agrees':'agree',
+  'enjoys':'enjoy','enjoyed':'enjoy','enjoying':'enjoy',
+  'keeps':'keep','keeping':'keep',
+  'costs':'cost','matters':'matter','matter':'matter',
+  'raining':'rain','rains':'rain','rained':'rain',
+  'smoking':'smoke','smoked':'smoke','smokes':'smoke',
+  'repaired':'repair','repairs':'repair',
+  'depends':'depend','depended':'depend',
+  'interested':'interesting','interest':'interesting',
   'been':'be','being':'be','wasn’t':'was','wasnt':'was',
   // deck2 verbs
   'went':'go','gone':'go','goes':'go','going':'go',
@@ -97,8 +127,12 @@ export const IRREGULAR = {
 };
 
 // Regular English inflection: strip a suffix, see if the stem is a known lemma.
+const PREFIXES = ['un', 'in', 'im', 'dis', 're', 'pre', 'post', 'non'];
+const DERIV_SUFFIXES = ['ful', 'less', 'ness', 'able', 'ible', 'ment', 'ly', 'al', 'ic', 'ist', 'ism', 'ation', 'tion', 'er', 'or'];
+
 export function lemmaOf(word, dict) {
-  const w = norm(word);
+  const w = norm(word).replace(/[\u2018\u2019]/g, "'").replace(/'s$/, '');
+  if (dict.has(w)) return { lemma: w, kind: 'exact' };
   if (dict.has(w)) return { lemma: w, kind: 'exact' };
   if (IRREGULAR[w] && dict.has(IRREGULAR[w])) return { lemma: IRREGULAR[w], kind: 'irregular' };
   const tries = [];
@@ -115,12 +149,35 @@ export function lemmaOf(word, dict) {
     tries.push([base, 'doubled']);
   }
   for (const [cand, kind] of tries) if (dict.has(cand)) return { lemma: cand, kind };
+  // derivational: prefix and/or suffix over a known stem
+  for (const p of PREFIXES) {
+    if (w.startsWith(p) && w.length > p.length + 2) {
+      const stem = w.slice(p.length);
+      if (dict.has(stem)) return { lemma: stem, kind: 'prefix ' + p + '-' };
+      for (const sfx of DERIV_SUFFIXES) {
+        if (stem.endsWith(sfx)) {
+          const base = stem.slice(0, -sfx.length);
+          if (dict.has(base)) return { lemma: base, kind: 'prefix ' + p + '- + -' + sfx };
+          if (dict.has(base + 'e')) return { lemma: base + 'e', kind: 'prefix ' + p + '- + -' + sfx };
+          if (dict.has(base.replace(/i$/, 'y'))) return { lemma: base.replace(/i$/, 'y'), kind: 'prefix ' + p + '- + -' + sfx };
+        }
+      }
+    }
+  }
+  for (const sfx of DERIV_SUFFIXES) {
+    if (w.endsWith(sfx) && w.length > sfx.length + 2) {
+      const base = w.slice(0, -sfx.length);
+      if (dict.has(base)) return { lemma: base, kind: '-' + sfx };
+      if (dict.has(base + 'e')) return { lemma: base + 'e', kind: '-' + sfx };
+      if (dict.has(base.replace(/i$/, 'y'))) return { lemma: base.replace(/i$/, 'y'), kind: '-' + sfx };
+    }
+  }
   return null;
 }
 
 export function tokenize(sentence) {
   return String(sentence)
-    .replace(/[.,!?;:"“”—–()]/g, ' ')
+    .replace(/[.,!?;:"“”—–()\-]/g, ' ')
     .split(/\s+/)
     .filter(Boolean)
     .map(t => t.replace(/^'+|'+$/g, ''))
