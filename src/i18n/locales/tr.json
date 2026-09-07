@@ -557,5 +557,10 @@
  "Это твой собственный код.": "Bu senin kendi kodun.",
  "Этого слова тут нет.": "Bu kelime burada yok.",
  "Этот друг уже зачтён.": "Bu arkadaş zaten sayıldı.",
- "Язык интерфейса 🌍": "Uygulama dili 🌍"
+ "Язык интерфейса 🌍": "Uygulama dili 🌍",
+ "всё как в русском": "Rusçadaki gibi",
+ "почти как в русском": "neredeyse Rusçadaki gibi",
+ "похоже, но есть особенность": "benzer, tek bir farkla",
+ "кое-что иначе": "bir kısmı farklı işliyor",
+ "здесь по-своему": "bu kendi bildiğini okuyor"
 }

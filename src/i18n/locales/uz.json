@@ -557,5 +557,10 @@
  "Это твой собственный код.": "Bu sening oʻz koding.",
  "Этого слова тут нет.": "Bunday soʻz bu yerda yoʻq.",
  "Этот друг уже зачтён.": "Bu doʻst allaqachon hisobga olingan.",
- "Язык интерфейса 🌍": "Interfeys tili 🌍"
+ "Язык интерфейса 🌍": "Interfeys tili 🌍",
+ "всё как в русском": "ruschadagi bilan bir xil",
+ "почти как в русском": "deyarli ruschadagidek",
+ "похоже, но есть особенность": "oʻxshash, bitta oʻziga xosligi bor",
+ "кое-что иначе": "ayrim narsa boshqacha ishlaydi",
+ "здесь по-своему": "bu oʻzicha ishlaydi"
 }

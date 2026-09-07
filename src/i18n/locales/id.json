@@ -557,5 +557,10 @@
  "Это твой собственный код.": "Ini kode kamu sendiri.",
  "Этого слова тут нет.": "Kata ini nggak ada di sini.",
  "Этот друг уже зачтён.": "Teman ini sudah dihitung.",
- "Язык интерфейса 🌍": "Bahasa aplikasi 🌍"
+ "Язык интерфейса 🌍": "Bahasa aplikasi 🌍",
+ "всё как в русском": "sama seperti bahasa Rusia",
+ "почти как в русском": "hampir sama dengan bahasa Rusia",
+ "похоже, но есть особенность": "mirip, ada satu ciri",
+ "кое-что иначе": "ada yang bekerja lain",
+ "здесь по-своему": "yang ini jalannya sendiri"
 }

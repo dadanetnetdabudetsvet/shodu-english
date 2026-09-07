@@ -557,5 +557,10 @@
  "Это твой собственный код.": "To twój własny kod.",
  "Этого слова тут нет.": "Tego słowa tu nie ma.",
  "Этот друг уже зачтён.": "Ten kumpel jest już zaliczony.",
- "Язык интерфейса 🌍": "Język aplikacji 🌍"
+ "Язык интерфейса 🌍": "Język aplikacji 🌍",
+ "всё как в русском": "tak samo jak po rosyjsku",
+ "почти как в русском": "prawie jak po rosyjsku",
+ "похоже, но есть особенность": "podobnie, z jednym niuansem",
+ "кое-что иначе": "coś działa inaczej",
+ "здесь по-своему": "to idzie po swojemu"
 }

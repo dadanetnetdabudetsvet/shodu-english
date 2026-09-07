@@ -557,5 +557,10 @@
  "Это твой собственный код.": "That’s your own code.",
  "Этого слова тут нет.": "That word is not here.",
  "Этот друг уже зачтён.": "This friend is already counted.",
- "Язык интерфейса 🌍": "Interface language 🌍"
+ "Язык интерфейса 🌍": "Interface language 🌍",
+ "всё как в русском": "same as in Russian",
+ "почти как в русском": "almost like Russian",
+ "похоже, но есть особенность": "similar, with one quirk",
+ "кое-что иначе": "some of it works differently",
+ "здесь по-своему": "this one goes its own way"
 }
