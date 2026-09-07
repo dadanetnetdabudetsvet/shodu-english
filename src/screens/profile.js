@@ -394,7 +394,7 @@ export function screen(store, content) {
       function challengeBlock(s) {
         return el('div', { class: 'card stack', style: 'gap:var(--sp-3)' },
           el('div', { class: 'row row--between' },
-            el('div', { style: 'font-weight:600' }, t('Планка 🎚')),
+            el('div', { style: 'font-weight:600' }, t('Сложность 📶')),
             el('div', { class: 't-caption' }, t(tierOf(s.challenge.index).name))),
           el('div', { class: 't-sm' },
             t('Какие слова тебе подбирать. Двигай сам или просто отвечай после захода.')),
@@ -407,7 +407,7 @@ export function screen(store, content) {
         const desc = el('div', { class: 't-caption' }, t(tierOf(s.challenge.index).desc));
         const input = el('input', {
           type: 'range', min: MIN_INDEX, max: MAX_INDEX, value: s.challenge.index,
-          style: 'width:100%', 'aria-label': t('Ручка планки'),
+          style: 'width:100%', 'aria-label': t('Ручка сложности'),
           onInput: (e) => {
             val.textContent = e.target.value;
             desc.textContent = t(tierOf(Number(e.target.value)).desc);

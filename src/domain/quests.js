@@ -92,28 +92,90 @@ export function questDone(quest, day) {
 /* Двадцать вещей, которые в приложении можно сделать. Это не задания
    и не обязанности: ничего не сгорает, наград за них нет, они просто
    показывают, что здесь вообще есть. */
+/* Двадцать вещей, которые в приложении можно сделать.
+ *
+ * За часть из них дают алмазы — один раз и только за настоящее
+ * действие, а не за открытие экрана. Это не задания и не долг:
+ * невыполненное ничего не отнимает и никогда не подсвечивается
+ * красным.
+ *
+ * Поле `done` считает выполнение из состояния там, где это возможно.
+ * Где нельзя посчитать честно, отметка ставится по факту перехода.
+ */
 export const ACTIVITIES = [
-  { id: 'a01', icon: '📘', title: 'Стопка слов',        sub: 'новые слова и повторение', route: 'session/build' },
-  { id: 'a02', icon: '⚡', title: 'Блиц на скорость',        sub: 'шестьдесят секунд',        route: 'session/sprint' },
-  { id: 'a03', icon: '🎧', title: 'Занятие на слух',         sub: 'слова без написания',      route: 'session/ether' },
-  { id: 'a04', icon: '🧱', title: 'Собрать фразу',           sub: 'слова превращаются в речь', route: 'phrase' },
-  { id: 'a05', icon: '👁', title: 'Найти чужое слово',         sub: 'читать быстрее',           route: 'stream' },
-  { id: 'a06', icon: '📏', title: 'Пересчитать себя',        sub: 'та же проверка, что в первый день', route: 'recheck' },
-  { id: 'a07', icon: '📗', title: 'Посмотреть, что уже знаю', sub: 'весь словарь целиком',    route: 'words' },
-  { id: 'a08', icon: '🪤', title: 'Посмотреть двойников',         sub: 'слова с двойным дном', route: 'words', param: 'traps' },
-  { id: 'a09', icon: '🌱', title: 'Заглянуть в новые слова', sub: 'то, что ещё впереди',      route: 'words', param: 'new' },
-  { id: 'a10', icon: '💡', title: 'Прочесть одно совпадение',  sub: 'там, где всё как у нас',   route: 'rules' },
-  { id: 'a11', icon: '🎚', title: 'Подвинуть планку',     sub: 'если хочется поспокойнее или поплотнее', route: 'profile' },
-  { id: 'a12', icon: '🙂', title: 'Выбрать себе облик',      sub: 'аватар и имя',             route: 'profile' },
-  { id: 'a13', icon: '🎁', title: 'Позвать своего',          sub: 'каждый друг — день заморозки',        route: 'profile' },
-  { id: 'a14', icon: '💎', title: 'Заглянуть в лавку',       sub: 'на что уходят алмазы',     route: 'quests', param: 'shop' },
-  { id: 'a15', icon: '📊', title: 'Посмотреть свой ритм',    sub: 'график по дням',           route: 'profile' },
-  { id: 'a16', icon: '🏅', title: 'Посмотреть медали',        sub: 'что уже открыто',          route: 'profile' },
-  { id: 'a17', icon: '💾', title: 'Сохранить прогресс',      sub: 'страховка одним файлом',   route: 'profile' },
-  { id: 'a18', icon: '📲', title: 'Поставить на экран',      sub: 'чтобы не потерялось',      route: 'profile' },
-  { id: 'a19', icon: '🌍', title: 'Сменить язык',            sub: 'девятнадцать на выбор',    route: 'profile' },
-  { id: 'a20', icon: '🔊', title: 'Послушать слово дня',     sub: 'одно слово, десять секунд', route: 'home' },
+  { id: 'a01', icon: '📘', title: 'Стопка слов', sub: 'новые слова и повторение', route: 'session/build',
+    gems: 15, done: (s) => Object.values(s.days || {}).some(d => (d.modes || {}).build) },
+  { id: 'a02', icon: '⚡', title: 'Блиц на скорость', sub: 'шестьдесят секунд', route: 'session/sprint',
+    gems: 15, done: (s) => Object.values(s.days || {}).some(d => (d.modes || {}).sprint) },
+  { id: 'a03', icon: '🎧', title: 'Заход на слух', sub: 'слова без написания', route: 'session/ether',
+    gems: 20, done: (s) => Object.values(s.days || {}).some(d => (d.modes || {}).ether) },
+  { id: 'a04', icon: '🧱', title: 'Собрать фразу', sub: 'слова превращаются в речь', route: 'phrase',
+    gems: 25, done: (s) => Object.values(s.days || {}).some(d => (d.modes || {}).phrase) },
+  { id: 'a05', icon: '👁', title: 'Найти чужое слово', sub: 'слова идут сами', route: 'stream',
+    gems: 25, done: (s) => Object.values(s.days || {}).some(d => (d.modes || {}).stream) },
+  { id: 'a06', icon: '📏', title: 'Пересчитать себя', sub: 'та же проверка, что в первый день', route: 'recheck',
+    gems: 40, done: (s) => (s.rechecks || []).length > 0 },
+  { id: 'a07', icon: '🔑', title: 'Открыть первый ключ', sub: 'правило вместо слова', route: 'session/build',
+    gems: 30, done: (s) => Object.keys(s.keys || {}).length > 0 },
+  { id: 'a08', icon: '🙂', title: 'Выбрать себе облик', sub: 'аватар и имя', route: 'profile',
+    gems: 15, done: (s) => !!(s.profile.name || (s.profile.avatar && s.profile.avatar.base !== 'b00')) },
+  { id: 'a09', icon: '💎', title: 'Купить что-нибудь в лавке', sub: 'алмазы для этого и нужны', route: 'quests', param: 'shop',
+    gems: 20, done: (s) => (s.owned || []).length > 0 },
+  { id: 'a10', icon: '📶', title: 'Подвинуть сложность', sub: 'под себя, а не под норму', route: 'profile',
+    gems: 15, done: (s) => !!s.challenge.manual },
+  { id: 'a11', icon: '💡', title: 'Прочесть одно совпадение', sub: 'там, где всё как у нас', route: 'rules',
+    gems: 15, done: (s) => Object.keys(s.rulesRead || {}).length > 0 },
+  { id: 'a12', icon: '🪤', title: 'Посмотреть двойников', sub: 'слова с двойным дном', route: 'words', param: 'traps',
+    gems: 10, done: null },
+  { id: 'a13', icon: '🎁', title: 'Позвать своего', sub: 'каждый друг — день заморозки', route: 'profile',
+    gems: 30, done: (s) => ((s.referral || {}).friends || []).length > 0 },
+  { id: 'a14', icon: '💾', title: 'Сохранить прогресс', sub: 'страховка одним файлом', route: 'profile',
+    gems: 20, done: null },
+  { id: 'a15', icon: '📲', title: 'Поставить на экран', sub: 'чтобы не потерялось', route: 'profile',
+    gems: 25, done: (s) => !!(s.flags || {}).installPromptSeen },
+  { id: 'a16', icon: '☀️', title: 'Заглянуть в «Сегодня»', sub: 'слово, двойник и совпадение', route: 'today',
+    gems: 10, done: (s) => Object.values(s.days || {}).some(d => d.present) },
+  { id: 'a17', icon: '📗', title: 'Посмотреть свой словарь', sub: 'всё, что уже твоё', route: 'words',
+    gems: 0, done: null },
+  { id: 'a18', icon: '🏅', title: 'Проверить медали', sub: 'что уже открыто', route: 'profile',
+    gems: 0, done: null },
+  { id: 'a19', icon: '🌍', title: 'Сменить язык', sub: 'девятнадцать на выбор', route: 'profile',
+    gems: 0, done: null },
+  { id: 'a20', icon: '🔊', title: 'Послушать слово дня', sub: 'одно слово, десять секунд', route: 'today',
+    gems: 0, done: null },
 ];
+
+/** Выполнена ли активность: по состоянию, либо по отметке перехода. */
+export function activityDone(a, state) {
+  if (a.done) return !!a.done(state);
+  return !!(state.activitiesDone || {})[a.id];
+}
+
+/**
+ * Порядок: сначала невыполненное с наградой, дороже сверху, затем
+ * невыполненное без награды, затем сделанное. Сделанное не прячем:
+ * список выполненного — это тоже улика.
+ */
+export function sortedActivities(state) {
+  const rank = (a) => {
+    const done = activityDone(a, state);
+    if (done) return 2;
+    return a.gems > 0 ? 0 : 1;
+  };
+  return ACTIVITIES.slice().sort((x, y) => {
+    const rx = rank(x), ry = rank(y);
+    if (rx !== ry) return rx - ry;
+    if (rx === 0) return y.gems - x.gems;
+    return 0;
+  });
+}
+
+/** Сколько алмазов ещё лежит в невыполненных активностях. */
+export function activitiesLeft(state) {
+  return ACTIVITIES
+    .filter(a => a.gems > 0 && !activityDone(a, state))
+    .reduce((sum, a) => sum + a.gems, 0);
+}
 
 /* ── месяц ────────────────────────────────────────────────────── */
 

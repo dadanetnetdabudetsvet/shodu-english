@@ -55,10 +55,10 @@ export function screen(store, content) {
          вчерашнего, чтобы был виден прирост, а не сумма с нуля. */
       const big = el('div', { class: 't-num', style: 'font-size:var(--fs-4xl);font-weight:800;line-height:1' },
         String(knownBefore));
-      const bigCap = el('div', { class: 't-sm' }, t('английских слов ты уже узнаёшь'));
+      const bigCap = el('div', { class: 't-sm' }, t('слов в твоём английском'));
       const delta = gained > 0
         ? el('div', { class: 't-caption' }, t('сегодня прибавилось {v0}', { v0: gained }))
-        : el('div', { class: 't-caption' }, t('сегодня подтверждено: {v0}', { v0: r.correctFirstTry || 0 }));
+        : el('div', { class: 't-caption' }, t('сегодня отозвались сразу: {v0}', { v0: r.correctFirstTry || 0 }));
 
       const xpEl = el('div', { class: 'tile__val t-num' }, '0');
       const firstEl = el('div', { class: 'tile__val t-num' }, '0');
@@ -199,6 +199,8 @@ export function screen(store, content) {
         tiles, goalLine, keyCard, medalBlock, wpmLine,
         r.maxCombo >= 5 ? el('div', { class: 't-sm center' }, t('Лучшая серия: {v0} подряд', { v0: r.maxCombo })) : null,
         voteBox, voteReply, handshake,
+        el('div', { class: 't-caption center', style: 'padding-top:var(--sp-3)' },
+          t('Слова останутся, даже пока тебя здесь нет.')),
         el('div', { class: 'grow' }),
         goalMet ? stop : again,
         goalMet ? again : stop,

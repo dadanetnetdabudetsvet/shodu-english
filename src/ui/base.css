@@ -305,3 +305,37 @@ a { color: var(--accent); }
   display: grid; place-items: center; color: var(--text-3); font-size: 15px;
 }
 .toast__close:active { background: var(--surface-2); }
+
+/* Шторки. Раньше они просто не влезали по высоте, и не было ни одного
+   признака, что содержимое можно листать: человек видел обрезанную
+   карточку и считал это поломкой. */
+[role="dialog"] {
+  max-height: min(82svh, 720px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(var(--sp-4) + var(--safe-b));
+  /* Тень внизу гаснет, когда докрутили до конца: это и есть подсказка,
+     что ниже что-то есть. */
+  background:
+    linear-gradient(var(--surface) 30%, transparent) top / 100% 24px no-repeat local,
+    linear-gradient(transparent, var(--surface) 70%) bottom / 100% 24px no-repeat local,
+    radial-gradient(farthest-side at 50% 0, rgba(0,0,0,.10), transparent) top / 100% 12px no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,.10), transparent) bottom / 100% 12px no-repeat scroll,
+    var(--surface);
+}
+/* Полоска-ручка сверху: без неё шторка не читается как шторка. */
+[role="dialog"]::before {
+  content: '';
+  display: block;
+  width: 36px; height: 4px;
+  margin: 0 auto var(--sp-3);
+  border-radius: var(--r-full);
+  background: var(--border-strong);
+  opacity: .5;
+  position: sticky; top: 0;
+}
+@media (max-height: 700px) {
+  [role="dialog"] { max-height: 88svh; }
+}
+.list-row--done { opacity: .62; }

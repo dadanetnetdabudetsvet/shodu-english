@@ -10,7 +10,7 @@ import { refreshStreak, completeDay, costsLife, loseLife, regenLives,
 import { applyVote, autoAdjust, setManual, clampIndex } from '../domain/challenge.js';
 import { makeSelfCode, verifyProof, rewardFor, NEWCOMER_GEMS } from '../domain/referral.js';
 import { evaluateMedals } from '../domain/medals.js';
-import { questsForDay, questDone } from '../domain/quests.js';
+import { questsForDay, questDone, ACTIVITIES, activityDone } from '../domain/quests.js';
 import { evaluateKeys } from '../domain/keys.js';
 import { itemById, isOwned, FREEZE } from '../domain/shop.js';
 import { weekDone } from '../domain/streak.js';
@@ -197,6 +197,24 @@ export function rootReducer(state, action) {
         }
       }
 
+      /* Активности, выполнение которых видно по состоянию, засчитываются
+         сами: человек уже сделал дело, требовать от него ещё и нажать
+         на карточку было бы бюрократией. */
+      const actDone = { ...(state.activitiesDone || {}) };
+      let actGems = 0;
+      const nextForCheck = { ...state, days, keys, srs: state.srs };
+      for (const a of ACTIVITIES) {
+        if (!a.done || actDone[a.id]) continue;
+        if (a.done(nextForCheck)) {
+          actDone[a.id] = day;
+          if (a.gems) {
+            actGems += a.gems;
+            effects.push(fx.toast({ i18n: '{v0} · +{v1} 💎', vars: { v0: a.title, v1: a.gems }, tr: ['v0'] }, 'info'));
+          }
+        }
+      }
+      econ.gems += actGems;
+
       /* Медали выдаются здесь, а не при заходе в профиль. Раньше человек,
          который не открывал профиль, не получал ни одной медали и ни одного
          алмаза за них. */
@@ -222,7 +240,7 @@ export function rootReducer(state, action) {
         effects.push(fx.sound('levelUp'), fx.confetti({ count: 70 }));
       }
       return {
-        state: { ...state, days, econ, streak, medals, lastModes, keys,
+        state: { ...state, days, econ, streak, medals, lastModes, keys, activitiesDone: actDone,
                  profile: { ...state.profile, level },
                  lastMedals: fresh.map(m => m.id),
                  lastKeys: freshKeys.map(k => k.id) },
@@ -364,6 +382,26 @@ export function rootReducer(state, action) {
     case 'SESSION_CLEAR':
       if (!state.openSession) return { state, effects: [] };
       return { state: { ...state, openSession: null }, effects: [fx.save()] };
+
+    /* Отметка активности и разовая награда за неё. Награда даётся один
+       раз и только если она объявлена: список не должен превращаться
+       в источник дохода. */
+    case 'ACTIVITY_DONE': {
+      const doneMap = { ...(state.activitiesDone || {}) };
+      if (doneMap[action.id]) return { state, effects: [] };
+      doneMap[action.id] = state.day;
+      const act = ACTIVITIES.find(a => a.id === action.id);
+      const gems = act && act.gems ? act.gems : 0;
+      const effects = [fx.save()];
+      if (gems) {
+        effects.unshift(fx.sound('gems', 4),
+          fx.toast({ i18n: '{v0} · +{v1} 💎', vars: { v0: act.title, v1: gems }, tr: ['v0'] }, 'info'));
+      }
+      return {
+        state: { ...state, activitiesDone: doneMap, econ: { ...state.econ, gems: state.econ.gems + gems } },
+        effects,
+      };
+    }
 
     case 'PRESENCE': {
       const day = state.day;

@@ -20,6 +20,7 @@ import { isSoftMode, MAX_LIVES } from '../domain/streak.js';
 import { poolForChallenge, pickDistractors, shuffle, isTypo } from '../data/content.js';
 import { enterCard, enterOptions, popCorrect, shakeWrong, popCombo, fillBar, animate } from '../core/motion.js';
 import { sound } from '../core/sound.js';
+import { toast } from '../ui/toast.js';
 import { speech } from '../core/speech.js';
 import { haptics } from '../core/haptics.js';
 import { t } from '../i18n/index.js';
@@ -134,7 +135,7 @@ export function screen(store, content) {
         const name = el('div', { class: 't-caption center' }, t(tierOf(cur).name));
         const input = el('input', {
           type: 'range', min: '0', max: '30', value: String(cur),
-          style: 'width:100%', 'aria-label': t('Ручка планки'),
+          style: 'width:100%', 'aria-label': t('Ручка сложности'),
           onInput: (e) => {
             val.textContent = e.target.value;
             name.textContent = t(tierOf(Number(e.target.value)).name);
@@ -144,15 +145,17 @@ export function screen(store, content) {
           class: 'card stack', role: 'dialog', 'aria-modal': 'true',
           style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:95;max-width:536px;margin:0 auto',
         },
-          el('div', { style: 'font-weight:600' }, t('Планка 🎚')),
+          el('div', { style: 'font-weight:600' }, t('Сложность 📶')),
           val, name, input,
           el('div', { class: 't-caption center' }, t('Подействует со следующего слова.')),
           el('button', {
             class: 'btn btn--primary btn--cta',
             onClick: () => {
-              store.dispatch({ type: 'CHALLENGE_SET', index: Number(input.value) });
+              const next = Number(input.value);
+              store.dispatch({ type: 'CHALLENGE_SET', index: next });
               sound.select();
               close();
+              rebuildTail(next);
             },
           }, t('Готово ✓')),
           el('button', { class: 'btn btn--ghost', onClick: close }, t('Отмена')),
@@ -397,6 +400,15 @@ export function screen(store, content) {
           : right ? pick([t('Верно'), t('Точно'), t('Есть'), t('Так и есть'), t('В точку')])
           : gaveUp ? t('Отложил. Вернётся в конце.') : pick([t('Вот оно'), t('Вот это слово'), t('Оно вот такое')]);
 
+        /* Трудность приписывается слову, а не человеку. Данные для
+           этого уже собраны: сдвиг ударения, выпавший слог, двойник. */
+        const why = !right && !typo
+          ? (w.falseFriend ? t('У этого слова есть двойник в русском. На нём спотыкаются почти все.')
+            : w.stressShift ? t('Ударение тут не там, где в русском. Дело в слове, не в тебе.')
+            : w.syllableDrop ? t('Тут выпадает слог. Это слышат не сразу.')
+            : null)
+          : null;
+
         const note = right && !typo
           ? `${w.en} — ${w.answer}`
           : t('{v0} — {v1}. {v2}', {
@@ -407,6 +419,7 @@ export function screen(store, content) {
         setChildren(feedback, 
           el('div', { class: 'feedback__title', role: 'status', 'aria-live': 'assertive' }, title),
           el('div', { class: 'feedback__note' }, note),
+          why ? el('div', { class: 't-caption' }, why) : null,
           w.tier >= 3 && (w.stressShift || w.syllableDrop)
             ? el('div', { class: 't-caption' }, t('звучит так: {v0}', { v0: w.tr })) : null,
           el('button', {
@@ -432,6 +445,35 @@ export function screen(store, content) {
       /* Выход подтверждается, а половина занятия засчитывается как день.
          Раньше касание крестика на семнадцатом задании из восемнадцати
          стирало день целиком. */
+      /* Пересборка хвоста очереди под новую сложность.
+       *
+       * Пройденное не трогаем: человек уже ответил, отменять это нельзя.
+       * Меняется только то, что впереди, и знаменатель остаётся прежним,
+       * чтобы занятие не удлинилось от изменения настройки.
+       */
+      function rebuildTail(index) {
+        const left = queue.items.length - queue.pos - 1;
+        if (left < 2) {
+          toast(t('Сложность запомнил. Со следующего захода.'), { kind: 'info' });
+          return;
+        }
+        const st = store.state;
+        const sources2 = allowedSources(index);
+        const pool2 = poolForChallenge(content, sources2).map(w => ({
+          id: w.id, word: w,
+          rec: (st.srs[w.deck === 'core' ? 'deck2' : 'deck1'] || {})[w.id] || newRecord(),
+        }));
+        const seen = new Set(queue.items.slice(0, queue.pos + 1).map(x => x.id));
+        const banded2 = selectByChallenge(pool2.filter(p => !seen.has(p.id)), index);
+        if (banded2.length < left) {
+          toast(t('Сложность запомнил. Со следующего захода.'), { kind: 'info' });
+          return;
+        }
+        const tail = banded2.slice(0, left).map(p => ({ ...p, phase: 'check' }));
+        queue.items.splice(queue.pos + 1, left, ...tail);
+        toast(t('Готово. Дальше слова под новую сложность.'), { kind: 'info' });
+      }
+
       function confirmExit() {
         // Три ответа — это уже день. Порог в половину занятия был
         // дедлайном внутри сессии, то есть ровно тем, что запрещено.
@@ -564,7 +606,7 @@ function deadEndFix({ mode, ctx, store, content, hasAnyProgress, onRetry }) {
           store.dispatch({ type: 'CHALLENGE_SET', index: Math.min(30, s.challenge.index + 3) });
           onRetry();
         },
-      }, t('Поднять планку 📈')),
+      }, t('Поднять сложность 📈')),
     ),
 
     mode !== 'build' ? el('button', {

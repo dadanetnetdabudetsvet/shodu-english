@@ -387,9 +387,19 @@ console.log('\nЧЕЛЛЕНДЖИ И ЛАВКА');
   else {
     const quests = root.querySelectorAll('.card .bar--thin').length;
     const acts = root.querySelectorAll('.list-row').length;
-    step(`челленджей на сегодня: ${quests}, активностей в списке: ${acts}`);
+    const doneActs = root.querySelectorAll('.list-row--done').length;
+    step(`челленджей на сегодня: ${quests}, активностей: ${acts}, из них сделано: ${doneActs}`);
     if (quests !== 3) fail(`челленджей ${quests}, ожидалось 3`);
     if (acts !== 20) fail(`активностей ${acts}, ожидалось 20`);
+    if (doneActs === 0) fail('ни одна активность не отмечена, хотя занятие уже было');
+
+    // Награда за вычисляемую активность выдаётся сама.
+    const { ACTIVITIES, activityDone } = await imp('src/domain/quests.js');
+    const auto = ACTIVITIES.filter(a => a.done && activityDone(a, store.state));
+    step('засчитано по состоянию: ' + auto.map(a => a.title).join(', '));
+    const claimed = Object.keys(store.state.activitiesDone || {}).length;
+    if (claimed === 0) fail('выполненные активности не записались в состояние');
+    else step('записано выполненных: ' + claimed);
   }
 
   const shopTab = [...root.querySelectorAll('button')].find(b => b.textContent.includes('Лавка'));

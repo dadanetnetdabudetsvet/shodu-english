@@ -86,10 +86,12 @@ export function screen(store, content) {
       const proof = el('div', { class: 'stack', style: 'gap:2px' },
         el('div', { class: 't-caption' }, greeting(s.profile.name)),
         bigNumber,
-        el('div', { class: 't-body' }, t('английских слов ты уже узнаёшь')),
+        el('div', { class: 't-body' }, t('слов в твоём английском')),
         known > 0
-          ? el('div', { class: 't-caption' }, t('{v0} из них держатся без напоминания', { v0: known }))
-          : null,
+          ? el('div', { class: 't-caption' }, t('{v0} из них ты достаёшь не думая', { v0: known }))
+          : recognised > 0
+            ? el('div', { class: 't-caption' }, t('Ты их не учил. Ты их узнал.'))
+            : null,
       );
 
       const barFill = el('div', { class: 'bar__fill' });
@@ -121,7 +123,7 @@ export function screen(store, content) {
 
       const hero = el('div', { class: 'card--hero stack', style: 'gap:var(--sp-3)' },
         el('div', { style: 'font-size:var(--fs-md);font-weight:700' },
-          doneToday === 0 ? t('Связка на сегодня') : doneToday >= 3 ? t('Связка сложилась') : t('Ты в середине')),
+          doneToday === 0 ? t('Три захода на сегодня') : doneToday >= 3 ? t('Все три захода сделаны') : t('Ты в середине')),
         chips,
         heroBtn,
         el('div', { class: 't-caption', style: 'color:rgba(255,255,255,.75);text-align:center' },

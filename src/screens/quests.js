@@ -10,7 +10,8 @@
 
 import { el, setChildren } from '../ui/dom.js';
 import { t } from '../i18n/index.js';
-import { questsForDay, questProgress, questDone, ACTIVITIES, monthStats } from '../domain/quests.js';
+import { questsForDay, questProgress, questDone, ACTIVITIES, monthStats,
+         sortedActivities, activityDone, activitiesLeft } from '../domain/quests.js';
 import { SECTIONS, FREEZE, isOwned, itemById } from '../domain/shop.js';
 import { dayToDate } from '../core/day.js';
 import { countKnown } from '../ui/reducer.js';
@@ -81,6 +82,7 @@ export function screen(store, content) {
         const quests = questsForDay(s.day, s.settings.dailyGoalWords || 10);
         const claimed = new Set((s.questsClaimed || {})[String(s.day)] || []);
         const ready = quests.some(q => questDone(q, day) && !claimed.has(q.id));
+        const left = activitiesLeft(s);
 
         const rows = quests.map(q => {
           const have = questProgress(q, day);
@@ -111,23 +113,34 @@ export function screen(store, content) {
             el('div', { class: 't-caption' }, t('ничего не сгорает'))),
           ...rows,
           claimBtn,
-          el('div', { class: 't-h2', style: 'margin-top:var(--sp-4)' }, t('Чем ещё заняться')),
-          el('div', { class: 't-caption' }, t('Просто список того, что здесь есть. Наград за это нет.')),
+          el('div', { class: 'row row--between', style: 'margin-top:var(--sp-4)' },
+            el('div', { class: 't-h2' }, t('Чем ещё заняться')),
+            left > 0 ? el('div', { class: 't-caption' }, t('тут ещё {v0} 💎', { v0: left })) : null),
+          el('div', { class: 't-caption' },
+            t('Ничего не обязательно. За часть дают алмазы — один раз, за настоящее действие.')),
           el('div', { class: 'stack', style: 'gap:0' },
-            ...ACTIVITIES.map(a => el('button', {
-              class: 'list-row',
-              onClick: () => {
-                sound.tap();
-                if (a.route === 'quests' && a.param === 'shop') { tab = 'shop'; render(); return; }
-                ctx.go(a.route);
+            ...sortedActivities(s).map(a => {
+              const done = activityDone(a, s);
+              return el('button', {
+                class: 'list-row' + (done ? ' list-row--done' : ''),
+                onClick: () => {
+                  sound.tap();
+                  if (!done && !a.done) store.dispatch({ type: 'ACTIVITY_DONE', id: a.id });
+                  if (a.route === 'quests' && a.param === 'shop') { tab = 'shop'; render(); return; }
+                  ctx.go(a.param ? `${a.route}/${a.param}` : a.route);
+                },
               },
-            },
-              el('span', { style: 'font-size:20px;width:30px;text-align:center' }, a.icon),
-              el('span', { class: 'stack grow', style: 'gap:1px' },
-                el('span', { style: 'font-weight:600' }, t(a.title)),
-                el('span', { class: 't-caption' }, t(a.sub))),
-              el('span', { class: 't-caption' }, '›'),
-            ))),
+                el('span', { style: `font-size:20px;width:30px;text-align:center;${done ? 'filter:grayscale(.5);opacity:.6' : ''}` }, a.icon),
+                el('span', { class: 'stack grow', style: 'gap:1px' },
+                  el('span', { style: 'font-weight:600' }, t(a.title)),
+                  el('span', { class: 't-caption' }, t(a.sub))),
+                done
+                  ? el('span', { class: 't-sm', style: 'color:var(--answer-right)' }, '✓')
+                  : a.gems > 0
+                    ? el('span', { class: 't-caption', style: 'white-space:nowrap' }, `+${a.gems} 💎`)
+                    : el('span', { class: 't-caption' }, '›'),
+              );
+            })),
         );
       }
 
