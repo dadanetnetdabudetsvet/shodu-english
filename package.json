@@ -6,6 +6,10 @@
   "description": "PWA для изучения английских слов: старт с русско-английских когнатов",
   "scripts": {
     "dev": "node serve.mjs 5173",
-    "start": "node serve.mjs 5173"
+    "start": "node serve.mjs 5173",
+    "check": "node check.mjs",
+    "smoke": "node smoke.mjs",
+    "screens": "node screens-check.mjs",
+    "onboarding": "node standalone-check.mjs"
   }
 }

@@ -76,6 +76,7 @@ export function emptyState() {
       newcomerPaid: false,      // бонус новичку выдан после первого занятия
       friends: [],              // подтверждённые коды друзей
     },
+    premium: { active: false, since: null },  // «Сходу Всё»: даётся за троих друзей
     medals: {},                 // { [id]: номер дня получения }
     rulesRead: {},              // { [id правила]: номер дня }
     baseline: null,             // первая проверка: точка отсчёта роста

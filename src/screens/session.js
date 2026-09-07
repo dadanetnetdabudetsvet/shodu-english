@@ -148,8 +148,8 @@ export function screen(store, content) {
           },
         });
         const sheet = el('div', {
-          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
-          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:95;max-width:536px;margin:0 auto',
+          class: 'card stack sheet', role: 'dialog', 'aria-modal': 'true',
+          style: 'z-index:95',
         },
           el('div', { style: 'font-weight:600' }, t('Сложность 📶')),
           val, name, input,
@@ -489,8 +489,8 @@ export function screen(store, content) {
         const half = queue.pos >= 3;
         if (queue.pos === 0) { finish(false); return; }
         const sheet = el('div', {
-          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
-          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:90;max-width:536px;margin:0 auto',
+          class: 'card stack sheet', role: 'dialog', 'aria-modal': 'true',
+          style: 'z-index:90',
         },
           el('div', { style: 'font-weight:600' }, t('Уходим?')),
           el('div', { class: 't-sm' }, half

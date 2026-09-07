@@ -9,11 +9,12 @@ import { refreshStreak, completeDay, costsLife, loseLife, regenLives,
          isSoftMode, grantEmergencyFreeze } from '../domain/streak.js';
 import { applyVote, autoAdjust, setManual, clampIndex, setSize } from '../domain/challenge.js';
 import { makeSelfCode, verifyProof, rewardFor, NEWCOMER_GEMS } from '../domain/referral.js';
+import { NEEDED as PREMIUM_NEEDED, isActive as isPremiumState } from '../domain/premium.js';
 import { evaluateMedals } from '../domain/medals.js';
 import { questsForDay, questDone, ACTIVITIES, activityDone } from '../domain/quests.js';
 import { evaluateKeys } from '../domain/keys.js';
 import { itemById, isOwned, FREEZE } from '../domain/shop.js';
-import { weekDone } from '../domain/streak.js';
+import { weekDone, MAX_FREEZES } from '../domain/streak.js';
 import { fx } from './store.js';
 import { t } from '../i18n/index.js';
 
@@ -25,7 +26,24 @@ export function rootReducer(state, action) {
       if (day === state.day) return { state, effects: [] };
       const { streak, events } = refreshStreak(state.streak, day);
       const effects = [];
-      let next = { ...state, day, streak, lives: regenLives(state.lives, action.at, true) };
+
+      /* «Сходу Всё» держит ритм сам: запас заморозок пополняется раз в
+         неделю, и человеку не приходится об этом думать. Это ровно то,
+         что обещано в карточке, и оно должно происходить без его
+         участия — иначе это не подарок, а ещё одна обязанность. */
+      let kept = streak;
+      if (isPremiumState(state) && kept.freezes < MAX_FREEZES) {
+        const lastGift = state.premium?.lastFreezeDay ?? -99;
+        if (day - lastGift >= 7) {
+          kept = { ...kept, freezes: kept.freezes + 1 };
+          effects.push(fx.toast({ i18n: 'Заморозка на неделю пополнена 💠' }, 'info'));
+        }
+      }
+      const premium = kept !== streak
+        ? { ...state.premium, lastFreezeDay: day }
+        : state.premium;
+
+      let next = { ...state, day, streak: kept, premium, lives: regenLives(state.lives, action.at, true) };
 
       for (const e of events) {
         if (e.type === 'freezeUsed') {
@@ -281,6 +299,14 @@ export function rootReducer(state, action) {
       const nth = r.friends.length + 1;
       const gems = rewardFor(nth);
 
+      /* Третий друг открывает «Сходу Всё» навсегда. Выдаём здесь же,
+         одним событием с самим подтверждением: человек не должен
+         никуда идти и ничего забирать. */
+      const willHave = r.friends.length + 1;
+      const premium = (!state.premium?.active && willHave >= PREMIUM_NEEDED)
+        ? { active: true, since: state.day }
+        : state.premium;
+
       /* Друг приносит день заморозки. Это не нарисованное обещание:
          подтверждение приходит с устройства друга, и заморозка
          выдаётся по-настоящему. Если запас полон, говорим прямо. */
@@ -291,15 +317,18 @@ export function rootReducer(state, action) {
 
       return {
         state: {
-          ...state, streak,
+          ...state, streak, premium,
           referral: { ...r, friends: [...r.friends, res.friendCode] },
           econ: { ...state.econ, gems: state.econ.gems + gems },
         },
         effects: [
-          fx.sound('medal'), fx.confetti({ count: 90 }),
-          fx.toast(room
-            ? { i18n: 'Друг зачтён. День заморозки и +{v0} алмазов', vars: { v0: gems } }
-            : { i18n: 'Друг зачтён. +{v0} алмазов. Заморозок и так полный запас', vars: { v0: gems } },
+          fx.sound('medal'),
+          fx.confetti({ count: premium !== state.premium ? 220 : 90 }),
+          fx.toast(premium !== state.premium
+            ? { i18n: 'Трое своих. «Сходу Всё» открыто навсегда, и ещё +{v0} алмазов 💠', vars: { v0: gems } }
+            : room
+              ? { i18n: 'Друг зачтён. День заморозки и +{v0} алмазов', vars: { v0: gems } }
+              : { i18n: 'Друг зачтён. +{v0} алмазов. Заморозок и так полный запас', vars: { v0: gems } },
             'info'),
           fx.save(),
         ],

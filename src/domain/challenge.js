@@ -109,13 +109,17 @@ export const VOTE_DELTA = { easy: +2, normal: 0, hard: -2 };
  * задания легче, чем более трудное слово, и резкий скачок читается как
  * наказание за честный ответ.
  */
+/* Обычные границы ручки. Абсолютные шире: «Сходу Всё» открывает
+   от пяти до сорока, и зажим ниже не должен это срезать. */
 export const SIZE_MIN = 8;
 export const SIZE_MAX = 30;
+export const SIZE_HARD_MIN = 5;
+export const SIZE_HARD_MAX = 40;
 export const SIZE_DEFAULT = 18;
 export const SIZE_VOTE_DELTA = { easy: +2, normal: 0, hard: -3 };
 
 export function clampSize(v) {
-  return Math.max(SIZE_MIN, Math.min(SIZE_MAX, Math.round(v)));
+  return Math.max(SIZE_HARD_MIN, Math.min(SIZE_HARD_MAX, Math.round(v)));
 }
 
 export function sizeLabel(n) {

@@ -41,6 +41,21 @@ for (const f of ['src/domain/medals.js', 'src/domain/challenge.js', 'src/domain/
   }
 }
 
+/* Часть текстов лежит в данных модулей и попадает в t() переменной:
+   t(guide.title), t(st.text), t(perk.sub). Их не видно обычным поиском
+   по вызовам, поэтому берём значения известных полей показа. Список
+   полей узкий: иначе в каталог попадут ключи сопоставления тем, которые
+   человеку никогда не показываются. */
+const SHOWN = /\b(title|sub|text|note|line|hint|desc|period|key|name)\s*:\s*'((?:[^'\\\n]|\\.)*)'/g;
+for (const f of ['src/core/install.js', 'src/domain/premium.js',
+                 'src/domain/wordsets.js', 'src/domain/keys.js', 'src/domain/today.js']) {
+  const src = readFileSync(f, 'utf8').replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/.*$/gm, '$1 ');
+  for (const m of src.matchAll(SHOWN)) {
+    const v = m[2];
+    if (/[А-Яа-яЁё]/.test(v) && !keys.has(v)) { keys.set(v, [f.replace('src/', '')]); DOMAIN_STRINGS.push(v); }
+  }
+}
+
 const sorted = [...keys.keys()].sort((a, b) => a.localeCompare(b, 'ru'));
 mkdirSync('src/i18n/locales', { recursive: true });
 writeFileSync('src/i18n/catalog.json', JSON.stringify({

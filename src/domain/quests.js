@@ -127,7 +127,7 @@ export const ACTIVITIES = [
     gems: 15, done: (s) => Object.keys(s.rulesRead || {}).length > 0 },
   { id: 'a12', icon: '🪤', title: 'Посмотреть двойников', sub: 'слова с двойным дном', route: 'words', param: 'traps',
     gems: 10, done: null },
-  { id: 'a13', icon: '🎁', title: 'Позвать своего', sub: 'каждый друг — день заморозки', route: 'profile',
+  { id: 'a13', icon: '🎁', title: 'Позвать своего', sub: 'трое — и «Сходу Всё» твоё навсегда', route: 'profile',
     gems: 30, done: (s) => ((s.referral || {}).friends || []).length > 0 },
   { id: 'a14', icon: '💾', title: 'Сохранить прогресс', sub: 'страховка одним файлом', route: 'profile',
     gems: 20, done: null },

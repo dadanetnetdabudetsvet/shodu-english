@@ -76,8 +76,13 @@ export function itemById(id) {
   return allItems().find(x => x.id === id) || null;
 }
 
-export function isOwned(owned, item) {
-  return item.price === 0 || (owned || []).includes(item.id);
+/* «Сходу Всё» открывает весь гардероб разом. Заморозка не входит:
+   она расходуемая, а не вещь, и раздавать её бесконечно значит
+   обесценить сам ритм. */
+export function isOwned(owned, item, premium = false) {
+  if (item.price === 0) return true;
+  if (premium && item.id !== 'freeze') return true;
+  return (owned || []).includes(item.id);
 }
 
 /** Сколько всего можно потратить: показатель глубины стока. */

@@ -12,10 +12,13 @@ import { countKnown, levelInfo } from '../ui/reducer.js';
 import { MEDALS, evaluateMedals, nextMedal, visibleMedals } from '../domain/medals.js';
 import { gradeForLevel } from '../domain/scoring.js';
 import { tierOf, MIN_INDEX, MAX_INDEX, SIZE_MIN, SIZE_MAX, sizeLabel, sizeMinutes } from '../domain/challenge.js';
-import { THEMES, SIZES, setSize as countSet, setTitle } from '../domain/wordsets.js';
+import { THEMES, SIZES, setSize as countSet, setTitle, themesOf, isEmptySet } from '../domain/wordsets.js';
 import { weekDone } from '../domain/streak.js';
 import { weekdayShort, weekdayIndex } from '../core/day.js';
 import { inviteUrl, shareTargets, INVITE_TEXT } from '../domain/referral.js';
+import { premiumCard } from '../ui/premium-card.js';
+import { hardReload } from '../core/sw-update.js';
+import { sizeBounds, isActive as isPremium } from '../domain/premium.js';
 import { sound } from '../core/sound.js';
 import { storage } from '../core/storage.js';
 import { toast } from '../ui/toast.js';
@@ -46,6 +49,7 @@ export function screen(store, content) {
           medalsBlock(s, { known, learning, totalSessions }),
           challengeBlock(s),
           wordSetBlock(s),
+          premiumCard(s, { onInvite: shareInvite }),
           inviteBlock(s),
           settingsBlock(s),
         );
@@ -75,6 +79,9 @@ export function screen(store, content) {
           face,
           el('button', { class: 't-h1', style: 'background:none', onClick: () => editName(s) },
             s.profile.name || t('Дать себе имя ✏️')),
+          /* Знак «Сходу Всё» рядом с именем. Обещан в карточке, значит
+             должен быть виден там, где человек смотрит на себя. */
+          isPremium(s) ? el('div', { class: 'prem-badge' }, '💠', t('Сходу Всё')) : null,
           el('div', { class: 't-sm' }, t('Уровень {v0} · {v1}', { v0: lvl.level, v1: t(grade.name) })),
           el('div', { class: 't-caption' }, t(grade.line)),
           el('div', { class: 'bar', style: 'width:100%;margin-top:var(--sp-2)' }, bar),
@@ -90,8 +97,8 @@ export function screen(store, content) {
           style: 'width:100%;min-height:48px',
         });
         const sheet = el('div', {
-          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
-          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:90;max-width:536px;margin:0 auto',
+          class: 'card stack sheet', role: 'dialog', 'aria-modal': 'true',
+          style: 'z-index:90',
         },
           el('div', { style: 'font-weight:600' }, t('Как тебя звать?')),
           el('div', { class: 't-caption' }, t('Так приложение будет называть твой английский.')),
@@ -235,96 +242,69 @@ export function screen(store, content) {
       /* Подборка сужает базу под конкретную цель. Вся остальная логика
          работает так же: это фильтр поверх того же английского, а не
          отдельный курс. */
-      function wordSetBlock(s) {
-        const cur = s.settings.wordSet || {};
-        const isAuto = !cur.theme && !cur.size;
-
-        const apply = (patch) => {
-          const next = patch === null ? null : { ...cur, ...patch };
-          store.dispatch({ type: 'SETTINGS_SET', patch: { wordSet: next } });
-          sound.select();
-          render();
-        };
-
-        const themeBtn = (id, icon, title, sub) => el('button', {
-          class: 'setcard' + ((cur.theme || null) === id ? ' setcard--on' : ''),
-          onClick: () => apply({ theme: id }),
-        },
-          el('span', { style: 'font-size:20px' }, icon),
-          el('span', { class: 'stack grow', style: 'gap:1px;text-align:left' },
-            el('span', { style: 'font-weight:600' }, t(title)),
-            el('span', { class: 't-caption' }, t(sub))));
-
-        const sizeBtn = (n) => el('button', {
-          class: 'btn' + ((cur.size || null) === n ? ' btn--primary' : ''),
-          style: 'min-height:38px;padding:0 var(--sp-3);font-size:var(--fs-sm)',
-          onClick: () => apply({ size: n }),
-        }, n === null ? t('все') : String(n));
-
-        return el('div', { class: 'card stack', style: 'gap:var(--sp-3)' },
-          el('div', { class: 'row row--between' },
-            el('div', { style: 'font-weight:600' }, t('База слов 📚')),
-            el('div', { class: 't-caption' }, t(setTitle(cur)))),
-          el('div', { class: 't-sm' },
-            isAuto
-              ? t('Сейчас берётся вся база, а какие слова подавать — решает сложность.')
-              : t('В подборке {v0} слов. Всё остальное работает как обычно.', { v0: countSet(content, cur) })),
-
-          el('div', { class: 'stack', style: 'gap:6px' },
-            el('button', {
-              class: 'setcard' + (isAuto ? ' setcard--on' : ''),
-              onClick: () => apply(null),
-            },
-              el('span', { style: 'font-size:20px' }, '🎚'),
-              el('span', { class: 'stack grow', style: 'gap:1px;text-align:left' },
-                el('span', { style: 'font-weight:600' }, t('По умолчанию')),
-                el('span', { class: 't-caption' }, t('вся база, состав решает сложность')))),
-            themeBtn(null, '⭐', 'Самые нужные слова', 'по полезности, без темы'),
-            ...Object.values(THEMES).map(th => themeBtn(th.id, th.icon, th.title, th.sub))),
-
-          el('div', { class: 'stack', style: 'gap:6px' },
-            el('div', { class: 't-caption' }, t('СКОЛЬКО СЛОВ')),
-            el('div', { class: 'row', style: 'gap:6px;flex-wrap:wrap' },
-              sizeBtn(null), ...SIZES.map(n => sizeBtn(n)))),
-        );
-      }
-
       /* ── друзья ────────────────────────────────────────────── */
+
       /* ── база слов ─────────────────────────────────────────── */
 
       /* Подборка сужает базу под конкретную цель. Вся остальная логика
          работает так же: это фильтр поверх того же английского, а не
          отдельный курс. */
+      /* Подпись подборки: переводимая часть отдельно, число отдельно. */
+      function setLabel(set) {
+        const r = setTitle(set);
+        return r.size ? `${t(r.key, r.vars)} · ${r.size}` : t(r.key, r.vars);
+      }
+
       function wordSetBlock(s) {
         const cur = s.settings.wordSet || {};
-        const isAuto = !cur.theme && !cur.size;
+        const picked = themesOf(cur);
+        const isAuto = isEmptySet(cur);
 
-        const apply = (patch) => {
-          const next = patch === null ? null : { ...cur, ...patch };
+        const save = (next) => {
           store.dispatch({ type: 'SETTINGS_SET', patch: { wordSet: next } });
           sound.select();
           render();
         };
 
-        const themeBtn = (id, icon, title, sub) => el('button', {
-          class: 'setcard' + ((cur.theme || null) === id ? ' setcard--on' : ''),
-          onClick: () => apply({ theme: id }),
-        },
-          el('span', { style: 'font-size:20px' }, icon),
-          el('span', { class: 'stack grow', style: 'gap:1px;text-align:left' },
-            el('span', { style: 'font-weight:600' }, t(title)),
-            el('span', { class: 't-caption' }, t(sub))));
+        /* Подборка включается и выключается одним и тем же нажатием.
+           Отдельной кнопки «снять» нет: человек и так знает этот жест
+           по любому списку с галочками. */
+        const toggleTheme = (id) => {
+          const has = picked.includes(id);
+          const themes = has ? picked.filter(x => x !== id) : [...picked, id];
+          save(themes.length || cur.size ? { themes, size: cur.size || null } : null);
+        };
 
-        const sizeBtn = (n) => el('button', {
-          class: 'btn' + ((cur.size || null) === n ? ' btn--primary' : ''),
-          style: 'min-height:38px;padding:0 var(--sp-3);font-size:var(--fs-sm)',
-          onClick: () => apply({ size: n }),
-        }, n === null ? t('все') : String(n));
+        const themeBtn = (th) => {
+          const on = picked.includes(th.id);
+          return el('button', {
+            class: 'setcard' + (on ? ' setcard--on' : ''),
+            'aria-pressed': on ? 'true' : 'false',
+            onClick: () => toggleTheme(th.id),
+          },
+            el('span', { style: 'font-size:20px' }, th.icon),
+            el('span', { class: 'stack grow', style: 'gap:1px;text-align:left' },
+              el('span', { style: 'font-weight:600' }, t(th.title)),
+              el('span', { class: 't-caption' }, t(th.sub))),
+            el('span', { class: on ? 'done-mark' : 'setcard__add' }, on ? '✓' : '+'));
+        };
+
+        const sizeBtn = (n) => {
+          const on = (cur.size || null) === n;
+          return el('button', {
+            class: 'btn' + (on ? ' btn--primary' : ''),
+            style: 'min-height:38px;padding:0 var(--sp-3);font-size:var(--fs-sm)',
+            onClick: () => {
+              const size = on && n !== null ? null : n;
+              save(picked.length || size ? { themes: picked, size } : null);
+            },
+          }, n === null ? t('все') : String(n));
+        };
 
         return el('div', { class: 'card stack', style: 'gap:var(--sp-3)' },
           el('div', { class: 'row row--between' },
             el('div', { style: 'font-weight:600' }, t('База слов 📚')),
-            el('div', { class: 't-caption' }, t(setTitle(cur)))),
+            el('div', { class: 't-caption' }, setLabel(cur))),
           el('div', { class: 't-sm' },
             isAuto
               ? t('Сейчас берётся вся база, а какие слова подавать — решает сложность.')
@@ -333,19 +313,25 @@ export function screen(store, content) {
           el('div', { class: 'stack', style: 'gap:6px' },
             el('button', {
               class: 'setcard' + (isAuto ? ' setcard--on' : ''),
-              onClick: () => apply(null),
+              onClick: () => save(null),
             },
               el('span', { style: 'font-size:20px' }, '🎚'),
               el('span', { class: 'stack grow', style: 'gap:1px;text-align:left' },
                 el('span', { style: 'font-weight:600' }, t('По умолчанию')),
-                el('span', { class: 't-caption' }, t('вся база, состав решает сложность')))),
-            themeBtn(null, '⭐', 'Самые нужные слова', 'по полезности, без темы'),
-            ...Object.values(THEMES).map(th => themeBtn(th.id, th.icon, th.title, th.sub))),
+                el('span', { class: 't-caption' }, t('вся база, состав решает сложность'))),
+              isAuto ? el('span', { class: 'done-mark' }, '✓') : null),
+
+            el('div', { class: 't-caption', style: 'margin-top:var(--sp-2)' },
+              t('МОЖНО ВЫБРАТЬ НЕСКОЛЬКО')),
+            ...Object.values(THEMES).map(themeBtn)),
 
           el('div', { class: 'stack', style: 'gap:6px' },
             el('div', { class: 't-caption' }, t('СКОЛЬКО СЛОВ')),
             el('div', { class: 'row', style: 'gap:6px;flex-wrap:wrap' },
               sizeBtn(null), ...SIZES.map(n => sizeBtn(n)))),
+
+          picked.length > 1 ? el('div', { class: 't-caption' },
+            t('Подборки складываются: берутся слова из всех выбранных тем.')) : null,
         );
       }
 
@@ -356,6 +342,17 @@ export function screen(store, content) {
          Теперь одна крупная кнопка делает главное действие, каналы
          стали узнаваемыми плитками с фирменным цветом, а служебная
          часть с кодом убрана под раскрытие. */
+      async function shareInvite() {
+        sound.tap();
+        const st = store.state;
+        const link = inviteUrl(location.href.split('#')[0].split('?')[0], (st.referral || {}).selfCode || '');
+        const text = `${t(INVITE_TEXT)} ${link}`;
+        try {
+          if (navigator.share) await navigator.share({ title: 'Shodu', text: t(INVITE_TEXT), url: link });
+          else { await navigator.clipboard.writeText(text); toast(t('Ссылка скопирована 🔗'), { kind: 'info' }); }
+        } catch { /* человек передумал, это не ошибка */ }
+      }
+
       function inviteBlock(s) {
         const ref = s.referral || {};
         const url = inviteUrl(location.href.split('#')[0].split('?')[0], ref.selfCode || '');
@@ -416,7 +413,7 @@ export function screen(store, content) {
 
           el('div', { class: 't-sm' },
             count === 0
-              ? t('Вдвоём не бросают. Каждый друг приносит день заморозки: пропустишь день — ритм не тронется.')
+              ? t('Вдвоём не бросают. Каждый друг приносит день заморозки, а трое открывают «Сходу Всё» навсегда.')
               : t('Следующий друг принесёт день заморозки и {v0} алмазов.', { v0: nextGems })),
 
           el('div', { class: 't-caption' },
@@ -425,15 +422,7 @@ export function screen(store, content) {
               : t('Заморозок сейчас: {v0}', { v0: s.streak.freezes })),
 
           el('button', {
-            class: 'btn btn--primary btn--cta',
-            onClick: async () => {
-              sound.tap();
-              const text = `${t(INVITE_TEXT)} ${url}`;
-              try {
-                if (navigator.share) await navigator.share({ title: 'Shodu', text: t(INVITE_TEXT), url });
-                else { await navigator.clipboard.writeText(text); toast(t('Ссылка скопирована 🔗'), { kind: 'info' }); }
-              } catch { /* человек передумал, это не ошибка */ }
-            },
+            class: 'btn btn--primary btn--cta', onClick: shareInvite,
           }, t('Позвать друга 🎁')),
 
           tiles,
@@ -531,11 +520,12 @@ export function screen(store, content) {
          трудных слов, другому от того, что занятие не кончается. */
       function sizeRow(s) {
         const cur = s.challenge.size || 18;
+        const bounds = sizeBounds(s);
         const val = el('div', { class: 't-sm t-num' }, String(cur));
         const desc = el('div', { class: 't-caption' },
           t('{v0} · примерно {v1} мин', { v0: t(sizeLabel(cur)), v1: sizeMinutes(cur) }));
         const input = el('input', {
-          type: 'range', min: String(SIZE_MIN), max: String(SIZE_MAX), value: String(cur),
+          type: 'range', min: String(bounds.min), max: String(bounds.max), value: String(cur),
           style: 'width:100%', 'aria-label': t('Длина занятия'),
           onInput: (e) => {
             const v = Number(e.target.value);
@@ -732,8 +722,8 @@ export function screen(store, content) {
           el('div', { class: 'tile__cap' }, t('дней: {v0}', { v0: d })));
 
         const sheet = el('div', {
-          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
-          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:90;max-width:536px;margin:0 auto',
+          class: 'card stack sheet', role: 'dialog', 'aria-modal': 'true',
+          style: 'z-index:90',
         },
           el('div', { style: 'font-weight:600' }, t('Что оставить?')),
           el('div', { class: 'row', style: 'gap:var(--sp-2)' },
@@ -771,6 +761,17 @@ export function screen(store, content) {
 
         const { known, learning } = countKnown(s);
         inner.append(
+          /* Выход из застрявшей сборки. Стоит выше опасной кнопки и
+             ничего не удаляет: сносится только кэш, слова остаются. */
+          el('div', { class: 't-caption' },
+            t('Если приложение странно себя ведёт, перезапуск начисто чинит это. Слова и ритм останутся.')),
+          el('button', {
+            class: 'btn', style: 'align-self:flex-start',
+            onClick: () => { sound.tap(); hardReload(); },
+          }, t('Перезапустить начисто 🔄')),
+
+          el('div', { class: 'topbar__sep', style: 'height:1px;width:100%;margin:var(--sp-3) 0' }),
+
           el('div', { class: 't-caption' },
             t('Если начать заново, уйдут: {v0} слов, {v1} медалей, {v2} алмазов.', {
               v0: known + learning,
@@ -803,8 +804,8 @@ export function screen(store, content) {
         });
 
         const sheet = el('div', {
-          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
-          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:90;max-width:536px;margin:0 auto',
+          class: 'card stack sheet', role: 'dialog', 'aria-modal': 'true',
+          style: 'z-index:90',
         },
           el('div', { style: 'font-weight:600' }, t('Это нельзя отменить')),
           el('div', { class: 't-sm' }, t('Напиши {v0} заглавными, если точно решил.', { v0: WORD })),

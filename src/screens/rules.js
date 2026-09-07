@@ -65,39 +65,72 @@ export function screen(store, content) {
         // Правило засчитывается по закрытию, а не по открытию:
         // иначе счётчик считает касания, а не прочитанное.
         let counted = false;
-        const sheet = el('div', {
-          class: 'card', role: 'dialog', 'aria-modal': 'true',
-          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:80;max-width:536px;margin:0 auto;max-height:80dvh;overflow:auto',
-        },
-          el('h2', { class: 't-h2' }, r.title),
-          el('p', { class: 't-body', style: 'margin-top:var(--sp-2)' }, r.idea),
-          r.why_easy ? el('div', {
-            class: 'card card--flat',
-            style: 'margin-top:var(--sp-3);background:var(--accent-soft)',
-          },
-            el('div', { class: 't-caption' }, t('ЧТО ЗДЕСЬ УЖЕ ЗНАКОМО')),
-            el('div', { class: 't-sm' }, r.why_easy)) : null,
-          el('div', { class: 'card card--flat', style: 'margin-top:var(--sp-2)' },
-            el('div', { class: 't-caption' }, t('ТЫ ТАК УЖЕ ГОВОРИШЬ')),
-            el('div', { class: 't-sm' }, r.ru_parallel)),
-          el('div', { class: 'card card--flat', style: 'margin-top:var(--sp-2)' },
-            el('div', { lang: 'en', style: 'font-weight:600' }, r.en_example),
-            el('div', { class: 't-sm' }, r.ru_example)),
-          r.gotcha ? el('div', {
-            class: 'card card--flat',
-            style: 'margin-top:var(--sp-2)',
-          },
-            el('div', { class: 't-caption' }, t('ВСЯ РАЗНИЦА')),
-            el('div', { class: 't-sm' }, r.gotcha)) : null,
-          el('button', {
-            class: 'btn btn--primary btn--cta', style: 'margin-top:var(--sp-3)',
-            onClick: close,
-          }, t('Ровно так и говорю ✓')),
+
+        /* Лист устроен как разворот, а не как стопка серых блоков.
+           Сверху — заголовок, который не уезжает; в середине —
+           крупная английская фраза, ради которой всё и открывали;
+           снизу — кнопка, приклеенная к краю, чтобы её было видно
+           до прокрутки и человек понимал, что лист длинный. */
+        const body = el('div', { class: 'rsheet__body' },
+          el('div', { class: 'rsheet__hero' },
+            el('div', { class: 't-caption', style: 'color:rgba(255,255,255,.72)' }, t('ЧИТАЕТСЯ ТАК')),
+            el('div', { class: 'rsheet__en', lang: 'en' }, r.en_example),
+            el('div', { class: 'rsheet__ru' }, r.ru_example)),
+
+          el('p', { class: 'rsheet__idea' }, r.idea),
+
+          el('div', { class: 'rsheet__pair' },
+            el('div', { class: 'rsheet__pair-side' },
+              el('div', { class: 't-caption' }, t('ПО-РУССКИ ТЫ ГОВОРИШЬ')),
+              el('div', { class: 'rsheet__pair-text' }, r.ru_parallel)),
+            el('div', { class: 'rsheet__pair-eq' }, sameMark(r.sameness)),
+            el('div', { class: 'rsheet__pair-side' },
+              el('div', { class: 't-caption' }, t('ПО-АНГЛИЙСКИ ТОЧНО ТАК ЖЕ')),
+              el('div', { class: 'rsheet__pair-text', lang: 'en' }, r.en_example))),
+
+          r.en_example2 ? el('div', { class: 'rsheet__more' },
+            el('div', { class: 't-caption' }, t('ЕЩЁ ОДИН')),
+            el('div', { lang: 'en', class: 'rsheet__more-en' }, r.en_example2),
+            el('div', { class: 't-sm' }, r.ru_example2)) : null,
+
+          r.why_easy ? el('div', { class: 'rsheet__note rsheet__note--easy' },
+            el('div', { class: 'rsheet__note-ic' }, '✅'),
+            el('div', {},
+              el('div', { class: 't-caption' }, t('ПОЧЕМУ ЭТО ЛЕГКО')),
+              el('div', { class: 't-sm' }, r.why_easy))) : null,
+
+          r.gotcha ? el('div', { class: 'rsheet__note rsheet__note--diff' },
+            el('div', { class: 'rsheet__note-ic' }, '⚠️'),
+            el('div', {},
+              el('div', { class: 't-caption' }, t('ВСЯ РАЗНИЦА')),
+              el('div', { class: 't-sm' }, r.gotcha))) : null,
         );
-        const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:79', onClick: close });
+
+        const sheet = el('div', { class: 'rsheet', role: 'dialog', 'aria-modal': 'true' },
+          el('div', { class: 'rsheet__head' },
+            el('span', { class: `rule__mark rule__mark--s${r.sameness}` }, sameMark(r.sameness)),
+            el('div', { class: 'grow' },
+              el('div', { class: 'rsheet__title' }, r.title),
+              el('div', { class: 't-caption' }, sameLabel(r.sameness))),
+            el('button', { class: 'rsheet__x', 'aria-label': t('Закрыть'), onClick: close }, '✕')),
+          body,
+          el('div', { class: 'rsheet__foot' },
+            el('button', { class: 'btn btn--primary btn--cta', onClick: close },
+              t('Ровно так и говорю ✓'))));
+
+        const back = el('div', { class: 'rsheet__back', onClick: close });
         document.body.append(back, sheet);
+
+        /* Тень у нижнего края, пока лист не докручен: без неё длинный
+           лист выглядит закончившимся на середине. */
+        const shade = () => sheet.classList.toggle('is-more',
+          body.scrollHeight - body.scrollTop - body.clientHeight > 12);
+        body.addEventListener('scroll', shade, { passive: true });
+        requestAnimationFrame(shade);
+
         animate(sheet, [{ transform: 'translateY(110%)' }, { transform: 'none' }],
           { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+
         function close() {
           if (!counted) { counted = true; store.dispatch({ type: 'RULE_READ', id: r.id }); }
           sheet.remove(); back.remove(); render();

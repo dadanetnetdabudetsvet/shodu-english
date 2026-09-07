@@ -118,7 +118,7 @@ export function screen(store, content) {
       function openCard(w, r) {
         sound.tap();
         const sheet = el('div', {
-          class: 'card', style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:80;max-width:536px;margin:0 auto',
+          class: 'card sheet', style: 'z-index:80',
           role: 'dialog', 'aria-modal': 'true',
         },
           el('div', { class: 'teach' },

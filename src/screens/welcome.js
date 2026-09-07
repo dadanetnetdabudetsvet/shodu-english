@@ -52,7 +52,7 @@ export function screen(store, content) {
           el('div', { style: 'font-size:56px;line-height:1' }, '👋'),
           el('h1', { class: 't-h1' }, t('Ты уже читаешь по-английски')),
           el('p', { class: 't-body t-dim' }, t('Сейчас увидишь сам. Минута, без подготовки.')),
-          el('p', { class: 't-sm' }, t('Отвечай не думая. Не думая — честнее.')),
+          el('p', { class: 't-sm' }, t('Тыкай первое, что приходит в голову. Здесь так и надо.')),
           el('div', { class: 'grow' }),
           el('button', { class: 'btn btn--primary btn--cta', onClick: () => { sound.tap(); step = 1; startQuiz(); } }, t('Убедиться за минуту 👀')),
         );

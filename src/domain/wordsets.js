@@ -78,17 +78,35 @@ export function ranked(content) {
     .sort((a, b) => rank(a) - rank(b));
 }
 
+/* Подборок можно держать несколько сразу: человек и переезжает, и
+   работает, и это одна жизнь, а не два курса. Несколько подборок
+   складываются объединением тем, а не пересечением: пересечение почти
+   всегда даёт пустоту и выглядит как поломка.
+
+   Старая форма с одной темой понимается по-прежнему: у людей уже
+   сохранены настройки, и терять их из-за смены формата нельзя. */
+export function themesOf(set) {
+  if (!set) return [];
+  if (Array.isArray(set.themes)) return set.themes.filter(id => THEMES[id]);
+  return set.theme && THEMES[set.theme] ? [set.theme] : [];
+}
+
+export function isEmptySet(set) {
+  return !set || (!themesOf(set).length && !set.size);
+}
+
 /**
  * Слова подборки.
  * @param {object} content загруженный контент
- * @param {object} set { theme: null|'travel'|…, size: null|50|100|250|500 }
+ * @param {object} set { themes: string[], size: null|50|100|250|500 }
  */
 export function wordsFor(content, set) {
-  if (!set || (!set.theme && !set.size)) return null;   // вся база
+  if (isEmptySet(set)) return null;   // вся база
 
   let pool = ranked(content);
-  if (set.theme && THEMES[set.theme]) {
-    const topics = new Set(THEMES[set.theme].topics);
+  const picked = themesOf(set);
+  if (picked.length) {
+    const topics = new Set(picked.flatMap(id => THEMES[id].topics));
     pool = pool.filter(w => w.deck === ALWAYS || topics.has(w.topic));
   }
   if (set.size) {
@@ -107,9 +125,15 @@ export function setSize(content, set) {
   return w ? w.filter(x => x.deck !== ALWAYS).length : content.counts.total;
 }
 
-/** Человеческое название подборки. */
+/* Название подборки возвращается ключом и подстановками, а не готовой
+   строкой. Склеенная здесь строка не нашлась бы в словаре и на всех
+   языках показывала бы русский текст. */
 export function setTitle(set) {
-  if (!set || (!set.theme && !set.size)) return 'Вся база';
-  const theme = set.theme && THEMES[set.theme] ? THEMES[set.theme].title : 'Топ слов';
-  return set.size ? `${theme}: ${set.size}` : theme;
+  const picked = themesOf(set);
+  if (isEmptySet(set)) return { key: 'Вся база', vars: {} };
+  if (!picked.length) return { key: 'Топ {v0}', vars: { v0: set.size } };
+  const name = picked.length === 1
+    ? { key: THEMES[picked[0]].title, vars: {} }
+    : { key: 'Подборок: {v0}', vars: { v0: picked.length } };
+  return set.size ? { ...name, size: set.size } : name;
 }

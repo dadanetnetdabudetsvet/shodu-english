@@ -7,7 +7,7 @@ import { speech } from './core/speech.js';
 import { haptics } from './core/haptics.js';
 import { setMotionLevel } from './core/motion.js';
 import { confetti } from './core/confetti.js';
-import { registerServiceWorker } from './core/sw-update.js';
+import { registerServiceWorker, hardReload } from './core/sw-update.js';
 import { loadContent } from './data/content.js';
 import { readRefFromUrl } from './domain/referral.js';
 import { watchPrompt } from './core/install.js';
@@ -103,6 +103,28 @@ async function boot() {
       });
     },
   });
+
+  watchForBreakage();
+}
+
+/* Молчащая поломка — худшее, что может случиться: человек нажимает, и
+ * ничего не происходит, а винит он себя. Поэтому любая необработанная
+ * ошибка выходит на экран одной строкой и всегда с выходом: снести
+ * кэш и загрузиться заново. Прогресс при этом остаётся на месте.
+ */
+let breakageShown = false;
+function watchForBreakage() {
+  const show = () => {
+    if (breakageShown) return;
+    breakageShown = true;
+    try { storage.flush(); } catch { /* сохранить не вышло — не страшно */ }
+    toast('Что-то не отозвалось. Прогресс на месте.', {
+      action: { label: t('Перезапустить'), fn: () => hardReload() },
+      sticky: true,
+    });
+  };
+  window.addEventListener('error', (e) => { if (e && (e.error || e.message)) show(); });
+  window.addEventListener('unhandledrejection', show);
 }
 
 /* Подписи навигации живут в разметке, поэтому переводятся отдельно.

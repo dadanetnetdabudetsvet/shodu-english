@@ -6,7 +6,7 @@ import { t } from '../i18n/index.js';
  * Так приложение переживает и починку данных, и откат.
  */
 
-import { wordsFor } from '../domain/wordsets.js';
+import { isEmptySet, wordsFor } from '../domain/wordsets.js';
 
 let cache = null;
 
@@ -165,7 +165,7 @@ function guessSpellingTrap(x) {
 /* Подборка сужает базу, но не трогает остальную логику: коробки,
    сложность и режимы работают ровно так же. */
 export function applyWordSet(pool, content, set) {
-  if (!set || (!set.theme && !set.size)) return pool;
+  if (isEmptySet(set)) return pool;
   const allowed = wordsFor(content, set);
   if (!allowed) return pool;
   const ids = new Set(allowed.map(w => w.id));

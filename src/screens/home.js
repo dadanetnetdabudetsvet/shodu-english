@@ -17,6 +17,7 @@ import { weekdayShort, weekdayIndex, dayToDate } from '../core/day.js';
 import { countKnown, levelInfo } from '../ui/reducer.js';
 import { isKnown } from '../domain/srs.js';
 import { questsForDay } from '../domain/quests.js';
+import { isActive as isPremium } from '../domain/premium.js';
 import { enterCard, fillBar, animate, tweenNumber } from '../core/motion.js';
 import { sound } from '../core/sound.js';
 import { speech } from '../core/speech.js';
@@ -107,8 +108,8 @@ export function screen(store, content) {
         });
 
         const sheet = el('div', {
-          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
-          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:90;max-width:536px;margin:0 auto',
+          class: 'card stack sheet', role: 'dialog', 'aria-modal': 'true',
+          style: 'z-index:90',
         },
           el('div', { style: 'font-weight:600' }, t('Твоя неделя')),
           ...rows,
@@ -122,6 +123,10 @@ export function screen(store, content) {
             el('div', { class: 'tile grow' },
               el('div', { class: 'tile__val' }, String(s.streak.best || 0)),
               el('div', { class: 'tile__cap' }, t('лучший ритм')))),
+          /* «Сходу Всё» показывает не неделю, а весь год сразу.
+             Год целиком — это единственный вид, где человек видит не
+             отдельный день, а размер собственной привычки. */
+          isPremium(s) ? yearGrid(s) : null,
           el('div', { class: 't-caption' },
             t('Первый день был {v0} дней назад.', { v0: Math.max(0, s.day - first) })),
           el('button', {
@@ -135,6 +140,28 @@ export function screen(store, content) {
         const onKey = (e) => { if (e.key === 'Escape') close(); };
         document.addEventListener('keydown', onKey);
         function close() { sheet.remove(); back.remove(); document.removeEventListener('keydown', onKey); }
+      }
+
+      /* Сетка года: 182 дня назад и вперёд до сегодня. Яркость клетки
+         по числу тронутых слов, сегодня обведено. */
+      function yearGrid(st) {
+        const cells = [];
+        const from = st.day - 181;
+        for (let d = from; d <= st.day; d++) {
+          const rec = st.days[d] || {};
+          const w = rec.touched || rec.words || 0;
+          const lvl = w >= 20 ? 3 : w >= 8 ? 2 : w > 0 ? 1 : rec.present ? 1 : 0;
+          cells.push(el('span', {
+            class: 'year__d' + (lvl ? ` year__d--l${lvl}` : '') + (d === st.day ? ' year__d--today' : ''),
+          }));
+        }
+        const active = Object.keys(st.days).filter(k => Number(k) >= from
+          && ((st.days[k].touched || st.days[k].words || 0) > 0 || st.days[k].present)).length;
+        return el('div', { class: 'year' },
+          el('div', { class: 't-caption' }, t('ПОЛГОДА ОДНИМ ВЗГЛЯДОМ')),
+          el('div', { class: 'year__grid' }, ...cells),
+          el('div', { class: 't-caption' },
+            t('Дней с английским за это время: {v0}', { v0: active })));
       }
 
       /* Главный кадр экрана.
@@ -174,8 +201,8 @@ export function screen(store, content) {
         },
           el('span', { class: 'hero__cta-icon' }, MODES[current].icon),
           el('span', { class: 'grow', style: 'text-align:left' },
-            doneToday === 0 ? t('Начнём')
-              : doneToday >= 3 ? t('Ещё заход')
+            doneToday === 0 ? t('Начнём: {v0}', { v0: t(MODES[current].name) })
+              : doneToday >= 3 ? t('Ещё заход: {v0}', { v0: t(MODES[current].name) })
               : t('Дальше: {v0}', { v0: t(MODES[current].name) })),
           el('span', { class: 'hero__cta-note' }, nextReward(s, today, goal))),
 
@@ -193,7 +220,7 @@ export function screen(store, content) {
       const pickLink = el('button', {
         class: 'btn btn--ghost', style: 'align-self:flex-start;font-size:var(--fs-sm)',
         onClick: openPicker,
-      }, t('Выбрать другой заход →'));
+      }, t('Выбрать заход самому →'));
 
 
       const softNote = isSoftMode(s.lives) && el('div', { class: 'card card--flat t-sm' },
@@ -265,8 +292,8 @@ export function screen(store, content) {
           );
         });
         const sheet = el('div', {
-          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
-          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:80;max-width:536px;margin:0 auto',
+          class: 'card stack sheet', role: 'dialog', 'aria-modal': 'true',
+          style: 'z-index:80',
         },
           el('div', { style: 'font-weight:600' }, t('Чем займёмся?')),
           ...rows,

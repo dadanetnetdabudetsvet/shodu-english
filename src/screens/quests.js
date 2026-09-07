@@ -13,6 +13,8 @@ import { t } from '../i18n/index.js';
 import { questsForDay, questProgress, questDone, ACTIVITIES, monthStats,
          sortedActivities, activityDone, activitiesLeft } from '../domain/quests.js';
 import { SECTIONS, FREEZE, isOwned, itemById } from '../domain/shop.js';
+import { isActive as isPremium } from '../domain/premium.js';
+import { premiumCard } from '../ui/premium-card.js';
 import { dayToDate } from '../core/day.js';
 import { countKnown } from '../ui/reducer.js';
 import { enterCard, fillBar, animate, tweenNumber } from '../core/motion.js';
@@ -157,6 +159,7 @@ export function screen(store, content) {
       /* ── лавка ─────────────────────────────────────────────── */
       function shopBlock(s) {
         const owned = s.owned || [];
+        const prem = isPremium(s);
         const avatar = s.profile.avatar || {};
         const slotOf = { bases: 'base', hats: 'hat', frames: 'frame' };
 
@@ -164,7 +167,7 @@ export function screen(store, content) {
           el('div', { class: 't-h2' }, t(sec.title)),
           el('div', { style: 'display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2)' },
             ...sec.items.map(item => {
-              const have = isOwned(owned, item);
+              const have = isOwned(owned, item, prem);
               const slot = slotOf[sec.id];
               const active = sec.id === 'accents'
                 ? (s.settings.accent || 'a00') === item.id
@@ -228,6 +231,11 @@ export function screen(store, content) {
               onClick: () => { tab = 'today'; sound.select(); render(); },
             }, t('Показать, что можно сделать сегодня →')),
             el('div', { class: 't-caption' }, t('Слова здесь не продаются. Только облик и защита ритма.'))),
+
+          /* Витрина стоит рядом с прилавком: человек видит цены и тут же
+             узнаёт, что всё это открывается разом и бесплатно. */
+          premiumCard(s, { compact: false, onInvite: () => ctx.go('profile') }),
+
           freezeCard,
           ...sections,
         );
