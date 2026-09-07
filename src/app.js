@@ -7,7 +7,7 @@ import { speech } from './core/speech.js';
 import { haptics } from './core/haptics.js';
 import { setMotionLevel } from './core/motion.js';
 import { confetti } from './core/confetti.js';
-import { registerServiceWorker, hardReload } from './core/sw-update.js';
+import { registerServiceWorker, hardReload, isReloading } from './core/sw-update.js';
 import { loadContent } from './data/content.js';
 import { readRefFromUrl } from './domain/referral.js';
 import { watchPrompt } from './core/install.js';
@@ -69,6 +69,15 @@ async function boot() {
       }
       if (!inSession) sound.screen();
     },
+    /* Экран не загрузился дважды подряд. Это единственный случай,
+       когда человек действительно упирается в пустоту, и здесь ему
+       нужен не отчёт об ошибке, а выход. */
+    onFail: () => {
+      toast('Что-то не отозвалось. Прогресс на месте.', {
+        action: { label: t('Перезапустить'), fn: () => hardReload() },
+        sticky: true,
+      });
+    },
   });
 
   /* Пересчёт дня делается ДО первой отрисовки и до того, как что-то
@@ -107,15 +116,40 @@ async function boot() {
   watchForBreakage();
 }
 
-/* Молчащая поломка — худшее, что может случиться: человек нажимает, и
- * ничего не происходит, а винит он себя. Поэтому любая необработанная
- * ошибка выходит на экран одной строкой и всегда с выходом: снести
- * кэш и загрузиться заново. Прогресс при этом остаётся на месте.
+/* Сторож молчащих поломок.
+ *
+ * Молчащая поломка — худшее, что может случиться: человек нажимает, и
+ * ничего не происходит, а винит он себя. Поэтому настоящая поломка
+ * должна выходить на экран с выходом из неё.
+ *
+ * Но первая же версия этого сторожа отправляла сообщение на любой
+ * отказ промиса — и первым делом сообщила о поломке там, где её не
+ * было: приложение само ставило обновление, перезагружалось, и
+ * оборванные на полпути загрузки модулей сторож принял за беду.
+ *
+ * Отсюда три условия молчания. Ни одно из них не прячет настоящую
+ * поломку: тот отчёт был про экран, который не отвечает на нажатия,
+ * а такой случай проходит все три и доходит до человека.
  */
+const BOOTED_AT = Date.now();
+const QUIET_MS = 2500;
+
+/* Обрыв загрузки при уходе со страницы. Браузеры называют это
+   по-разному, поэтому список, а не одно имя. */
+function isLoadAbort(reason) {
+  const name = reason && reason.name;
+  if (name === 'AbortError' || name === 'NetworkError') return true;
+  const text = String((reason && (reason.message || reason)) || '');
+  return /Importing a module script failed|Load failed|error loading dynamically imported module|NetworkError|cancell?ed|aborted/i.test(text);
+}
+
 let breakageShown = false;
 function watchForBreakage() {
-  const show = () => {
+  const show = (reason) => {
     if (breakageShown) return;
+    if (isReloading()) return;                       // мы сами перезагружаемся
+    if (isLoadAbort(reason)) return;                 // страница уходит, это не беда
+    if (Date.now() - BOOTED_AT < QUIET_MS) return;   // шум запуска
     breakageShown = true;
     try { storage.flush(); } catch { /* сохранить не вышло — не страшно */ }
     toast('Что-то не отозвалось. Прогресс на месте.', {
@@ -123,8 +157,11 @@ function watchForBreakage() {
       sticky: true,
     });
   };
-  window.addEventListener('error', (e) => { if (e && (e.error || e.message)) show(); });
-  window.addEventListener('unhandledrejection', show);
+  window.addEventListener('error', (e) => {
+    if (e && (e.error || e.message)) show(e.error || e.message);
+  });
+  window.addEventListener('unhandledrejection', (e) => show(e && e.reason));
+  window.addEventListener('pagehide', () => { breakageShown = true; }, { once: true });
 }
 
 /* Подписи навигации живут в разметке, поэтому переводятся отдельно.

@@ -263,6 +263,44 @@ if (anySheet) { const c = [...anySheet.querySelectorAll('button')].pop(); if (c)
 /* Каждый язык должен собираться целиком: подстановки на месте, ни
    одного «{v0}» в готовом тексте, ни одного undefined. */
 const LANGS = (process.env.LANGS || 'en,de,ja,ar,tr,uk').split(',');
+/* ── сторож поломок ────────────────────────────────────────────────
+   Он обязан молчать на шуме (обрыв загрузки при перезагрузке) и
+   говорить на настоящей поломке. Первая версия молчать не умела и
+   сообщала о беде на ровном месте. */
+console.log('');
+console.log('СТОРОЖ ПОЛОМОК');
+/* Тост — один постоянный элемент #toast, который прячется, а не
+   удаляется. Удалять его в проверке нельзя: модуль держит ссылку. */
+const toastNode = window.document.getElementById('toast');
+const toastText = () => (toastNode && !toastNode.hidden)
+  ? toastNode.textContent.replace(/\s+/g, ' ').trim() : null;
+const clearToasts = () => { if (toastNode) { toastNode.hidden = true; toastNode.replaceChildren(); } };
+
+const NOISE = [
+  ['обрыв модуля', new TypeError('Importing a module script failed.')],
+  ['отмена', Object.assign(new Error('cancelled'), { name: 'AbortError' })],
+  ['сеть', new TypeError('Load failed')],
+];
+for (const [label, reason] of NOISE) {
+  clearToasts();
+  window.dispatchEvent(Object.assign(new window.Event('unhandledrejection'), { reason }));
+  await sleep(120);
+  const t = toastText();
+  console.log((t ? '  ПЛОХО ' : '  ок    ') + 'молчит на шуме: ' + label + (t ? ' → ' + t : ''));
+  if (t) problems.push('сторож сработал на шуме: ' + label);
+}
+
+clearToasts();
+window.dispatchEvent(Object.assign(new window.Event('unhandledrejection'),
+  { reason: new TypeError('u.render is not a function') }));
+await sleep(150);
+const realToast = toastText();
+console.log((realToast ? '  ок    ' : '  ПЛОХО ') + 'говорит на настоящей поломке'
+            + (realToast ? ' → ' + realToast : ''));
+if (!realToast) problems.push('сторож промолчал на настоящей поломке');
+else if (!/Перезапустить|restart|Restart/i.test(realToast)) problems.push('в сообщении нет выхода');
+clearToasts();
+
 console.log('');
 console.log('ЯЗЫКИ');
 for (const lg of LANGS) {

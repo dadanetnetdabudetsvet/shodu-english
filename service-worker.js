@@ -9,7 +9,7 @@
  * по нажатию человека пришлёт сообщение.
  */
 
-const VERSION = 'v055b9400bb';
+const VERSION = 'v71856985f0';
 const CACHE = `shodu-${VERSION}`;
 
 const SHELL = [
@@ -125,53 +125,25 @@ self.addEventListener('message', (e) => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
-/* Файлы кода версионируются вместе, поэтому смесь сборок ломает
-   приложение молча: один модуль новый, другой старый, и обработчик
-   нажатия перестаёт работать без единой ошибки на экране.
-   Для кода берём сеть первой, кэш оставляем запасным. Данные и
-   картинки меняются редко и отдаются из кэша сразу. */
-const CODE = /\.(?:js|css|html)$|\/$/;
-
+/* Кэш отдаётся сразу, свежая копия подтягивается следом.
+ *
+ * Сначала здесь была сеть-первой, и это было ошибкой: на телефоне
+ * запуск упирался в три десятка сетевых запросов, а ради свежести
+ * человек ждал белый экран. Свежесть обеспечивает не эта функция, а
+ * то, что новый service worker теперь встаёт сам при холодном
+ * запуске. Значит кэш можно отдавать мгновенно, а обновление
+ * готовить к следующему разу.
+ *
+ * Смесь файлов из разных сборок при этом невозможна: у каждой сборки
+ * своё имя кэша, и переключение происходит целиком.
+ */
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
 
-  const isCode = CODE.test(url.pathname) || req.mode === 'navigate';
-
   e.respondWith((async () => {
-    if (isCode) {
-      /* Сеть первой, но не любой ценой: на медленной связи ждать ответ
-         дольше двух с половиной секунд — значит показать человеку
-         белый экран там, где в кэше уже лежит рабочая копия.
-         Свежесть важна, но не важнее того, чтобы приложение открылось. */
-      try {
-        const fresh = await Promise.race([
-          fetch(req),
-          new Promise((_, rej) => setTimeout(() => rej(new Error('slow')), 2500)),
-        ]);
-        if (fresh && fresh.ok) {
-          const clone = fresh.clone();
-          caches.open(CACHE).then((c) => c.put(req, clone)).catch(() => {});
-          return fresh;
-        }
-      } catch {
-        /* Нет сети или она слишком медленная. Берём кэш, а свежую
-           копию дотягиваем в фоне: следующий запуск будет новым. */
-        fetch(req).then((r) => {
-          if (r && r.ok) caches.open(CACHE).then((c) => c.put(req, r)).catch(() => {});
-        }).catch(() => {});
-      }
-      const cachedCode = await caches.match(req, { ignoreSearch: true });
-      if (cachedCode) return cachedCode;
-      if (req.mode === 'navigate') {
-        const shell = await caches.match('./index.html');
-        if (shell) return shell;
-      }
-      return new Response('Нет сети', { status: 503, headers: { 'content-type': 'text/plain; charset=utf-8' } });
-    }
-
     const cached = await caches.match(req, { ignoreSearch: true });
     if (cached) return cached;
     try {

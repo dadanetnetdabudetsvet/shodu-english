@@ -47,9 +47,20 @@ export function registerServiceWorker({ onUpdateReady } = {}) {
     .catch(() => null);
 }
 
+/* Пока идёт наша собственная перезагрузка, страница разбирается на
+ * ходу: незавершённые загрузки модулей обрываются и дают отказы
+ * промисов. Это не поломка, а нормальный конец жизни страницы, и
+ * сторож ошибок должен об этом знать — иначе он сообщит человеку о
+ * несуществующей беде ровно в тот момент, когда всё как раз чинится.
+ */
+let switching = false;
 let reloading = false;
+
+export function isReloading() { return switching || reloading; }
+
 function applyUpdate(reg) {
   if (!reg.waiting) return;
+  switching = true;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (reloading) return;
     reloading = true;              // ровно одна перезагрузка
@@ -66,6 +77,7 @@ function applyUpdate(reg) {
  * и в IndexedDB — их мы не трогаем, поэтому терять нечего.
  */
 export async function hardReload() {
+  switching = true;
   try {
     if ('serviceWorker' in navigator) {
       const regs = await navigator.serviceWorker.getRegistrations();
