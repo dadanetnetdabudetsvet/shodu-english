@@ -172,6 +172,11 @@ function wireStoragePersistence(store) {
       : t('Браузер не даёт сохранять. Прогресс держится только в этой вкладке.'),
       { kind: 'warn', sticky: true });
   });
+  storage.addEventListener('corrupt', () => {
+    // Раньше битый документ означал молчаливую потерю: событие
+    // отправлялось и никто его не слушал.
+    toast(t('Часть записи не прочиталась. Взял последнюю целую копию.'), { kind: 'warn', ms: 7000 });
+  });
   storage.addEventListener('readonly', () => {
     toast('Прогресс записан более новой версией приложения. Пока только чтение.', { kind: 'warn', sticky: true });
   });

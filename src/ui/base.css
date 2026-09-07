@@ -300,3 +300,8 @@ a { color: var(--accent); }
 .diff__half--right { background: var(--accent-soft); }
 /* Мягкая точка: день, в который человек заглядывал, но не занимался. */
 .rhythm__dot--light { background: var(--accent-border); }
+.toast__close {
+  flex: none; width: 30px; height: 30px; border-radius: var(--r-full);
+  display: grid; place-items: center; color: var(--text-3); font-size: 15px;
+}
+.toast__close:active { background: var(--surface-2); }

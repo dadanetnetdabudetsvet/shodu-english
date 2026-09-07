@@ -519,28 +519,94 @@ export function screen(store, content) {
         );
       }
 
+      /* Экспорт и импорт. Кнопка называет файл страховкой, а вернуть
+         его было некуда: это было самое крупное расхождение обещания и
+         возможностей во всём продукте. */
       function exportRow() {
-        return el('div', { class: 'row', style: 'gap:var(--sp-2)' },
-          el('button', {
-            class: 'btn grow', onClick: () => {
-              const blob = new Blob([JSON.stringify(store.state)], { type: 'application/json' });
-              const a = document.createElement('a');
-              a.href = URL.createObjectURL(blob);
-              // Файл экспорта — материальный след: пусть он называется
-              // по-человечески, а не служебным идентификатором.
-              const who = (store.state.profile.name || '').trim().toLowerCase().replace(/\s+/g, '-');
-              const n = countKnown(store.state).known + countKnown(store.state).learning;
-              a.download = `английский-${who ? who + '-' : ''}${n}-слов.json`;
-              a.click();
-              setTimeout(() => URL.revokeObjectURL(a.href), 30000);
-              toast('Файл сохранён. Держи его как страховку.', { kind: 'info' });
-            },
-          }, t('Сохранить прогресс в файл 💾')));
+        const file = el('input', {
+          type: 'file', accept: 'application/json,.json', style: 'display:none',
+          onChange: (e) => {
+            const f = e.target.files && e.target.files[0];
+            if (!f) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+              let incoming = null;
+              try { incoming = JSON.parse(String(reader.result)); }
+              catch { toast(t('Это не похоже на файл прогресса.'), { kind: 'warn' }); return; }
+              if (!incoming || !incoming.srs) { toast(t('Это не похоже на файл прогресса.'), { kind: 'warn' }); return; }
+              confirmImport(incoming);
+            };
+            reader.readAsText(f);
+            e.target.value = '';
+          },
+        });
+
+        return el('div', { class: 'stack', style: 'gap:var(--sp-2)' },
+          el('div', { class: 'row', style: 'gap:var(--sp-2)' },
+            el('button', {
+              class: 'btn grow', onClick: () => {
+                const blob = new Blob([JSON.stringify(store.state)], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                const who = (store.state.profile.name || '').trim().toLowerCase().replace(/\s+/g, '-');
+                const n = countKnown(store.state).known + countKnown(store.state).learning;
+                a.download = `английский-${who ? who + '-' : ''}${n}-слов.json`;
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+                toast(t('Файл сохранён. Держи его как страховку.'), { kind: 'info' });
+              },
+            }, t('Сохранить прогресс в файл 💾')),
+            el('button', { class: 'btn', onClick: () => file.click() }, t('Вернуть из файла 📂'))),
+          file,
+          el('div', { class: 't-caption' },
+            t('Твои слова живут в этом браузере и никуда не уходят. Сервера у нас нет.')));
       }
 
-      /* Опасная зона: свёрнута, внизу, нейтрального цвета, с подтверждением
-         вводом слова и окном отмены. Красный заголовок притягивает палец,
-         поэтому его здесь нет. */
+      /* Импорт показывает обе стороны прежде, чем что-то заменит:
+         одно нажатие не должно стирать месяц. */
+      function confirmImport(incoming) {
+        const mine = countKnown(store.state);
+        const theirs = countKnown(incoming);
+        const myDays = Object.keys(store.state.days || {}).length;
+        const theirDays = Object.keys(incoming.days || {}).length;
+
+        const side = (title, k, d) => el('div', { class: 'tile', style: 'align-items:flex-start;gap:2px' },
+          el('div', { class: 'tile__cap' }, title),
+          el('div', { class: 'tile__val', style: 'font-size:var(--fs-lg)' }, String(k.known + k.learning)),
+          el('div', { class: 'tile__cap' }, t('слов')),
+          el('div', { class: 'tile__cap' }, t('дней: {v0}', { v0: d })));
+
+        const sheet = el('div', {
+          class: 'card stack', role: 'dialog', 'aria-modal': 'true',
+          style: 'position:fixed;left:12px;right:12px;bottom:12px;z-index:90;max-width:536px;margin:0 auto',
+        },
+          el('div', { style: 'font-weight:600' }, t('Что оставить?')),
+          el('div', { class: 'row', style: 'gap:var(--sp-2)' },
+            side(t('здесь сейчас'), mine, myDays),
+            side(t('в файле'), theirs, theirDays)),
+          el('button', {
+            class: 'btn btn--primary btn--cta',
+            onClick: close,
+          }, t('Оставить как есть')),
+          el('button', {
+            class: 'btn',
+            onClick: () => {
+              storage.state = incoming;
+              storage.flush();
+              close();
+              location.reload();
+            },
+          }, t('Взять из файла')),
+        );
+        const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:89', onClick: close });
+        document.body.append(back, sheet);
+        const onKey = (e) => { if (e.key === 'Escape') close(); };
+        document.addEventListener('keydown', onKey);
+        function close() { sheet.remove(); back.remove(); document.removeEventListener('keydown', onKey); }
+      }
+
+      /* Опасная зона: свёрнута, внизу, нейтральным цветом. Красный
+         заголовок притягивает палец, поэтому его здесь нет. */
       function dangerZone(s) {
         const inner = el('div', { class: 'stack', hidden: true, style: 'margin-top:var(--sp-2)' });
         const head = el('button', {
@@ -548,16 +614,17 @@ export function screen(store, content) {
           onClick: () => { inner.hidden = !inner.hidden; },
         }, t('Дополнительно ▾'));
 
-        const { known } = countKnown(s);
+        const { known, learning } = countKnown(s);
         inner.append(
           el('div', { class: 't-caption' },
-            t('Если начать заново, исчезнут: {v0} слов, {v1} дней лучшего ритма, ', { v0: known, v1: s.streak.best }) +
-            t('{v0} медалей, {v1} алмазов.', { v0: Object.keys(s.medals || {}).length, v1: s.econ.gems })),
+            t('Если начать заново, уйдут: {v0} слов, {v1} медалей, {v2} алмазов.', {
+              v0: known + learning,
+              v1: Object.keys(s.medals || {}).length,
+              v2: s.econ.gems,
+            })),
           el('button', {
             class: 'btn', style: 'background:none;box-shadow:none;border:1px solid var(--border-strong);align-self:flex-start',
-            onClick: () => {
-              openWipeSheet();
-            },
+            onClick: openWipeSheet,
           }, t('Начать заново')),
         );
         return el('div', { style: 'margin-top:var(--sp-4)' }, head, inner);

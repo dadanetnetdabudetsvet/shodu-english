@@ -179,8 +179,22 @@ export function screen(store, content) {
         }, t('Понятно ✓')),
       );
 
+      /* Прерванное занятие. Человек не должен гадать, сохранилось ли
+         то, что он успел. */
+      const open = s.openSession && s.openSession.day === s.day && s.openSession.pos > 0
+        ? el('div', { class: 'card row', style: 'gap:var(--sp-3);align-items:center' },
+            el('div', { style: 'font-size:22px' }, '↩️'),
+            el('div', { class: 'stack grow', style: 'gap:2px' },
+              el('div', { style: 'font-weight:600' }, t('Ты остановился на {v0} из {v1}', { v0: s.openSession.pos, v1: s.openSession.total })),
+              el('div', { class: 't-caption' }, t('Всё, что успел, на месте'))),
+            el('button', {
+              class: 'btn btn--primary', style: 'flex:none',
+              onClick: () => { sound.sessionStart(); ctx.go(MODES[s.openSession.mode]?.route || 'session/build'); },
+            }, t('Дальше →')))
+        : null;
+
       const wrap = el('div', { class: 'screen' },
-        head, proof, goalRow, hero, pickLink,
+        head, proof, open, goalRow, hero, pickLink,
         recheckCard, installCard, softNote, wordOfDay);
       root.replaceChildren(wrap);
 

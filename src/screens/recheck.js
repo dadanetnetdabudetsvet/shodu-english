@@ -81,6 +81,9 @@ export function screen(store, content) {
         }
 
         setChildren(wrap, el('div', { class: 'stack', style: 'gap:var(--sp-4)' },
+          el('div', { class: 'row row--between' },
+            el('button', { class: 'session__close', 'aria-label': t('Выйти'), onClick: () => ctx.go('home') }, '✕'),
+            el('div', { class: 't-caption' }, t('Пересчёт'))),
           el('p', { class: 't-sm center' }, t('Те же десять слов, что в самый первый день.')),
           card, opts));
         enterCard(card);

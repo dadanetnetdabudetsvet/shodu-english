@@ -339,6 +339,19 @@ export function rootReducer(state, action) {
     /* Присутствие: человек пришёл и что-то взял, не занимаясь.
        Это засчитывается в ритм недели, но не в счётчик занятий:
        мы не выдаём чтение за упражнение. */
+    /* Занятие можно продолжить с места обрыва. Раньше состояние жило
+       в замыкании: звонок на девятом слове из восемнадцати — и следа
+       занятия не оставалось. */
+    case 'SESSION_MARK':
+      return {
+        state: { ...state, openSession: { mode: action.mode, pos: action.pos, total: action.total, day: state.day } },
+        effects: [fx.save()],
+      };
+
+    case 'SESSION_CLEAR':
+      if (!state.openSession) return { state, effects: [] };
+      return { state: { ...state, openSession: null }, effects: [fx.save()] };
+
     case 'PRESENCE': {
       const day = state.day;
       const days = { ...state.days };

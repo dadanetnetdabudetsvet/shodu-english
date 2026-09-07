@@ -33,8 +33,12 @@ export function screen(store, content) {
     mount(root, ctx) {
       const mode = ctx.params[0] || 'build';
       let teardown = () => {};
+      // Открытые шторки должны умирать вместе с экраном.
+      const sheets = new Set();
+      const trackSheet = (...nodes) => { for (const n of nodes) sheets.add(n); };
+      const dropSheets = () => { for (const n of sheets) n.remove(); sheets.clear(); };
       start();
-      return { destroy() { speech.cancel(); teardown(); } };
+      return { destroy() { speech.cancel(); dropSheets(); teardown(); } };
 
       /* Сессия пересобирается на месте: из тупика человек выходит
          кнопкой прямо здесь, а не уходом на главную. */
@@ -155,6 +159,7 @@ export function screen(store, content) {
         );
         const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:94', onClick: close });
         document.body.append(back, sheet);
+        trackSheet(back, sheet);
         const onKey = (e) => { if (e.key === 'Escape') close(); };
         document.addEventListener('keydown', onKey);
         function close() { sheet.remove(); back.remove(); document.removeEventListener('keydown', onKey); }
@@ -187,6 +192,9 @@ export function screen(store, content) {
 
         counter.textContent = `${queue.shownIndex}/${queue.total}`;
         fillBar(bar, queue.pos / queue.total, (queue.pos + 1) / queue.total);
+
+        // Отметка места: занятие переживает звонок и сворачивание.
+        store.dispatch({ type: 'SESSION_MARK', mode, pos: queue.pos, total: queue.total });
 
         if (item.phase === 'teach') renderTeach(item);
         else renderExercise(item);
@@ -442,6 +450,7 @@ export function screen(store, content) {
         );
         const back = el('div', { style: 'position:fixed;inset:0;background:var(--overlay);z-index:89', onClick: close });
         document.body.append(back, sheet);
+        trackSheet(back, sheet);
         function close() { sheet.remove(); back.remove(); }
       }
 
@@ -450,6 +459,7 @@ export function screen(store, content) {
         if (finished) return;      // переход асинхронный, тап успевает трижды
         finished = true;
         const ms = Date.now() - startedAt;
+        store.dispatch({ type: 'SESSION_CLEAR' });
         const bestBefore = store.state.profile.sprintBest || 0;
         const isRecord = mode === 'sprint' && stats.correctFirstTry > bestBefore;
         if (isRecord) store.dispatch({ type: 'PROFILE_SET', patch: { sprintBest: stats.correctFirstTry } });

@@ -20,6 +20,7 @@ import { makeProof } from '../domain/referral.js';
 import { popIn, tweenNumber, animate } from '../core/motion.js';
 import { confetti } from '../core/confetti.js';
 import { sound } from '../core/sound.js';
+import { toast } from '../ui/toast.js';
 
 export function screen(store, content) {
   return {
@@ -223,10 +224,22 @@ export function screen(store, content) {
       later(() => {
         const voted = (store.state.challenge.votes || []).some(v => v.day === store.state.day);
         if (!voted && r.mode !== 'stream') {
+          const before = store.state.challenge.index;
           store.dispatch({
             type: 'CHALLENGE_AUTO',
             stats: { answered: r.answered, correctFirstTry: r.correctFirstTry || 0, medianAnswerMs: r.medianAnswerMs },
           });
+          const after = store.state.challenge.index;
+          /* Молчаливое изменение состояния запрещено правилом Р6.
+             Если планка поехала сама, об этом говорят и дают вернуть. */
+          if (after !== before) {
+            toast(after > before
+              ? t('Подобрал слова поплотнее на завтра.')
+              : t('Подобрал слова поспокойнее на завтра.'), {
+              kind: 'info', ms: 6000,
+              action: { label: t('Вернуть'), fn: () => store.dispatch({ type: 'CHALLENGE_SET', index: before }) },
+            });
+          }
         }
       }, 4000);
 
