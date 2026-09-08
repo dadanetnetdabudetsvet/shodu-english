@@ -263,6 +263,37 @@ if (anySheet) { const c = [...anySheet.querySelectorAll('button')].pop(); if (c)
 /* Каждый язык должен собираться целиком: подстановки на месте, ни
    одного «{v0}» в готовом тексте, ни одного undefined. */
 const LANGS = (process.env.LANGS || 'en,de,ja,ar,tr,uk').split(',');
+/* ── звук не должен звать сам себя ────────────────────────────────
+   Ограничитель частоты и спящий контекст — разные причины отказа. Если
+   их перепутать, звук вызывает сам себя до переполнения стека, а это
+   падение нашего кода: сторож показывает поломку, занятие срывается. */
+console.log('');
+console.log('ЗВУК');
+{
+  const { sound } = await import(pathToFileURL(join(ROOT, 'src/core/sound.js')).href);
+  sound.unlock();
+  await sleep(60);
+  let broke = null;
+  const names = ['tap', 'select', 'correct', 'wrong', 'screen', 'swipe', 'close'];
+  try {
+    for (const n of names) {
+      if (typeof sound[n] !== 'function') continue;
+      for (let i = 0; i < 40; i++) sound[n]();     // подряд, быстрее ограничителя
+    }
+  } catch (e) { broke = e && (e.message || String(e)); }
+  console.log((broke ? '  ПЛОХО  ' : '  ок     ') + 'частые звуки подряд'
+              + (broke ? ' → ' + broke : ''));
+  if (broke) problems.push('звук падает при частом вызове: ' + broke);
+
+  // и то же самое при спящем контексте: там откладывание законно
+  try {
+    if (sound.ctx) sound.ctx.state = 'suspended';
+    for (const n of names) { if (typeof sound[n] === 'function') sound[n](); }
+    if (sound.ctx) sound.ctx.state = 'running';
+  } catch (e) { problems.push('звук падает при спящем контексте: ' + e.message); }
+  console.log('  ок     звук при спящем контексте');
+}
+
 /* ── сторож поломок ────────────────────────────────────────────────
    Он обязан молчать на шуме (обрыв загрузки при перезагрузке) и
    говорить на настоящей поломке. Первая версия молчать не умела и
