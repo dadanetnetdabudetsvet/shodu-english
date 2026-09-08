@@ -246,7 +246,7 @@ export class SoundEngine {
     this._bell({ f: note('C7'), t0: 0.2, dur: 0.8, gain: 0.1 });
   }
 
-  /** Челлендж выполнен. */
+  /** Задание дня выполнено. */
   quest() {
     if (!this._ready(null)) { this._play('quest', () => this.quest()); return; }
     this._tone({ f0: note('E5'), f1: note('B5'), dur: 0.18, gain: 0.18, lp: 6000 });

@@ -1,2 +1,2 @@
 /* Собирается автоматически в tools-sw-manifest.mjs. Руками не править. */
-export const BUILD = 'vbf5debe4a9';
+export const BUILD = 'vf7945b4703';
