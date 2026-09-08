@@ -36,6 +36,13 @@ const next = sw
   .replace(/const VERSION = '[^']*';/, `const VERSION = '${version}';`);
 writeFileSync('service-worker.js', next);
 
+/* Ту же версию кладём в приложение. Без неё отчёт «выскочило
+   сообщение» не говорит, какая сборка его показала, и разбор
+   начинается с угадывания. */
+writeFileSync('src/core/version.js',
+  `/* Собирается автоматически в tools-sw-manifest.mjs. Руками не править. */\n`
+  + `export const BUILD = '${version}';\n`);
+
 const bytes = files.reduce((a, f) => {
   try { return a + statSync(f.replace('./', '')).size; } catch { return a; }
 }, 0);

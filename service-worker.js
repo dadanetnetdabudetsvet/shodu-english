@@ -9,7 +9,7 @@
  * по нажатию человека пришлёт сообщение.
  */
 
-const VERSION = 'v37262b91d2';
+const VERSION = 'v8b9e6ff61c';
 const CACHE = `shodu-${VERSION}`;
 
 const SHELL = [
@@ -27,6 +27,7 @@ const SHELL = [
   './src/core/speech.js',
   './src/core/storage.js',
   './src/core/sw-update.js',
+  './src/core/version.js',
   './src/data/content.js',
   './src/domain/challenge.js',
   './src/domain/keys.js',

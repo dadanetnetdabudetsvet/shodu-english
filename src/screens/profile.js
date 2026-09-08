@@ -18,6 +18,7 @@ import { weekdayShort, weekdayIndex } from '../core/day.js';
 import { inviteUrl, shareTargets, INVITE_TEXT } from '../domain/referral.js';
 import { premiumCard } from '../ui/premium-card.js';
 import { hardReload } from '../core/sw-update.js';
+import { BUILD } from '../core/version.js';
 import { sizeBounds, isActive as isPremium } from '../domain/premium.js';
 import { sound } from '../core/sound.js';
 import { storage } from '../core/storage.js';
@@ -777,18 +778,21 @@ export function screen(store, content) {
               style: 'font-family:var(--font-mono);white-space:pre-wrap;word-break:break-word;'
                    + 'max-height:120px;overflow:auto;background:var(--surface-2);'
                    + 'padding:var(--sp-2);border-radius:var(--r-sm)',
-            }, [lastErr.at, lastErr.kind, lastErr.where].filter(Boolean).join(' · ') + '\n' + lastErr.text),
+            }, [lastErr.at, lastErr.build, lastErr.kind, lastErr.where].filter(Boolean).join(' · ')
+               + '\n' + lastErr.text),
             el('button', {
               class: 'btn', style: 'align-self:flex-start;font-size:var(--fs-sm)',
               onClick: async () => {
                 sound.tap();
-                const text = [lastErr.at, lastErr.kind, lastErr.where].filter(Boolean).join(' · ')
+                const text = [lastErr.at, lastErr.build, lastErr.kind, lastErr.where].filter(Boolean).join(' · ')
                   + '\n' + lastErr.text;
                 try { await navigator.clipboard.writeText(text); toast(t('Скопировано 📋'), { kind: 'info' }); }
                 catch { toast(text.slice(0, 160), { kind: 'info', ms: 12000 }); }
               },
             }, t('Копировать 📋')),
             el('div', { class: 'topbar__sep', style: 'height:1px;width:100%;margin:var(--sp-3) 0' })) : null,
+
+          el('div', { class: 't-caption', style: 'font-family:var(--font-mono)' }, `⚙ ${BUILD}`),
 
           /* Выход из застрявшей сборки. Стоит выше опасной кнопки и
              ничего не удаляет: сносится только кэш, слова остаются. */

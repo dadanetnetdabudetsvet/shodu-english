@@ -38,7 +38,8 @@ export async function takeUpdateBeforeBoot() {
   try { reg = await navigator.serviceWorker.getRegistration(); }
   catch { return false; }
   if (!reg || !reg.waiting) return false;
-  if (!(await isRealUpdate(reg))) return false;
+  try { if (!(await isRealUpdate(reg))) return false; }
+  catch { return false; }
 
   /* Ждём смены управляющего worker'а, но не бесконечно. Если она по
      какой-то причине не случится, лучше запуститься на прежней
@@ -73,11 +74,13 @@ export function registerServiceWorker({ onUpdateReady } = {}) {
       // Ожидающее обновление уже разобрано в takeUpdateBeforeBoot.
       // Здесь остаётся только случай, когда идёт занятие.
       if (reg.waiting && busyNow()) {
-        isRealUpdate(reg).then((real) => { if (real) onUpdateReady?.(() => applyUpdate(reg)); });
+        isRealUpdate(reg)
+          .then((real) => { if (real) onUpdateReady?.(() => applyUpdate(reg)); })
+          .catch(() => { /* не смогли сверить версии — молчим */ });
       }
       // Проверяем обновление при каждом возврате в приложение.
       document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) reg.update().catch(() => {});
+        if (!document.hidden) { try { reg.update().catch(() => {}); } catch { /* нечего проверять */ } }
       });
       reg.addEventListener('updatefound', () => {
         const sw = reg.installing;
@@ -90,7 +93,9 @@ export function registerServiceWorker({ onUpdateReady } = {}) {
              человек имеет право решить сам. В остальных случаях
              сообщение о версиях — лишний шум. */
           if (!busyNow()) return;
-          isRealUpdate(reg).then((real) => { if (real) onUpdateReady?.(() => applyUpdate(reg)); });
+          isRealUpdate(reg)
+            .then((real) => { if (real) onUpdateReady?.(() => applyUpdate(reg)); })
+            .catch(() => { /* не смогли сверить версии — молчим */ });
         });
       });
       return reg;

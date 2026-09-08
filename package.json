@@ -11,6 +11,7 @@
     "smoke": "node smoke.mjs",
     "screens": "node screens-check.mjs",
     "onboarding": "node standalone-check.mjs",
-    "wordsets": "node wordsets-check.mjs"
+    "wordsets": "node wordsets-check.mjs",
+    "safari": "node safari-check.mjs"
   }
 }

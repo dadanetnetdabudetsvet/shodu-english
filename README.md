@@ -58,6 +58,7 @@ node check.mjs                            # инварианты кода, да�
 npm i --no-save jsdom && node smoke.mjs    # сквозной прогон в настоящем DOM
 node screens-check.mjs                     # все экраны без ошибок, «Сходу Всё», сторож поломок
 node wordsets-check.mjs                    # любая подборка даёт занятие в любом режиме
+npx playwright install webkit && node safari-check.mjs   # прогон в движке Safari, эмуляция айфона
 node standalone-check.mjs                  # вводная проверка в приложении с домашнего экрана
 node tools-sw-manifest.mjs                 # пересборка списка офлайн-кэша
 node tools-i18n-extract.mjs                # каталог строк для переводчиков

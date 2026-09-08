@@ -16,6 +16,7 @@ import { createStore } from './ui/store.js';
 import { createRouter } from './ui/router.js';
 import { rootReducer } from './ui/reducer.js';
 import { toast } from './ui/toast.js';
+import { BUILD } from './core/version.js';
 
 const root = document.getElementById('root');
 const tabbar = document.getElementById('tabbar');
@@ -165,6 +166,7 @@ function remember(kind, reason, filename) {
     localStorage.setItem(K_LAST_ERROR, JSON.stringify({
       at: new Date().toISOString(),
       kind,
+      build: BUILD,
       text: String((reason && (reason.stack || reason.message)) || reason || '').slice(0, 700),
       where: String(filename || '').slice(0, 200),
       shown: false,
