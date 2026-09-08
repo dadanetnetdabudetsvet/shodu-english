@@ -1,6 +1,6 @@
 {
  "version": 1,
- "total": 1000,
+ "total": 1084,
  "decks": {
   "cognates": 200,
   "core": 120,
@@ -8,7 +8,8 @@
   "cognates2": 150,
   "actions": 238,
   "nouns": 213,
-  "topup": 49
+  "topup": 49,
+  "tion": 84
  },
  "duplicatesRemoved": 49,
  "order": [
@@ -18,6 +19,7 @@
   "cognates2",
   "actions",
   "nouns",
-  "topup"
+  "topup",
+  "tion"
  ]
 }

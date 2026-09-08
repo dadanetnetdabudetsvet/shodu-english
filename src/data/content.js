@@ -25,6 +25,7 @@ export async function loadContent() {
     ['./data/deck4-actions.json', 'actions'],
     ['./data/deck5-nouns.json', 'nouns'],
     ['./data/deck6-topup.json', 'topup'],
+    ['./data/deck7-tion.json', 'tion'],
   ];
 
   const loaded = await Promise.all(FILES.map(([url, deck]) =>
@@ -55,7 +56,8 @@ export async function loadContent() {
   let idx = 0;
   for (const { deck, j } of loaded) {
     if (!j || !j.words) continue;
-    if (deck === 'cognates2' || deck === 'actions' || deck === 'nouns' || deck === 'topup') {
+    if (deck === 'cognates2' || deck === 'actions' || deck === 'nouns'
+        || deck === 'topup' || deck === 'tion') {
       // после ловушек
     }
     for (const item of j.words) push(item, deck, idx++);
@@ -176,14 +178,22 @@ export function applyWordSet(pool, content, set) {
 }
 
 export function poolForChallenge(content, sources) {
+  /* Слова на -tion и -sion идут наравне с самыми узнаваемыми
+     когнатами, а не в общем хвосте. «Революция» и «эволюция» человек
+     читает без всякого обучения — держать их до десятой ступени
+     значило бы прятать лучшее, что есть в базе. */
+  const tion = content.extra.filter(w => w.deck === 'tion');
+
   // Низкая сложность — только самые узнаваемые когнаты.
-  let pool = content.deck1.filter(w => w.tier <= 2);
+  let pool = content.deck1.filter(w => w.tier <= 2)
+    .concat(tion.filter(w => w.tier <= 2));
   if (sources.includes('tier34')) {
-    pool = content.deck1.concat(content.extra.filter(w => w.deck === 'cognates2'));
+    pool = content.deck1
+      .concat(content.extra.filter(w => w.deck === 'cognates2' || w.deck === 'tion'));
   }
   if (sources.includes('deck2')) pool = pool.concat(content.deck2);
   if (sources.includes('general')) {
-    pool = pool.concat(content.extra.filter(w => w.deck !== 'cognates2'));
+    pool = pool.concat(content.extra.filter(w => w.deck !== 'cognates2' && w.deck !== 'tion'));
   }
   if (sources.includes('falseFriends')) pool = pool.concat(content.falseFriends);
   return pool;

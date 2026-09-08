@@ -76,12 +76,16 @@ firstIds === 'w001,w002,w003' && lastIds === 'w198,w199,w200'
 
 // Инварианты данных, каждый из которых был нарушен и починен.
 const DECK_FILES = ['data/words.json', 'data/core-words.json', 'data/deck3-cognates.json',
-                    'data/deck4-actions.json', 'data/deck5-nouns.json', 'data/deck6-topup.json'];
+                    'data/deck4-actions.json', 'data/deck5-nouns.json', 'data/deck6-topup.json',
+                    'data/deck7-tion.json'];
 const allDeckWords = DECK_FILES.flatMap(f => (JSON.parse(readFileSync(f, 'utf8')).words || []));
 const uniqueEn = new Set(allDeckWords.map(w => String(w.en).toLowerCase()));
-uniqueEn.size + words.false_friends.length === 1000
-  ? ok(`в базе ровно 1000 уникальных слов`)
-  : bad(`в базе ${uniqueEn.size + words.false_friends.length} слов, ожидалась 1000`);
+/* Число берётся из индекса колод, а не зашито: база растёт, и
+   расхождение должно ловиться, а не требовать правки проверки. */
+const expectedTotal = JSON.parse(readFileSync('data/deck-index.json', 'utf8')).total;
+uniqueEn.size + words.false_friends.length === expectedTotal
+  ? ok(`в базе ровно ${expectedTotal} уникальных слов`)
+  : bad(`в базе ${uniqueEn.size + words.false_friends.length} слов, в индексе ${expectedTotal}`);
 
 const rhoticAll = allDeckWords.filter(w => w.tr && w.ipa && /р/.test(w.tr) && !/r/.test(w.ipa));
 rhoticAll.length === 0 ? ok('транскрипция согласована с IPA во всех колодах')

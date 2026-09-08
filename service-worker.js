@@ -9,7 +9,7 @@
  * по нажатию человека пришлёт сообщение.
  */
 
-const VERSION = 'v181321efce';
+const VERSION = 'vdfaf3ced65';
 const CACHE = `shodu-${VERSION}`;
 
 const SHELL = [
@@ -93,6 +93,7 @@ const SHELL = [
   './data/deck4-actions.json',
   './data/deck5-nouns.json',
   './data/deck6-topup.json',
+  './data/deck7-tion.json',
   './data/rules.json',
   './data/words.json',
   './assets/icons/apple-touch-icon-180.png',
