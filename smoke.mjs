@@ -386,11 +386,20 @@ console.log('\nЧЕЛЛЕНДЖИ И ЛАВКА');
   if (!txt.includes('Сегодня')) fail('страница челленджей не отрисовалась');
   else {
     const quests = root.querySelectorAll('.card .bar--thin').length;
+    /* Список показывает пять ближайших, остальное раскрывается: стена
+       из двадцати одинаковых строк читалась как список дел. Проверяем
+       не количество строк, а что раскрытие доводит до всех двадцати. */
+    const visible = (el) => !el.closest('[hidden]');
+    const shown = [...root.querySelectorAll('.list-row')].filter(visible).length;
+    const moreBtn = [...root.querySelectorAll('button')].find(b => /Показать ещё/.test(b.textContent));
+    if (moreBtn) click(moreBtn);
+    await sleep(30);
     const acts = root.querySelectorAll('.list-row').length;
     const doneActs = root.querySelectorAll('.list-row--done').length;
-    step(`челленджей на сегодня: ${quests}, активностей: ${acts}, из них сделано: ${doneActs}`);
+    step(`челленджей на сегодня: ${quests}, сразу видно активностей: ${shown}, всего: ${acts}, из них сделано: ${doneActs}`);
     if (quests !== 3) fail(`челленджей ${quests}, ожидалось 3`);
-    if (acts !== 20) fail(`активностей ${acts}, ожидалось 20`);
+    if (shown > 8) fail(`сразу показано ${shown} активностей — это стена, а не список`);
+    if (acts !== 20) fail(`после раскрытия активностей ${acts}, ожидалось 20`);
     if (doneActs === 0) fail('ни одна активность не отмечена, хотя занятие уже было');
 
     // Награда за вычисляемую активность выдаётся сама.

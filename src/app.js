@@ -207,7 +207,7 @@ function watchForBreakage() {
 /* Подписи навигации живут в разметке, поэтому переводятся отдельно.
    Раньше они не попадали в каталог и на любом языке оставались русскими. */
 function localizeTabbar() {
-  const labels = { today: 'Сегодня', home: 'Дом', quests: 'Челлендж', words: 'Слова', rules: 'Правила', profile: 'Профиль' };
+  const labels = { today: 'Сегодня', home: 'Дом', quests: 'Награды', words: 'Слова', rules: 'Правила', profile: 'Профиль' };
   for (const item of tabbar.querySelectorAll('[data-tab]')) {
     const node = item.querySelector('.tabbar__label');
     if (node) node.textContent = t(labels[item.dataset.tab] || '');

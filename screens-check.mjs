@@ -192,8 +192,9 @@ for (const st of steps) console.log('    ·', st.querySelector('.inst-step__text
 
 /* Печатаем сам текст экранов: копирайт проверяется глазами. */
 if (process.env.DUMP) {
-  for (const r of ['today', 'profile']) {
+  for (const r of (process.env.DUMP_ROUTES || 'today,profile').split(',')) {
     window.location.hash = '#/' + r;
+    if (r === 'quests-shop') window.location.hash = '#/quests/shop';
     window.dispatchEvent(new window.Event('hashchange'));
     await sleep(450);
     console.log('\n───── ' + r.toUpperCase() + ' ─────');
@@ -345,6 +346,7 @@ for (const lg of LANGS) {
   let worst = 0, holes = 0, nulls = 0;
   for (const r of ['home', 'today', 'quests', 'profile', 'rules']) {
     window.location.hash = '#/' + r;
+    if (r === 'quests-shop') window.location.hash = '#/quests/shop';
     window.dispatchEvent(new window.Event('hashchange'));
     await sleep(260);
     const text = root.textContent.replace(/\s+/g, ' ');

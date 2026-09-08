@@ -93,3 +93,31 @@ export function totalPrice() {
 export function canAfford(gems, item) {
   return gems >= item.price;
 }
+
+/* ── ради чего копятся алмазы ──────────────────────────────────────
+ *
+ * Число на экране само по себе ничего не значит: «340 алмазов» — это
+ * много или мало? Пока рядом нет вещи, ради которой копят, лавка
+ * остаётся прайс-листом, а задания — списком дел.
+ *
+ * Поэтому считаем ближайшую цель. Если на что-то уже хватает, берём
+ * лучшее из доступного: человек должен узнать, что может взять вещь
+ * прямо сейчас, а не что ему до чего-то не хватило.
+ */
+export function nextGoal(owned, gems, premium = false) {
+  const left = allItems().filter(x => x.price > 0 && !isOwned(owned, x, premium));
+  if (!left.length) return null;
+
+  const affordable = left.filter(x => x.price <= gems);
+  if (affordable.length) {
+    const best = affordable.reduce((a, b) => (b.price > a.price ? b : a));
+    return { item: best, ready: true, need: 0, have: gems };
+  }
+  const soon = left.reduce((a, b) => (b.price < a.price ? b : a));
+  return { item: soon, ready: false, need: soon.price - gems, have: gems };
+}
+
+/** В какой витрине лежит вещь: нужно, чтобы показать её человеку. */
+export function sectionOf(id) {
+  return SECTIONS.find(s => s.items.some(x => x.id === id)) || null;
+}

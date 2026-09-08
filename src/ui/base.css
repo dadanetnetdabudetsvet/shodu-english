@@ -946,3 +946,56 @@ button.topbar__cell:active { background: var(--surface-2); }
   background: linear-gradient(to top, var(--surface), transparent);
   pointer-events: none;
 }
+
+/* ── ради чего копятся алмазы ──────────────────────────────────────
+   Голое число ничего не значит. Рядом с вещью и полосой до неё оно
+   становится целью, а задания внизу — способом её взять. */
+.goal {
+  position: relative; overflow: hidden;
+  border-radius: var(--r-xl); padding: var(--sp-4);
+  color: #fff; display: flex; flex-direction: column; gap: var(--sp-3);
+  background: linear-gradient(160deg, #123B4A 0%, #0E2233 100%);
+  border: 1px solid rgba(111, 231, 245, .22);
+  box-shadow: var(--sh-4);
+}
+.goal__glow {
+  position: absolute; inset: auto -30% -70% -30%; height: 140%;
+  background: radial-gradient(55% 55% at 50% 100%, rgba(18, 181, 203, .45), transparent 70%);
+  pointer-events: none;
+}
+.goal--ready { border-color: rgba(47, 203, 123, .5); }
+.goal--ready .goal__glow { background: radial-gradient(55% 55% at 50% 100%, rgba(47, 203, 123, .42), transparent 70%); }
+.goal--done { background: linear-gradient(160deg, #143A2C 0%, #0E2433 100%); }
+
+.goal__top { position: relative; display: flex; align-items: center; gap: var(--sp-3); }
+.goal__gems { font-size: var(--fs-xl); font-weight: var(--fw-black); letter-spacing: -.02em; }
+.goal__link {
+  margin-left: auto; border: 0; background: none; color: rgba(255,255,255,.7);
+  font-size: var(--fs-caption); padding: 4px 0;
+}
+.goal__row { position: relative; display: flex; align-items: center; gap: var(--sp-3); }
+.goal__face {
+  width: 52px; height: 52px; flex: 0 0 52px; border-radius: 16px;
+  display: grid; place-items: center; font-size: 26px; overflow: hidden;
+  background: rgba(255,255,255,.12);
+}
+.goal__face > * { max-width: 100%; }
+.goal__name { font-size: var(--fs-md); font-weight: var(--fw-bold); }
+.goal__line { position: relative; font-size: var(--fs-sm); color: rgba(255,255,255,.78); }
+.goal__cta {
+  position: relative; min-height: 48px; border: 0; border-radius: var(--r-md);
+  font-size: var(--fs-base); font-weight: var(--fw-bold); color: #06251A;
+  background: linear-gradient(180deg, #7BF3BE, #2FCB7B);
+  box-shadow: 0 5px 0 rgba(0,0,0,.26);
+  transition: transform .1s var(--ease-snappy), box-shadow .1s var(--ease-snappy);
+}
+.goal__cta:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.26); }
+
+/* Сделанное — полка с доказательствами, а не ежедневный отчёт:
+   свёрнуто в одну строку, разворачивается по желанию. */
+.done-fold {
+  display: flex; align-items: center; gap: var(--sp-2);
+  width: 100%; min-height: 44px; padding: 0 var(--sp-3);
+  border: 1px dashed var(--border-strong); border-radius: var(--r-md);
+  background: none; color: var(--text-2); font-size: var(--fs-sm);
+}
